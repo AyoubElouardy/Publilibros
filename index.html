@@ -1383,12 +1383,12 @@
         };
 
         // Inicializar Firebase
+        let app, auth, db, storage;
         try {
-            const app = firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-            const db = firebase.firestore();
-            const storage = firebase.storage();
-            
+            app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            storage = firebase.storage();
             console.log("Firebase inicializado correctamente");
         } catch (error) {
             console.error("Error inicializando Firebase:", error);
@@ -2110,6 +2110,12 @@
         window.addEventListener('beforeunload', function() {
             stopRealTimeListeners();
         });
+
+        // Función placeholder para abrir lector (para evitar errores)
+        function openReader(book) {
+            alert(`Función para abrir el lector del libro: ${book.title}`);
+            // Aquí iría la implementación real del lector
+        }
     </script>
 </body>
 </html>
