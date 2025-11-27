@@ -5,30 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publibros - Comparte y Lee Libros</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
+            --primary: #6a5af9;
+            --secondary: #d66efd;
+            --accent: #ff6b8b;
+            --light: #f8f9fa;
             --dark: #2c3e50;
             --text: #333;
             --text-light: #7f8c8d;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
+            --gradient: linear-gradient(135deg, #6a5af9, #d66efd);
+            --gradient-light: linear-gradient(135deg, #8a7dfa, #e28eff);
+            
+            /* Variables para modo oscuro */
+            --bg-color: #f9f9f9;
+            --card-bg: white;
+            --text-color: #333;
+            --text-muted: #7f8c8d;
+            --border-color: #ddd;
+            --header-bg: var(--gradient);
+            --footer-bg: var(--gradient);
+            --input-bg: white;
+            --input-border: #ddd;
+            --modal-bg: white;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modo oscuro */
+        body.dark-mode {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333;
+            --header-bg: linear-gradient(135deg, #4a3fb5, #a04fc9);
+            --footer-bg: linear-gradient(135deg, #4a3fb5, #a04fc9);
+            --input-bg: #2d2d2d;
+            --input-border: #444;
+            --modal-bg: #2d2d2d;
+            --shadow-color: rgba(0, 0, 0, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f9f9f9;
-            color: var(--text);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
+            transition: var(--transition);
         }
 
         .container {
@@ -39,7 +71,7 @@
 
         /* Header */
         header {
-            background-color: var(--primary);
+            background: var(--header-bg);
             color: white;
             padding: 1rem 0;
             box-shadow: var(--shadow);
@@ -62,12 +94,15 @@
         }
 
         .logo i {
-            color: var(--secondary);
+            color: white;
             margin-right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            border-radius: 50%;
         }
 
         .logo span {
-            color: var(--secondary);
+            color: white;
         }
 
         nav ul {
@@ -86,11 +121,13 @@
             font-weight: 500;
             padding: 0.5rem 1rem;
             border-radius: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
         nav ul li a:hover, nav ul li a.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--secondary);
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .user-actions {
@@ -109,7 +146,8 @@
         }
 
         .user-actions button:hover {
-            color: var(--secondary);
+            color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
         }
 
         /* Secciones principales */
@@ -125,20 +163,39 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('https://source.unsplash.com/random/1200x600/?library');
+            background: linear-gradient(rgba(106, 90, 249, 0.85), rgba(214, 110, 253, 0.85)), url('https://source.unsplash.com/random/1200x600/?library,books');
             background-size: cover;
             background-position: center;
             color: white;
             padding: 5rem 0;
             text-align: center;
-            border-radius: 12px;
+            border-radius: 20px;
             margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-10px, -10px) rotate(1deg); }
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 3.2rem;
             margin-bottom: 1rem;
             font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .hero p {
@@ -150,7 +207,7 @@
 
         .btn {
             display: inline-block;
-            background-color: var(--secondary);
+            background: var(--gradient);
             color: white;
             padding: 0.8rem 1.8rem;
             border: none;
@@ -160,11 +217,28 @@
             cursor: pointer;
             transition: var(--transition);
             box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
-            background-color: #2980b9;
             transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
 
         .btn-outline {
@@ -183,7 +257,7 @@
         }
 
         .btn-secondary:hover {
-            background-color: #1a252f;
+            background-color: #5a4bd8;
         }
 
         .btn-danger {
@@ -191,7 +265,7 @@
         }
 
         .btn-danger:hover {
-            background-color: #c0392b;
+            background-color: #e55a7c;
         }
 
         /* Secciones */
@@ -207,7 +281,7 @@
             display: block;
             width: 80px;
             height: 4px;
-            background: var(--secondary);
+            background: var(--gradient);
             margin: 10px auto;
             border-radius: 2px;
         }
@@ -220,28 +294,40 @@
         }
 
         .book-card {
-            background-color: white;
-            border-radius: 12px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 20px var(--shadow-color);
             transition: var(--transition);
             position: relative;
+            border: 1px solid var(--border-color);
         }
 
         .book-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px var(--shadow-color);
         }
 
         .book-cover {
             height: 220px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 2rem;
             position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.1));
         }
 
         .book-actions {
@@ -264,11 +350,12 @@
             cursor: pointer;
             transition: var(--transition);
             color: var(--primary);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
 
         .book-action:hover {
             background: white;
-            transform: scale(1.1);
+            transform: scale(1.2) rotate(5deg);
         }
 
         .book-action.liked {
@@ -283,10 +370,11 @@
             font-weight: bold;
             margin-bottom: 0.5rem;
             font-size: 1.2rem;
+            color: var(--text-color);
         }
 
         .book-author {
-            color: var(--text-light);
+            color: var(--text-muted);
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
             display: flex;
@@ -309,7 +397,7 @@
             justify-content: space-between;
             margin-top: 15px;
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
 
         .book-stat {
@@ -326,12 +414,13 @@
             margin-bottom: 1rem;
             height: 60px;
             overflow: hidden;
+            color: var(--text-color);
         }
 
         .book-genre {
             display: inline-block;
-            background-color: #f1f2f6;
-            color: var(--text);
+            background-color: var(--input-bg);
+            color: var(--text-color);
             padding: 0.2rem 0.6rem;
             border-radius: 12px;
             font-size: 0.7rem;
@@ -344,14 +433,14 @@
         .empty-state {
             text-align: center;
             padding: 3rem;
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 20px var(--shadow-color);
         }
 
         .empty-state i {
             font-size: 4rem;
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-bottom: 1.5rem;
         }
 
@@ -361,7 +450,7 @@
         }
 
         .empty-state p {
-            color: var(--text-light);
+            color: var(--text-muted);
             max-width: 500px;
             margin: 0 auto 2rem;
         }
@@ -384,10 +473,10 @@
         .upload-form {
             max-width: 700px;
             margin: 0 auto;
-            background-color: white;
+            background-color: var(--card-bg);
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 20px var(--shadow-color);
         }
 
         .form-group {
@@ -404,16 +493,18 @@
         .form-control {
             width: 100%;
             padding: 0.8rem 1rem;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
             transition: var(--transition);
+            background-color: var(--input-bg);
+            color: var(--text-color);
         }
 
         .form-control:focus {
             border-color: var(--secondary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 3px rgba(214, 110, 253, 0.2);
         }
 
         textarea.form-control {
@@ -425,10 +516,10 @@
         .reader-container {
             max-width: 900px;
             margin: 0 auto;
-            background-color: white;
+            background-color: var(--card-bg);
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 20px var(--shadow-color);
         }
 
         .reader-header {
@@ -437,7 +528,7 @@
             align-items: center;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .reader-content {
@@ -445,6 +536,7 @@
             font-size: 1.1rem;
             min-height: 400px;
             white-space: pre-line;
+            color: var(--text-color);
         }
 
         .reader-controls {
@@ -460,18 +552,18 @@
         }
 
         .review-form {
-            background: #f8f9fa;
+            background: var(--input-bg);
             padding: 1.5rem;
             border-radius: 8px;
             margin-bottom: 2rem;
         }
 
         .review {
-            background: white;
+            background: var(--card-bg);
             padding: 1.5rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-color);
         }
 
         .review-header {
@@ -482,10 +574,11 @@
 
         .review-author {
             font-weight: bold;
+            color: var(--text-color);
         }
 
         .review-date {
-            color: var(--text-light);
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
@@ -499,17 +592,17 @@
             display: flex;
             align-items: center;
             margin-bottom: 2rem;
-            background: white;
+            background: var(--card-bg);
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 20px var(--shadow-color);
         }
 
         .user-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -519,6 +612,20 @@
             overflow: hidden;
             position: relative;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(106, 90, 249, 0.3);
+            border: 4px solid var(--card-bg);
+        }
+
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient);
+            border-radius: 50%;
+            z-index: -1;
         }
 
         .user-avatar img {
@@ -566,15 +673,16 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
+            color: var(--text-color);
         }
 
         .user-email {
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-bottom: 0.5rem;
         }
 
         .user-bio {
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-bottom: 1rem;
         }
 
@@ -595,642 +703,9 @@
 
         .stat-label {
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
-
-        /* Pestañas del perfil */
-        .profile-tabs {
-            margin-top: 3rem;
-        }
-
-        .tabs-header {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 2rem;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 1rem 2rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            transition: var(--transition);
-        }
-
-        .tab-btn:hover {
-            color: var(--primary);
-        }
-
-        .tab-btn.active {
-            color: var(--secondary);
-            border-bottom: 3px solid var(--secondary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary);
-            color: white;
-            padding: 3rem 0 2rem;
-            margin-top: 3rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-section h3:after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--secondary);
-        }
-
-        .footer-section p {
-            margin-bottom: 1rem;
-            opacity: 0.8;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            opacity: 0.7;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h3 {
-            color: var(--primary);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .auth-tab {
-            padding: 0.8rem 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            transition: var(--transition);
-        }
-
-        .auth-tab.active {
-            color: var(--secondary);
-            border-bottom: 3px solid var(--secondary);
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .form-footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            color: var(--text-light);
-        }
-
-        .form-footer a {
-            color: var(--secondary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            color: var(--accent);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
-
-        /* Géneros */
-        .genre-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .genre-chip {
-            background-color: #e0e0e0;
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .genre-chip:hover {
-            background-color: #d5d5d5;
-        }
-
-        .genre-chip.active {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        /* Panel de administración */
-        .admin-panel {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-        }
-
-        .admin-badge {
-            background: var(--accent);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .report-reason {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-
-        .verification-badge {
-            display: inline-flex;
-            align-items: center;
-            background: #d4edda;
-            color: #155724;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-        }
-
-        .verification-badge.unverified {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Estadísticas */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Acciones de biblioteca */
-        .library-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        /* Nuevos estilos para el editor mejorado */
-        .editor-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .editor-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-            background: #f8f9fa;
-        }
-        
-        .editor-btn {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 0.5rem 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .editor-btn:hover {
-            background: #e9ecef;
-        }
-        
-        .editor-btn.active {
-            background: var(--secondary);
-            color: white;
-            border-color: var(--secondary);
-        }
-        
-        .editor-content {
-            min-height: 400px;
-            padding: 1.5rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            outline: none;
-        }
-        
-        .editor-stats {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #eee;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-        
-        /* Estilos para el sistema de portadas */
-        .cover-upload-section {
-            margin-bottom: 2rem;
-        }
-        
-        .cover-preview {
-            width: 200px;
-            height: 280px;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-        
-        .cover-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-        
-        .cover-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .cover-option {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .cover-option:hover {
-            border-color: var(--secondary);
-        }
-        
-        .cover-option.selected {
-            border-color: var(--secondary);
-            background: rgba(52, 152, 219, 0.1);
-        }
-        
-        .cover-design {
-            width: 100px;
-            height: 140px;
-            margin: 0 auto 0.5rem;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        /* Estilos para el sistema de capítulos */
-        .chapters-section {
-            margin-bottom: 2rem;
-        }
-        
-        .chapter-list {
-            margin-bottom: 1rem;
-        }
-        
-        .chapter-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            background: white;
-        }
-        
-        .chapter-item:hover {
-            background: #f8f9fa;
-        }
-        
-        .chapter-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .chapter-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-        
-        .chapter-btn:hover {
-            color: var(--secondary);
-        }
-        
-        /* Estilos para el modal de escritura mejorado */
-        .writing-modal .modal-content {
-            max-width: 900px;
-            width: 95%;
-        }
-        
-        .writing-tabs {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 1.5rem;
-        }
-        
-        .writing-tab {
-            padding: 1rem 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            transition: var(--transition);
-        }
-        
-        .writing-tab.active {
-            color: var(--secondary);
-            border-bottom: 3px solid var(--secondary);
-        }
-        
-        .tab-panel {
-            display: none;
-        }
-        
-        .tab-panel.active {
-            display: block;
-        }
-        
-        /* Estilos para vista previa de portada en tarjetas */
-        .book-card .book-cover {
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .book-card .book-cover .cover-text {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 0.5rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        
-        .book-status {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            z-index: 1;
-        }
-        
-        .status-pending {
-            background: #f39c12;
-            color: white;
-        }
-        
-        .status-approved {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .status-rejected {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .user-management-item {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .user-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .confirmation-modal {
-            text-align: center;
-        }
-        
-        .confirmation-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav ul {
-                margin-top: 1rem;
-                justify-content: center;
-            }
-
-            nav ul li {
-                margin: 0 0.5rem;
-            }
-
-            .user-actions {
-                margin-top: 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-
-            .user-profile {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .user-avatar {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-
-            .tabs-header {
-                flex-direction: column;
-            }
-
-            .tab-btn {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .library-actions {
-                flex-direction: column;
-            }
-            
-            .search-filter {
-                width: 100%;
-            }
-            
-            .writing-tabs {
-                flex-direction: column;
-            }
-            
-            .writing-tab {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+</style>
 </head>
 <body>
     <!-- Header -->
@@ -1252,7 +727,47 @@
             </div>
         </div>
     </header>
-        <!-- Sección Inicio -->
+      <!-- Modal de Bienvenida (nuevo) -->
+    <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>¡Bienvenido a Publibros!</h3>
+            </div>
+            <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
+            <div class="welcome-options">
+                <div class="welcome-option" id="login-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h4>Iniciar Sesión</h4>
+                    <p>Accede con tu cuenta existente</p>
+                </div>
+                <div class="welcome-option" id="register-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4>Registrarse</h4>
+                    <p>Crea una nueva cuenta y descubre todas las funciones</p>
+                </div>
+                <div class="welcome-option" id="guest-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>Modo Invitado</h4>
+                    <p>Explora con acceso limitado a funciones básicas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación de estado de invitado (nuevo) -->
+    <div id="guest-notification" class="guest-notification" style="display: none;">
+        <i class="fas fa-info-circle"></i>
+        <span>Estás navegando como invitado. Algunas funciones están limitadas. <a href="#" id="upgrade-account">Mejora tu cuenta</a> para acceder a todo.</span>
+        <span class="close" id="close-guest-notification">&times;</span>
+    </div>
+
+    <!-- Sección Inicio -->
     <section id="inicio" class="main-section active">
         <div class="container">
             <div class="hero">
@@ -1261,14 +776,12 @@
                 <button class="btn" id="explore-library">Explorar Biblioteca</button>
                 <button class="btn btn-outline" id="upload-first-book">Publica tu Primer Libro</button>
             </div>
-
             <div class="featured-books">
                 <h2 class="section-title">Libros Destacados</h2>
                 <div class="books-grid" id="featured-books-container">
                     <!-- Los libros destacados se cargarán aquí -->
                 </div>
             </div>
-
             <!-- Nueva sección: Libros Recomendados -->
             <div class="recommended-books" id="recommended-section">
                 <h2 class="section-title">Libros Recomendados para Ti</h2>
@@ -1276,7 +789,6 @@
                     <!-- Los libros recomendados se cargarán aquí -->
                 </div>
             </div>
-
             <div class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1309,7 +821,7 @@
     <section id="biblioteca" class="main-section">
         <div class="container">
             <h2 class="section-title">Biblioteca de Libros</h2>
-            
+           
             <div class="library-actions">
                 <button class="btn" id="upload-book-btn">
                     <i class="fas fa-plus"></i> Subir Nuevo Libro
@@ -1323,12 +835,11 @@
                     </select>
                 </div>
             </div>
-            
+           
             <!-- Filtros de género -->
             <div class="genre-filter" id="genre-filter-container">
                 <!-- Los filtros de género se cargarán aquí -->
             </div>
-
             <div class="books-grid" id="books-container">
                 <!-- Los libros se cargarán aquí -->
             </div>
@@ -1339,7 +850,7 @@
     <section id="perfil" class="main-section">
         <div class="container">
             <h2 class="section-title">Mi Perfil</h2>
-            
+           
             <div class="user-profile">
                 <div class="user-avatar" id="user-avatar">
                     <div class="avatar-placeholder" id="avatar-placeholder">
@@ -1382,27 +893,27 @@
             <!-- Panel de Administración -->
             <div id="admin-panel" class="admin-panel" style="display: none;">
                 <h3 class="section-title">Panel de Moderación</h3>
-                
+               
                 <div class="tabs-header">
                     <button class="tab-btn active" data-tab="pending-books">Libros Pendientes</button>
                     <button class="tab-btn" data-tab="reported-books">Libros Reportados</button>
                     <button class="tab-btn" data-tab="user-management">Gestión de Usuarios</button>
                 </div>
-                
+               
                 <div class="tab-content active" id="pending-books-tab">
                     <h3>Libros Pendientes de Aprobación</h3>
                     <div class="books-grid" id="pending-books-container">
                         <!-- Los libros pendientes se cargarán aquí -->
                     </div>
                 </div>
-                
+               
                 <div class="tab-content" id="reported-books-tab">
                     <h3>Libros Reportados</h3>
                     <div id="reported-books-container">
                         <!-- Los libros reportados se cargarán aquí -->
                     </div>
                 </div>
-                
+               
                 <div class="tab-content" id="user-management-tab">
                     <h3>Gestión de Usuarios</h3>
                     <div id="users-container">
@@ -1417,21 +928,21 @@
                     <button class="tab-btn" data-tab="liked-books">Libros que Me Gustan</button>
                     <button class="tab-btn" data-tab="my-reviews">Mis Reseñas</button>
                 </div>
-                
+               
                 <div class="tab-content active" id="my-books-tab">
                     <h3>Mis Libros Publicados</h3>
                     <div class="books-grid" id="my-books-container">
                         <!-- Los libros del usuario se cargarán aquí -->
                     </div>
                 </div>
-                
+               
                 <div class="tab-content" id="liked-books-tab">
                     <h3>Libros que Me Gustan</h3>
                     <div class="books-grid" id="liked-books-container">
                         <!-- Los libros que le gustan al usuario se cargarán aquí -->
                     </div>
                 </div>
-                
+               
                 <div class="tab-content" id="my-reviews-tab">
                     <h3>Mis Reseñas</h3>
                     <div id="my-reviews-container">
@@ -1449,12 +960,12 @@
                 <h3 id="auth-modal-title">Iniciar Sesión</h3>
                 <button class="close-modal" id="close-auth-modal">&times;</button>
             </div>
-            
+           
             <div class="auth-tabs">
                 <button class="auth-tab active" data-form="login">Iniciar Sesión</button>
                 <button class="auth-tab" data-form="register">Registrarse</button>
             </div>
-            
+           
             <form id="login-form" class="auth-form active">
                 <div class="form-group">
                     <label for="login-email">Email</label>
@@ -1473,7 +984,7 @@
                     ¿No tienes cuenta? <a id="switch-to-register">Regístrate aquí</a>
                 </div>
             </form>
-            
+           
             <form id="register-form" class="auth-form">
                 <div class="form-group">
                     <label for="register-name">Nombre</label>
@@ -1502,21 +1013,22 @@
             </form>
         </div>
     </div>
-        <!-- Modal para subir libro MEJORADO -->
+
+    <!-- Modal para subir libro MEJORADO -->
     <div id="upload-modal" class="modal writing-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Publicar Nuevo Libro</h3>
                 <button class="close-modal" id="close-upload-modal">&times;</button>
             </div>
-            
+           
             <div class="writing-tabs">
                 <button class="writing-tab active" data-tab="basic-info">Información Básica</button>
                 <button class="writing-tab" data-tab="cover-design">Portada</button>
                 <button class="writing-tab" data-tab="content-editor">Contenido</button>
                 <button class="writing-tab" data-tab="preview">Vista Previa</button>
             </div>
-            
+           
             <form id="upload-form">
                 <!-- Pestaña 1: Información Básica -->
                 <div class="tab-panel active" id="basic-info-panel">
@@ -1557,38 +1069,38 @@
                         <button type="button" class="btn btn-secondary" id="next-to-cover">Siguiente: Portada</button>
                     </div>
                 </div>
-                
+               
                 <!-- Pestaña 2: Diseño de Portada -->
                 <div class="tab-panel" id="cover-design-panel">
                     <div class="cover-upload-section">
                         <h4>Portada del Libro</h4>
                         <p>Puedes subir una imagen personalizada o elegir uno de nuestros diseños.</p>
-                        
+                       
                         <div class="form-group">
                             <label for="book-cover-upload">Subir Imagen de Portada</label>
                             <input type="file" id="book-cover-upload" class="form-control" accept="image/*">
                             <small>Formatos: JPG, PNG. Tamaño máximo: 2MB</small>
                         </div>
-                        
+                       
                         <div class="cover-preview" id="cover-preview">
                             <div id="cover-placeholder">
                                 <i class="fas fa-book fa-3x" style="color: #7f8c8d;"></i>
                                 <p style="margin-top: 10px; color: #7f8c8d;">Vista previa de portada</p>
                             </div>
                         </div>
-                        
+                       
                         <h5>O elige un diseño prediseñado:</h5>
                         <div class="cover-options" id="cover-options">
                             <!-- Los diseños de portada se generarán dinámicamente -->
                         </div>
                     </div>
-                    
+                   
                     <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
                         <button type="button" class="btn btn-secondary" id="back-to-basic">Anterior: Información</button>
                         <button type="button" class="btn btn-secondary" id="next-to-content">Siguiente: Contenido</button>
                     </div>
                 </div>
-                
+               
                 <!-- Pestaña 3: Editor de Contenido -->
                 <div class="tab-panel" id="content-editor-panel">
                     <div class="form-group">
@@ -1611,7 +1123,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                   
                     <div class="chapters-section">
                         <h4>Capítulos</h4>
                         <div class="chapter-list" id="chapter-list">
@@ -1621,13 +1133,13 @@
                             <i class="fas fa-cog"></i> Gestionar Capítulos
                         </button>
                     </div>
-                    
+                   
                     <div class="form-group" style="display: flex; justify-content: space-between;">
                         <button type="button" class="btn btn-secondary" id="back-to-cover">Anterior: Portada</button>
                         <button type="button" class="btn btn-secondary" id="next-to-preview">Siguiente: Vista Previa</button>
                     </div>
                 </div>
-                
+               
                 <!-- Pestaña 4: Vista Previa -->
                 <div class="tab-panel" id="preview-panel">
                     <div class="book-preview">
@@ -1646,20 +1158,21 @@
                                 <div class="book-genre" id="preview-genre">Género</div>
                             </div>
                         </div>
-                        
+                       
                         <div class="preview-content">
                             <h5>Contenido (primeras 500 palabras):</h5>
                             <div class="preview-text" id="preview-content-text" style="
-                                background: #f8f9fa; 
-                                padding: 1rem; 
-                                border-radius: 8px; 
-                                max-height: 200px; 
+                                background: var(--input-bg);
+                                padding: 1rem;
+                                border-radius: 8px;
+                                max-height: 200px;
                                 overflow-y: auto;
                                 white-space: pre-line;
+                                color: var(--text-color);
                             "></div>
                         </div>
                     </div>
-                    
+                   
                     <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
                         <button type="button" class="btn btn-secondary" id="back-to-content">Anterior: Contenido</button>
                         <button type="submit" class="btn" id="publish-book-btn">Publicar Libro</button>
@@ -1711,7 +1224,6 @@
                     <span id="page-info">Página 1 de 1</span>
                     <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
                 </div>
-
                 <!-- Sección de reseñas -->
                 <div class="reviews-section">
                     <h3>Reseñas</h3>
@@ -1766,14 +1278,802 @@
             </div>
         </div>
     </footer>
-        <!-- Firebase SDK -->
+      <style>
+        /* Pestañas del perfil */
+        .profile-tabs {
+            margin-top: 3rem;
+        }
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+        .tab-btn.active {
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: white;
+        }
+        .footer-section p {
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .footer-section a:hover {
+            opacity: 0.8;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--modal-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-header h3 {
+            color: var(--primary);
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .close-modal:hover {
+            color: var(--accent);
+        }
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .auth-tab {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        .auth-tab.active {
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+        .auth-form {
+            display: none;
+        }
+        .auth-form.active {
+            display: block;
+        }
+        .form-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .form-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Géneros */
+        .genre-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .genre-chip {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            font-weight: 500;
+        }
+        .genre-chip:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .genre-chip.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(106, 90, 249, 0.3);
+        }
+
+        /* Panel de administración */
+        .admin-panel {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            margin-bottom: 2rem;
+        }
+        .admin-badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .report-reason {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        .verification-badge.unverified {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Acciones de biblioteca */
+        .library-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Nuevos estilos para el editor mejorado */
+        .editor-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+       
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--input-bg);
+        }
+       
+        .editor-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-color);
+        }
+       
+        .editor-btn:hover {
+            background: var(--input-bg);
+        }
+       
+        .editor-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+       
+        .editor-content {
+            min-height: 400px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            outline: none;
+            color: var(--text-color);
+            background: var(--card-bg);
+        }
+       
+        .editor-stats {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--input-bg);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+       
+        /* Estilos para el sistema de portadas */
+        .cover-upload-section {
+            margin-bottom: 2rem;
+        }
+       
+        .cover-preview {
+            width: 200px;
+            height: 280px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: var(--input-bg);
+        }
+       
+        .cover-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+       
+        .cover-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+       
+        .cover-option {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--card-bg);
+        }
+       
+        .cover-option:hover {
+            border-color: var(--secondary);
+        }
+       
+        .cover-option.selected {
+            border-color: var(--secondary);
+            background: rgba(214, 110, 253, 0.1);
+        }
+       
+        .cover-design {
+            width: 100px;
+            height: 140px;
+            margin: 0 auto 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+       
+        /* Estilos para el sistema de capítulos */
+        .chapters-section {
+            margin-bottom: 2rem;
+        }
+       
+        .chapter-list {
+            margin-bottom: 1rem;
+        }
+       
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: var(--card-bg);
+        }
+       
+        .chapter-item:hover {
+            background: var(--input-bg);
+        }
+       
+        .chapter-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+       
+        .chapter-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+       
+        .chapter-btn:hover {
+            color: var(--secondary);
+        }
+       
+        /* Estilos para el modal de escritura mejorado */
+        .writing-modal .modal-content {
+            max-width: 900px;
+            width: 95%;
+        }
+       
+        .writing-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+       
+        .writing-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+       
+        .writing-tab.active {
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+       
+        .tab-panel {
+            display: none;
+        }
+       
+        .tab-panel.active {
+            display: block;
+        }
+       
+        /* Estilos para vista previa de portada en tarjetas */
+        .book-card .book-cover {
+            background-size: cover;
+            background-position: center;
+        }
+       
+        .book-card .book-cover .cover-text {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+       
+        .book-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+       
+        .status-pending {
+            background: #f39c12;
+            color: white;
+        }
+       
+        .status-approved {
+            background: #27ae60;
+            color: white;
+        }
+       
+        .status-rejected {
+            background: #e74c3c;
+            color: white;
+        }
+       
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+       
+        .user-management-item {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+       
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+       
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+       
+        .confirmation-modal {
+            text-align: center;
+        }
+       
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Estilos para modal de bienvenida y estado de invitado */
+        .welcome-modal {
+            z-index: 2000;
+        }
+       
+        .welcome-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+       
+        .welcome-option {
+            padding: 20px;
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+       
+        .welcome-option:hover {
+            background: var(--gradient-light);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+       
+        .welcome-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+       
+        .guest-notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+        }
+       
+        .guest-notification .close {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+       
+        .restricted-action {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+       
+        .restricted-message {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            z-index: 10;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 5px;
+        }
+       
+        .restricted-action:hover .restricted-message {
+            opacity: 1;
+        }
+       
+        .page-limit-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .page-limit-warning i {
+            font-size: 1.2rem;
+        }
+
+        /* Animaciones adicionales para elementos interactivos */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .like-btn.liked {
+            animation: pulse 0.5s ease;
+        }
+
+        /* Mejoras responsivas para móviles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            nav ul li {
+                margin: 0 0.5rem;
+            }
+            .user-actions {
+                margin-top: 1rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            .user-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            .user-avatar {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            .tabs-header {
+                flex-direction: column;
+            }
+            .tab-btn {
+                width: 100%;
+                text-align: center;
+            }
+           
+            .library-actions {
+                flex-direction: column;
+            }
+           
+            .search-filter {
+                width: 100%;
+            }
+           
+            .writing-tabs {
+                flex-direction: column;
+            }
+           
+            .writing-tab {
+                width: 100%;
+                text-align: center;
+            }
+           
+            .guest-notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        /* Transición suave para el cambio de tema */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    
+   
     <!-- JavaScript -->
     <script>
+        // Variables globales para control de acceso
+        let currentUserType = null; // 'logged', 'guest', o null (no autenticado)
+        let guestPagesRead = 0;
+        const MAX_GUEST_PAGES = 3;
+        const WORDS_PER_PAGE = 300;
+
+        // Función para alternar modo oscuro
+        function toggleDarkMode() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Verificar preferencia guardada
+        function checkDarkModePreference() {
+            const darkMode = localStorage.getItem('darkMode');
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
         // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDjwZHNY-q6kp67MzUOMQ4olOW3CgtNL0U",
@@ -1804,8 +2104,8 @@
 
         // Géneros disponibles
         const genres = [
-            "romance", "thriller", "terror", "fantasia", "ciencia-ficcion", 
-            "misterio", "aventura", "drama", "poesia", "biografia", 
+            "romance", "thriller", "terror", "fantasia", "ciencia-ficcion",
+            "misterio", "aventura", "drama", "poesia", "biografia",
             "historico", "infantil", "juvenil", "autoayuda", "otros"
         ];
 
@@ -1859,480 +2159,273 @@
         // Listeners de tiempo real
         let booksListener = null;
         let usersListener = null;
-
+              // ============================
+        // SISTEMA DE CONTROL DE ACCESO
         // ============================
-        // SISTEMA DE ESCRITURA MEJORADO
-        // ============================
 
-        function initWritingSystem() {
-            // Configurar pestañas del modal de escritura
-            document.querySelectorAll('.writing-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    switchWritingTab(tabId);
-                });
+        // Función para mostrar el modal de bienvenida
+        function showWelcomeModal() {
+            document.getElementById('welcome-modal').style.display = 'flex';
+           
+            // Configurar eventos para las opciones
+            document.getElementById('login-option').addEventListener('click', function() {
+                document.getElementById('welcome-modal').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
             });
+           
+            document.getElementById('register-option').addEventListener('click', function() {
+                document.getElementById('welcome-modal').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+                // Cambiar a pestaña de registro
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('[data-form="register"]').classList.add('active');
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById('register-form').classList.add('active');
+            });
+           
+            document.getElementById('guest-option').addEventListener('click', function() {
+                enterAsGuest();
+            });
+        }
 
-            // Navegación entre pestañas
-            document.getElementById('next-to-cover').addEventListener('click', function() {
-                if (validateBasicInfo()) {
-                    switchWritingTab('cover-design');
+        // Función para entrar como invitado
+        function enterAsGuest() {
+            currentUserType = 'guest';
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('guest-notification').style.display = 'flex';
+           
+            // Actualizar la interfaz para modo invitado
+            updateUIForGuest();
+           
+            // Iniciar listeners para contenido público
+            startRealTimeListeners();
+        }
+
+        // Función para actualizar la UI para usuarios invitados
+        function updateUIForGuest() {
+            // Actualizar botón de autenticación
+            document.getElementById('auth-status').textContent = 'Invitado';
+           
+            // Ocultar o deshabilitar funciones restringidas
+            const restrictedActions = [
+                'upload-book-btn',
+                'edit-profile-btn',
+                'submit-review'
+            ];
+           
+            restrictedActions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.add('restricted-action');
+                    element.disabled = true;
+                   
+                    // Añadir tooltip de restricción
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'restricted-message';
+                    tooltip.textContent = 'Inicia sesión para acceder a esta función';
+                    element.appendChild(tooltip);
                 }
             });
-
-            document.getElementById('back-to-basic').addEventListener('click', function() {
-                switchWritingTab('basic-info');
+           
+            // Restringir acciones de like y seguir
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.like-btn') || e.target.closest('.follow-btn')) {
+                    if (currentUserType === 'guest') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        showLoginPrompt();
+                    }
+                }
             });
-
-            document.getElementById('next-to-content').addEventListener('click', function() {
-                switchWritingTab('content-editor');
-            });
-
-            document.getElementById('back-to-cover').addEventListener('click', function() {
-                switchWritingTab('cover-design');
-            });
-
-            document.getElementById('next-to-preview').addEventListener('click', function() {
-                updatePreview();
-                switchWritingTab('preview');
-            });
-
-            document.getElementById('back-to-content').addEventListener('click', function() {
-                switchWritingTab('content-editor');
-            });
-
-            // Configurar el editor de texto
-            initTextEditor();
-
-            // Configurar el sistema de portadas
-            initCoverSystem();
-
-            // Configurar el sistema de capítulos
-            initChapterSystem();
-
-            // Configurar el guardado automático
-            initAutoSave();
         }
 
-        function switchWritingTab(tabId) {
-            // Actualizar pestañas activas
-            document.querySelectorAll('.writing-tab').forEach(tab => {
-                tab.classList.remove('active');
+        // Función para mostrar mensaje de inicio de sesión
+        function showLoginPrompt() {
+            // Crear un modal de confirmación
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <div class="modal-header">
+                        <h3>Iniciar Sesión Requerido</h3>
+                    </div>
+                    <p>Para acceder a esta función, necesitas tener una cuenta.</p>
+                    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+                        <button class="btn" id="go-to-login">Iniciar Sesión</button>
+                        <button class="btn btn-secondary" id="cancel-login">Cancelar</button>
+                    </div>
+                </div>
+            `;
+           
+            document.body.appendChild(modal);
+           
+            // Configurar eventos
+            document.getElementById('go-to-login').addEventListener('click', function() {
+                document.body.removeChild(modal);
+                document.getElementById('auth-modal').style.display = 'flex';
             });
-            document.querySelector(`.writing-tab[data-tab="${tabId}"]`).classList.add('active');
-
-            // Actualizar paneles activos
-            document.querySelectorAll('.tab-panel').forEach(panel => {
-                panel.classList.remove('active');
+           
+            document.getElementById('cancel-login').addEventListener('click', function() {
+                document.body.removeChild(modal);
             });
-            document.getElementById(`${tabId}-panel`).classList.add('active');
+           
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
         }
 
-        function validateBasicInfo() {
-            const title = document.getElementById('book-title').value.trim();
-            const author = document.getElementById('book-author').value.trim();
-            const genre = document.getElementById('book-genre').value;
-            const description = document.getElementById('book-description').value.trim();
+        // Función para verificar si una acción está permitida
+        function isActionAllowed(action) {
+            if (currentUserType === 'logged') {
+                return true;
+            }
+           
+            if (currentUserType === 'guest') {
+                // Definir acciones permitidas para invitados
+                const allowedActions = [
+                    'view_books',
+                    'read_limited_content',
+                    'search_books',
+                    'filter_books'
+                ];
+               
+                return allowedActions.includes(action);
+            }
+           
+            return false;
+        }
 
-            if (!title) {
-                alert('Por favor, ingresa un título para el libro.');
+        // Función para manejar la lectura de páginas como invitado
+        function handleGuestPageReading() {
+            guestPagesRead++;
+           
+            if (guestPagesRead >= MAX_GUEST_PAGES) {
+                // Mostrar advertencia de límite alcanzado
+                const warning = document.createElement('div');
+                warning.className = 'page-limit-warning';
+                warning.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Límite de lectura alcanzado</strong>
+                    <p>Has leído ${MAX_GUEST_PAGES} páginas como invitado. <a href="#" id="register-from-limit">Regístrate</a> para continuar leyendo.</p>
+                `;
+               
+                const readerContent = document.getElementById('reader-content');
+                readerContent.parentNode.insertBefore(warning, readerContent.nextSibling);
+               
+                // Deshabilitar botones de navegación
+                document.getElementById('prev-page').disabled = true;
+                document.getElementById('next-page').disabled = true;
+               
+                // Configurar enlace de registro
+                document.getElementById('register-from-limit').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById('auth-modal').style.display = 'flex';
+                });
+               
                 return false;
             }
-
-            if (!author) {
-                alert('Por favor, ingresa el nombre del autor.');
-                return false;
-            }
-
-            if (!genre) {
-                alert('Por favor, selecciona un género para el libro.');
-                return false;
-            }
-
-            if (!description) {
-                alert('Por favor, escribe una descripción para el libro.');
-                return false;
-            }
-
-            // Guardar datos básicos
-            currentBookData.title = title;
-            currentBookData.author = author;
-            currentBookData.genre = genre;
-            currentBookData.description = description;
-
+           
             return true;
         }
 
-        function initTextEditor() {
-            const editor = document.getElementById('book-content');
-            const toolbar = document.getElementById('editor-toolbar');
-
-            // Configurar botones de formato
-            toolbar.querySelectorAll('.editor-btn[data-command]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const command = this.getAttribute('data-command');
-                    const value = this.getAttribute('data-value');
-                    
-                    if (command === 'formatBlock' && value) {
-                        document.execCommand(command, false, value);
-                    } else {
-                        document.execCommand(command, false, null);
-                    }
-                    
-                    editor.focus();
-                });
-            });
-
-            // Actualizar estadísticas
-            editor.addEventListener('input', updateEditorStats);
-
-            // Inicializar estadísticas
-            updateEditorStats();
-        }
-
-        function updateEditorStats() {
-            const editor = document.getElementById('book-content');
-            const text = editor.textContent || editor.innerText;
-            
-            // Contar palabras
-            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-            document.getElementById('word-count').textContent = `${wordCount} palabras`;
-            
-            // Calcular páginas (aproximadamente 300 palabras por página)
-            const pageCount = Math.ceil(wordCount / 300);
-            document.getElementById('page-count').textContent = `${pageCount} páginas`;
-            
-            // Actualizar datos del libro
-            currentBookData.content = editor.innerHTML;
-            currentBookData.wordCount = wordCount;
-            currentBookData.pageCount = pageCount;
-        }
-
-        function initCoverSystem() {
-            const coverUpload = document.getElementById('book-cover-upload');
-            const coverPreview = document.getElementById('cover-preview');
-            
-            // Configurar subida de imagen
-            coverUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    // Validar tipo y tamaño
-                    if (!file.type.match('image.*')) {
-                        alert('Por favor, selecciona un archivo de imagen válido.');
-                        return;
-                    }
-                    
-                    if (file.size > 2 * 1024 * 1024) {
-                        alert('La imagen no puede ser mayor a 2MB.');
-                        return;
-                    }
-                    
-                    // Mostrar previsualización
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        coverPreview.innerHTML = `<img src="${e.target.result}" alt="Portada del libro">`;
-                        currentBookData.coverType = 'custom';
-                        currentBookData.coverImage = file;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            // Generar opciones de portadas prediseñadas
-            generateCoverOptions();
-        }
-
-        function generateCoverOptions() {
-            const coverOptions = document.getElementById('cover-options');
-            const designs = [
-                { id: 'design1', bgColor: '#3498db', textColor: '#ffffff', pattern: 'solid' },
-                { id: 'design2', bgColor: '#e74c3c', textColor: '#ffffff', pattern: 'stripes' },
-                { id: 'design3', bgColor: '#2ecc71', textColor: '#ffffff', pattern: 'dots' },
-                { id: 'design4', bgColor: '#f39c12', textColor: '#ffffff', pattern: 'gradient' },
-                { id: 'design5', bgColor: '#9b59b6', textColor: '#ffffff', pattern: 'lines' },
-                { id: 'design6', bgColor: '#1abc9c', textColor: '#ffffff', pattern: 'grid' }
-            ];
-            
-            coverOptions.innerHTML = '';
-            
-            designs.forEach(design => {
-                const option = document.createElement('div');
-                option.className = 'cover-option';
-                option.setAttribute('data-design', design.id);
-                
-                // Crear diseño visual
-                const designElement = document.createElement('div');
-                designElement.className = 'cover-design';
-                designElement.style.backgroundColor = design.bgColor;
-                designElement.innerHTML = '<i class="fas fa-book"></i>';
-                
-                option.appendChild(designElement);
-                option.appendChild(document.createTextNode('Diseño ' + design.id.replace('design', '')));
-                
-                option.addEventListener('click', function() {
-                    // Quitar selección anterior
-                    document.querySelectorAll('.cover-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // Seleccionar este diseño
-                    this.classList.add('selected');
-                    selectedCoverDesign = design;
-                    currentBookData.coverType = 'generated';
-                    currentBookData.coverDesign = design;
-                    
-                    // Actualizar previsualización
-                    updateCoverPreview(design);
-                });
-                
-                coverOptions.appendChild(option);
-            });
-        }
-
-        function updateCoverPreview(design) {
-            const coverPreview = document.getElementById('cover-preview');
-            coverPreview.innerHTML = '';
-            coverPreview.style.background = design.bgColor;
-            coverPreview.style.display = 'flex';
-            coverPreview.style.alignItems = 'center';
-            coverPreview.style.justifyContent = 'center';
-            coverPreview.style.color = design.textColor;
-            coverPreview.style.fontWeight = 'bold';
-            coverPreview.style.fontSize = '1.2rem';
-            coverPreview.innerHTML = '<div style="text-align: center;"><i class="fas fa-book fa-2x"></i><p style="margin-top: 10px;">Portada Personalizada</p></div>';
-        }
-
-        function initChapterSystem() {
-            const addChapterBtn = document.getElementById('add-chapter-btn');
-            const chapterList = document.getElementById('chapter-list');
-            
-            addChapterBtn.addEventListener('click', function() {
-                const editor = document.getElementById('book-content');
-                const selection = window.getSelection();
-                
-                if (selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const selectedText = range.toString();
-                    
-                    if (selectedText) {
-                        // Crear un nuevo capítulo
-                        const chapterTitle = prompt('Ingresa el título del capítulo:', selectedText.substring(0, 30) + '...');
-                        
-                        if (chapterTitle) {
-                            addChapter(chapterTitle, range);
-                        }
-                    } else {
-                        alert('Selecciona un texto para marcar como inicio de capítulo.');
-                    }
-                } else {
-                    alert('Selecciona un texto para marcar como inicio de capítulo.');
-                }
-            });
-            
-            // Botón para gestionar capítulos
-            document.getElementById('manage-chapters-btn').addEventListener('click', function() {
-                showChapterManager();
-            });
-        }
-
-        function addChapter(title, range) {
-            // Crear marcador de capítulo
-            const chapterMarker = document.createElement('span');
-            chapterMarker.className = 'chapter-marker';
-            chapterMarker.setAttribute('data-chapter-title', title);
-            chapterMarker.innerHTML = `[CAPÍTULO: ${title}]`;
-            chapterMarker.style.backgroundColor = '#ffeaa7';
-            chapterMarker.style.padding = '2px 4px';
-            chapterMarker.style.borderRadius = '3px';
-            chapterMarker.style.fontSize = '0.8rem';
-            
-            // Insertar el marcador
-            range.insertNode(chapterMarker);
-            
-            // Añadir a la lista de capítulos
-            currentBookData.chapters.push({
-                title: title,
-                position: currentBookData.chapters.length
-            });
-            
-            updateChapterList();
-        }
-
-        function updateChapterList() {
-            const chapterList = document.getElementById('chapter-list');
-            chapterList.innerHTML = '';
-            
-            currentBookData.chapters.forEach((chapter, index) => {
-                const chapterItem = document.createElement('div');
-                chapterItem.className = 'chapter-item';
-                chapterItem.innerHTML = `
-                    <div>
-                        <strong>Capítulo ${index + 1}:</strong> ${chapter.title}
-                    </div>
-                    <div class="chapter-actions">
-                        <button class="chapter-btn edit-chapter" data-index="${index}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="chapter-btn delete-chapter" data-index="${index}" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                
-                chapterList.appendChild(chapterItem);
-            });
-            
-            // Configurar eventos para los botones de capítulo
-            document.querySelectorAll('.edit-chapter').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    editChapter(index);
-                });
-            });
-            
-            document.querySelectorAll('.delete-chapter').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    deleteChapter(index);
-                });
-            });
-        }
-
-        function showChapterManager() {
-            // Implementar un modal más avanzado para gestión de capítulos
-            alert('Funcionalidad de gestión avanzada de capítulos en desarrollo.');
-        }
-
-        function editChapter(index) {
-            const newTitle = prompt('Nuevo título del capítulo:', currentBookData.chapters[index].title);
-            if (newTitle) {
-                currentBookData.chapters[index].title = newTitle;
-                updateChapterList();
-                
-                // También actualizar los marcadores en el editor
-                updateChapterMarkers();
-            }
-        }
-
-        function deleteChapter(index) {
-            if (confirm('¿Estás seguro de que quieres eliminar este capítulo?')) {
-                currentBookData.chapters.splice(index, 1);
-                updateChapterList();
-                updateChapterMarkers();
-            }
-        }
-
-        function updateChapterMarkers() {
-            // Esta función actualizaría los marcadores en el editor
-            // Implementación simplificada por ahora
-        }
-
-        function initAutoSave() {
-            // Guardar automáticamente cada 30 segundos
-            autoSaveInterval = setInterval(function() {
-                if (currentBookData.content) {
-                    localStorage.setItem('publibros_draft', JSON.stringify(currentBookData));
-                    console.log('Borrador guardado automáticamente');
-                }
-            }, 30000);
-            
-            // Cargar borrador guardado si existe
-            const savedDraft = localStorage.getItem('publibros_draft');
-            if (savedDraft) {
-                if (confirm('Tienes un borrador guardado. ¿Quieres continuar donde lo dejaste?')) {
-                    currentBookData = JSON.parse(savedDraft);
-                    loadDraftData();
-                }
-            }
-        }
-
-        function loadDraftData() {
-            // Cargar datos del borrador en el formulario
-            document.getElementById('book-title').value = currentBookData.title;
-            document.getElementById('book-author').value = currentBookData.author;
-            document.getElementById('book-genre').value = currentBookData.genre;
-            document.getElementById('book-description').value = currentBookData.description;
-            document.getElementById('book-content').innerHTML = currentBookData.content;
-            
-            updateEditorStats();
-            updateChapterList();
-        }
-
-        function updatePreview() {
-            // Actualizar vista previa con los datos actuales
-            document.getElementById('preview-title').textContent = currentBookData.title;
-            document.getElementById('preview-author').textContent = `por ${currentBookData.author}`;
-            document.getElementById('preview-book-title').textContent = currentBookData.title;
-            document.getElementById('preview-book-author').textContent = `por ${currentBookData.author}`;
-            document.getElementById('preview-description').textContent = currentBookData.description;
-            document.getElementById('preview-genre').textContent = genreNames[currentBookData.genre] || currentBookData.genre;
-            
-            // Mostrar contenido (primeras 500 palabras)
-            const contentText = document.getElementById('book-content').textContent || '';
-            const previewText = contentText.substring(0, 500) + (contentText.length > 500 ? '...' : '');
-            document.getElementById('preview-content-text').textContent = previewText;
-            
-            // Actualizar portada en vista previa
-            const previewCover = document.getElementById('preview-cover');
-            if (currentBookData.coverType === 'custom' && currentBookData.coverImage) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewCover.style.backgroundImage = `url(${e.target.result})`;
-                    previewCover.querySelector('.cover-text').style.display = 'none';
-                };
-                reader.readAsDataURL(currentBookData.coverImage);
-            } else if (currentBookData.coverType === 'generated' && currentBookData.coverDesign) {
-                previewCover.style.background = currentBookData.coverDesign.bgColor;
-                previewCover.querySelector('.cover-text').style.display = 'block';
-                previewCover.querySelector('.cover-text').style.color = currentBookData.coverDesign.textColor;
-            } else {
-                previewCover.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
-                previewCover.querySelector('.cover-text').style.display = 'block';
-                previewCover.querySelector('.cover-text').style.color = 'white';
-            }
-        }
-                // ============================
-        // LECTOR DE LIBROS MEJORADO
+        // ============================
+        // MODIFICACIONES AL LECTOR PARA INVITADOS
         // ============================
 
+        // Sobrescribir la función openReader para incluir control de invitados
         function openReader(book) {
+            // Verificar permisos para usuarios invitados
+            if (currentUserType === 'guest' && guestPagesRead >= MAX_GUEST_PAGES) {
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'flex';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 450px; text-align: center;">
+                        <div class="modal-header">
+                            <h3>Límite de Lectura Alcanzado</h3>
+                        </div>
+                        <p>Has alcanzado el límite de ${MAX_GUEST_PAGES} páginas como usuario invitado.</p>
+                        <p>Regístrate para continuar leyendo este y otros libros sin restricciones.</p>
+                        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+                            <button class="btn" id="register-from-limit-modal">Registrarse</button>
+                            <button class="btn btn-secondary" id="cancel-reading">Entendido</button>
+                        </div>
+                    </div>
+                `;
+               
+                document.body.appendChild(modal);
+               
+                document.getElementById('register-from-limit-modal').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                    document.getElementById('auth-modal').style.display = 'flex';
+                });
+               
+                document.getElementById('cancel-reading').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+               
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+               
+                return;
+            }
+           
             currentBook = book;
             currentPage = 0;
-            
+           
             // Ocultar todas las secciones principales
             document.querySelectorAll('.main-section').forEach(section => {
                 section.style.display = 'none';
             });
-            
+           
             // Mostrar el lector
             document.getElementById('reader').style.display = 'block';
-            
+           
             // Configurar información del libro
             document.getElementById('reader-title').textContent = book.title;
-            
+           
             // Preparar el contenido para paginación
             prepareBookContent(book.content);
-            
+           
             // Mostrar la primera página
             displayCurrentPage();
-            
+           
             // Cargar reseñas existentes
             loadReviews(book.id);
-            
+           
             // Actualizar contador de vistas
             updateBookViews(book.id);
+           
+            // Control de páginas para invitados
+            if (currentUserType === 'guest') {
+                guestPagesRead = 1; // Ya están leyendo la primera página
+               
+                // Verificar límite de páginas para invitados
+                if (guestPagesRead >= MAX_GUEST_PAGES) {
+                    document.getElementById('next-page').disabled = true;
+                }
+            }
         }
 
         function prepareBookContent(content) {
             // Dividir el contenido en páginas
             const words = content.split(' ');
             bookPages = [];
-            
+           
             for (let i = 0; i < words.length; i += wordsPerPage) {
                 const pageWords = words.slice(i, i + wordsPerPage);
                 bookPages.push(pageWords.join(' '));
             }
-            
+           
             // Si no hay páginas (contenido vacío), crear una página vacía
             if (bookPages.length === 0) {
                 bookPages.push('Este libro no tiene contenido aún.');
@@ -2342,13 +2435,18 @@
         function displayCurrentPage() {
             const readerContent = document.getElementById('reader-content');
             const pageInfo = document.getElementById('page-info');
-            
+           
             readerContent.textContent = bookPages[currentPage];
             pageInfo.textContent = `Página ${currentPage + 1} de ${bookPages.length}`;
-            
+           
             // Habilitar/deshabilitar botones según la página actual
             document.getElementById('prev-page').disabled = currentPage === 0;
             document.getElementById('next-page').disabled = currentPage === bookPages.length - 1;
+           
+            // Control adicional para invitados
+            if (currentUserType === 'guest' && guestPagesRead >= MAX_GUEST_PAGES) {
+                document.getElementById('next-page').disabled = true;
+            }
         }
 
         function closeReader() {
@@ -2357,74 +2455,77 @@
         }
 
         // ============================
-        // SISTEMA DE RESEÑAS COMPLETO
+        // MODIFICACIONES AL SISTEMA DE LIKES Y RESEÑAS
         // ============================
 
-        async function loadReviews(bookId) {
-            try {
-                const reviewsContainer = document.getElementById('reviews-container');
-                reviewsContainer.innerHTML = '<p>Cargando reseñas...</p>';
-                
-                const snapshot = await reviewsRef
-                    .where('bookId', '==', bookId)
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                
-                if (snapshot.empty) {
-                    reviewsContainer.innerHTML = '<p>No hay reseñas para este libro aún. ¡Sé el primero en opinar!</p>';
-                    return;
-                }
-                
-                reviewsContainer.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const review = doc.data();
-                    const reviewElement = createReviewElement(review);
-                    reviewsContainer.appendChild(reviewElement);
-                });
-            } catch (error) {
-                console.error("Error cargando reseñas:", error);
-                document.getElementById('reviews-container').innerHTML = 
-                    '<p>Error al cargar las reseñas. Intenta nuevamente.</p>';
+        async function handleLikeBook(bookId) {
+            if (!isActionAllowed('like_books')) {
+                showLoginPrompt();
+                return;
             }
-        }
-
-        function createReviewElement(review) {
-            const reviewDiv = document.createElement('div');
-            reviewDiv.className = 'review';
-            
-            const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-            
-            reviewDiv.innerHTML = `
-                <div class="review-header">
-                    <div class="review-author">${review.userName || 'Usuario Anónimo'}</div>
-                    <div class="review-date">${review.createdAt?.toDate?.().toLocaleDateString() || 'Fecha no disponible'}</div>
-                </div>
-                <div class="review-rating">${stars}</div>
-                <div class="review-content">${review.content}</div>
-            `;
-            
-            return reviewDiv;
+           
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                showLoginPrompt();
+                return;
+            }
+           
+            try {
+                const bookDoc = await booksRef.doc(bookId).get();
+                const book = bookDoc.data();
+                const userData = await getUserData(currentUser.uid);
+               
+                let likedBooks = userData?.likedBooks || [];
+                let currentLikes = book.likes || 0;
+                let isLiked = likedBooks.includes(bookId);
+               
+                if (isLiked) {
+                    likedBooks = likedBooks.filter(id => id !== bookId);
+                    currentLikes = Math.max(0, currentLikes - 1);
+                } else {
+                    likedBooks.push(bookId);
+                    currentLikes += 1;
+                }
+               
+                await booksRef.doc(bookId).update({
+                    likes: currentLikes
+                });
+               
+                await saveUserData(currentUser.uid, {
+                    likedBooks: likedBooks
+                });
+               
+                console.log(`Like ${isLiked ? 'quitado' : 'agregado'} al libro ${bookId}`);
+            } catch (error) {
+                console.error("Error manejando like:", error);
+                alert('Error al procesar el like. Intenta nuevamente.');
+            }
         }
 
         async function submitReview() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                alert('Debes iniciar sesión para enviar una reseña.');
+            if (!isActionAllowed('write_reviews')) {
+                showLoginPrompt();
                 return;
             }
-            
+           
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                showLoginPrompt();
+                return;
+            }
+           
             const rating = document.getElementById('review-rating').value;
             const content = document.getElementById('review-content').value.trim();
-            
+           
             if (!content) {
                 alert('Por favor, escribe tu reseña antes de enviar.');
                 return;
             }
-            
+           
             try {
                 // Obtener datos del usuario
                 const userData = await getUserData(currentUser.uid);
-                
+               
                 // Guardar la reseña
                 await reviewsRef.add({
                     bookId: currentBook.id,
@@ -2435,16 +2536,16 @@
                     content: content,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
+               
                 // Limpiar el formulario
                 document.getElementById('review-content').value = '';
-                
+               
                 // Recargar las reseñas
                 await loadReviews(currentBook.id);
-                
+               
                 // Actualizar estadísticas del usuario
                 updateProfileStats();
-                
+               
                 alert('¡Reseña enviada correctamente!');
             } catch (error) {
                 console.error("Error enviando reseña:", error);
@@ -2453,429 +2554,20 @@
         }
 
         // ============================
-        // PANEL DE ADMINISTRACIÓN COMPLETO
-        // ============================
-
-        async function loadAdminPanel() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-            
-            const userData = await getUserData(currentUser.uid);
-            const isAdmin = userData?.role === 'admin';
-            
-            const adminPanel = document.getElementById('admin-panel');
-            if (isAdmin) {
-                adminPanel.style.display = 'block';
-                await loadPendingBooks();
-                await loadReportedBooks();
-                await loadUsersForManagement();
-            } else {
-                adminPanel.style.display = 'none';
-            }
-        }
-
-        async function loadPendingBooks() {
-            try {
-                const container = document.getElementById('pending-books-container');
-                container.innerHTML = '<p>Cargando libros pendientes...</p>';
-                
-                const snapshot = await booksRef
-                    .where('status', '==', 'pending')
-                    .get();
-                
-                if (snapshot.empty) {
-                    container.innerHTML = '<p>No hay libros pendientes de aprobación.</p>';
-                    return;
-                }
-                
-                container.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const book = { id: doc.id, ...doc.data() };
-                    const bookCard = createAdminBookCard(book, 'pending');
-                    container.appendChild(bookCard);
-                });
-            } catch (error) {
-                console.error("Error cargando libros pendientes:", error);
-                document.getElementById('pending-books-container').innerHTML = 
-                    '<p>Error al cargar libros pendientes.</p>';
-            }
-        }
-
-        async function loadReportedBooks() {
-            try {
-                const container = document.getElementById('reported-books-container');
-                container.innerHTML = '<p>Cargando libros reportados...</p>';
-                
-                const snapshot = await booksRef
-                    .where('reported', '==', true)
-                    .get();
-                
-                if (snapshot.empty) {
-                    container.innerHTML = '<p>No hay libros reportados.</p>';
-                    return;
-                }
-                
-                container.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const book = { id: doc.id, ...doc.data() };
-                    const bookCard = createAdminBookCard(book, 'reported');
-                    container.appendChild(bookCard);
-                });
-            } catch (error) {
-                console.error("Error cargando libros reportados:", error);
-                document.getElementById('reported-books-container').innerHTML = 
-                    '<p>Error al cargar libros reportados.</p>';
-            }
-        }
-
-        function createAdminBookCard(book, type) {
-            const card = document.createElement('div');
-            card.className = 'book-card';
-            
-            let statusBadge = '';
-            let adminActions = '';
-            
-            if (type === 'pending') {
-                statusBadge = `<div class="book-status status-pending">Pendiente</div>`;
-                adminActions = `
-                    <div class="admin-actions">
-                        <button class="btn" onclick="approveBook('${book.id}')">Aprobar</button>
-                        <button class="btn btn-danger" onclick="rejectBook('${book.id}')">Rechazar</button>
-                    </div>
-                `;
-            } else if (type === 'reported') {
-                statusBadge = `<div class="book-status status-pending">Reportado</div>`;
-                
-                let reportsHtml = '';
-                if (book.reports && book.reports.length > 0) {
-                    book.reports.forEach(report => {
-                        reportsHtml += `
-                            <div class="report-reason">
-                                <strong>Reportado por:</strong> ${report.userEmail}<br>
-                                <strong>Razón:</strong> ${report.reason}
-                            </div>
-                        `;
-                    });
-                }
-                
-                adminActions = `
-                    <div class="admin-actions">
-                        <button class="btn" onclick="dismissReports('${book.id}')">Descartar Reportes</button>
-                        <button class="btn btn-danger" onclick="deleteBook('${book.id}')">Eliminar Libro</button>
-                    </div>
-                    ${reportsHtml}
-                `;
-            }
-            
-            card.innerHTML = `
-                <div class="book-cover">
-                    ${book.title.split(' ').map(word => word[0]).join('')}
-                    ${statusBadge}
-                </div>
-                <div class="book-info">
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">por ${book.author}</div>
-                    <div class="book-description">${book.description}</div>
-                    <div class="book-genre">${genreNames[book.genre]}</div>
-                    ${adminActions}
-                </div>
-            `;
-            
-            return card;
-        }
-
-        async function loadUsersForManagement() {
-            try {
-                const container = document.getElementById('users-container');
-                container.innerHTML = '<p>Cargando usuarios...</p>';
-                
-                const snapshot = await usersRef.get();
-                
-                if (snapshot.empty) {
-                    container.innerHTML = '<p>No hay usuarios registrados.</p>';
-                    return;
-                }
-                
-                container.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const user = { id: doc.id, ...doc.data() };
-                    const userElement = createUserManagementElement(user);
-                    container.appendChild(userElement);
-                });
-            } catch (error) {
-                console.error("Error cargando usuarios:", error);
-                document.getElementById('users-container').innerHTML = 
-                    '<p>Error al cargar usuarios.</p>';
-            }
-        }
-
-        function createUserManagementElement(user) {
-            const userDiv = document.createElement('div');
-            userDiv.className = 'user-management-item';
-            
-            const isAdmin = user.role === 'admin';
-            const isVerified = user.emailVerified;
-            
-            userDiv.innerHTML = `
-                <div class="user-info">
-                    <div class="user-name">${user.name || 'Usuario'} 
-                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
-                        <span class="verification-badge ${isVerified ? '' : 'unverified'}">
-                            <i class="fas fa-${isVerified ? 'check' : 'times'}-circle"></i> 
-                            ${isVerified ? 'Verificado' : 'No verificado'}
-                        </span>
-                    </div>
-                    <div class="user-email">${user.email}</div>
-                    <div class="user-stats">
-                        <span>Libros: ${user.booksCount || 0}</span>
-                        <span>Reseñas: ${user.reviewsCount || 0}</span>
-                    </div>
-                </div>
-                <div class="user-actions">
-                    ${!isAdmin ? `<button class="btn" onclick="makeAdmin('${user.id}')">Hacer Admin</button>` : ''}
-                    <button class="btn btn-danger" onclick="deleteUser('${user.id}')">Eliminar</button>
-                </div>
-            `;
-            
-            return userDiv;
-        }
-
-        // Funciones de administración
-        async function approveBook(bookId) {
-            if (!confirm('¿Estás seguro de que quieres aprobar este libro?')) return;
-            
-            try {
-                await booksRef.doc(bookId).update({
-                    status: 'approved',
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                alert('Libro aprobado correctamente.');
-                await loadPendingBooks();
-            } catch (error) {
-                console.error("Error aprobando libro:", error);
-                alert('Error al aprobar el libro.');
-            }
-        }
-
-        async function rejectBook(bookId) {
-            if (!confirm('¿Estás seguro de que quieres rechazar este libro?')) return;
-            
-            try {
-                await booksRef.doc(bookId).delete();
-                alert('Libro rechazado y eliminado.');
-                await loadPendingBooks();
-            } catch (error) {
-                console.error("Error rechazando libro:", error);
-                alert('Error al rechazar el libro.');
-            }
-        }
-
-        async function dismissReports(bookId) {
-            if (!confirm('¿Estás seguro de que quieres descartar todos los reportes de este libro?')) return;
-            
-            try {
-                await booksRef.doc(bookId).update({
-                    reported: false,
-                    reports: [],
-                    reportCount: 0,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                alert('Reportes descartados correctamente.');
-                await loadReportedBooks();
-            } catch (error) {
-                console.error("Error descartando reportes:", error);
-                alert('Error al descartar los reportes.');
-            }
-        }
-
-        async function deleteBook(bookId) {
-            if (!confirm('¿Estás seguro de que quieres eliminar este libro? Esta acción no se puede deshacer.')) return;
-            
-            try {
-                // Eliminar también las reseñas asociadas
-                const reviewsSnapshot = await reviewsRef
-                    .where('bookId', '==', bookId)
-                    .get();
-                
-                const batch = db.batch();
-                reviewsSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                batch.delete(booksRef.doc(bookId));
-                
-                await batch.commit();
-                
-                alert('Libro y reseñas asociadas eliminados correctamente.');
-                await loadReportedBooks();
-            } catch (error) {
-                console.error("Error eliminando libro:", error);
-                alert('Error al eliminar el libro.');
-            }
-        }
-
-        async function makeAdmin(userId) {
-            if (!confirm('¿Estás seguro de que quieres hacer admin a este usuario?')) return;
-            
-            try {
-                await usersRef.doc(userId).update({
-                    role: 'admin',
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                alert('Usuario promovido a administrador.');
-                await loadUsersForManagement();
-            } catch (error) {
-                console.error("Error haciendo admin:", error);
-                alert('Error al hacer admin al usuario.');
-            }
-        }
-
-        async function deleteUser(userId) {
-            if (!confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.')) return;
-            
-            try {
-                // Eliminar libros del usuario
-                const userBooksSnapshot = await booksRef
-                    .where('authorId', '==', userId)
-                    .get();
-                
-                const batch = db.batch();
-                userBooksSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                
-                // Eliminar reseñas del usuario
-                const userReviewsSnapshot = await reviewsRef
-                    .where('userId', '==', userId)
-                    .get();
-                
-                userReviewsSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                
-                // Eliminar usuario
-                batch.delete(usersRef.doc(userId));
-                
-                await batch.commit();
-                
-                alert('Usuario y contenido asociado eliminados correctamente.');
-                await loadUsersForManagement();
-            } catch (error) {
-                console.error("Error eliminando usuario:", error);
-                alert('Error al eliminar el usuario.');
-            }
-        }
-
-        // ============================
-        // FUNCIONES DE FIREBASE
-        // ============================
-
-        async function loadUserAvatar(userId) {
-            const userAvatar = document.getElementById('user-avatar');
-            const avatarPlaceholder = document.getElementById('avatar-placeholder');
-            
-            try {
-                const storageRef = storage.ref();
-                const avatarRef = storageRef.child(`avatars/${userId}`);
-                const avatarUrl = await avatarRef.getDownloadURL();
-                
-                avatarPlaceholder.style.display = 'none';
-                let img = userAvatar.querySelector('img');
-                if (!img) {
-                    img = document.createElement('img');
-                    userAvatar.insertBefore(img, avatarPlaceholder);
-                }
-                img.src = avatarUrl;
-                img.alt = 'Avatar del usuario';
-            } catch (error) {
-                avatarPlaceholder.style.display = 'flex';
-                const existingImg = userAvatar.querySelector('img');
-                if (existingImg) {
-                    existingImg.remove();
-                }
-                avatarPlaceholder.innerHTML = `<i class="fas fa-user"></i>`;
-            }
-        }
-
-        async function saveUserData(userId, userData) {
-            try {
-                await usersRef.doc(userId).set(userData, { merge: true });
-                return true;
-            } catch (error) {
-                console.error("Error guardando datos del usuario:", error);
-                return false;
-            }
-        }
-
-        async function getUserData(userId) {
-            try {
-                const doc = await usersRef.doc(userId).get();
-                return doc.exists ? doc.data() : null;
-            } catch (error) {
-                console.error("Error obteniendo datos del usuario:", error);
-                return null;
-            }
-        }
-
-        async function saveBook(bookData) {
-            try {
-                const docRef = await booksRef.add({
-                    ...bookData,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                return docRef.id;
-            } catch (error) {
-                console.error("Error guardando libro:", error);
-                return null;
-            }
-        }
-
-        async function getAllBooks() {
-            try {
-                const snapshot = await booksRef.orderBy('createdAt', 'desc').get();
-                const books = [];
-                snapshot.forEach(doc => {
-                    const bookData = doc.data();
-                    books.push({
-                        id: doc.id,
-                        ...bookData,
-                        createdAt: bookData.createdAt ? bookData.createdAt.toDate() : new Date(),
-                        updatedAt: bookData.updatedAt ? bookData.updatedAt.toDate() : new Date()
-                    });
-                });
-                return books;
-            } catch (error) {
-                console.error("Error obteniendo libros:", error);
-                return [];
-            }
-        }
-
-        async function updateBook(bookId, updates) {
-            try {
-                await booksRef.doc(bookId).update({
-                    ...updates,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                return true;
-            } catch (error) {
-                console.error("Error actualizando libro:", error);
-                return false;
-            }
-        }
-
-        // ============================
-        // MANEJO MEJORADO DEL FORMULARIO DE SUBIDA
+        // MODIFICACIONES AL SISTEMA DE SUBIDA
         // ============================
 
         async function handleUploadFormSubmit(e) {
             e.preventDefault();
-            
+           
+            if (!isActionAllowed('upload_books')) {
+                showLoginPrompt();
+                return;
+            }
+           
             const currentUser = auth.currentUser;
             if (!currentUser) {
-                alert('Debes iniciar sesión para publicar un libro.');
+                showLoginPrompt();
                 return;
             }
 
@@ -2900,16 +2592,16 @@
 
             try {
                 let coverUrl = null;
-                
+               
                 // Subir portada si es personalizada
                 if (currentBookData.coverType === 'custom' && currentBookData.coverImage) {
                     coverUrl = await uploadCoverImage(currentBookData.coverImage, currentUser.uid);
                 }
-                
+               
                 // Preparar datos del libro
                 const bookData = {
                     title: currentBookData.title,
-                    author: currentBookData.author,
+                    author: currentUser.displayName || currentBookData.author,
                     genre: currentBookData.genre,
                     description: currentBookData.description,
                     content: currentBookData.content,
@@ -2931,12 +2623,12 @@
                 };
 
                 const bookId = await saveBook(bookData);
-                
+               
                 if (bookId) {
                     // Limpiar borrador
                     localStorage.removeItem('publibros_draft');
                     clearInterval(autoSaveInterval);
-                    
+                   
                     // Resetear formulario
                     document.getElementById('upload-form').reset();
                     document.getElementById('book-content').innerHTML = '';
@@ -2953,7 +2645,7 @@
                         wordCount: 0,
                         pageCount: 0
                     };
-                    
+                   
                     // Cerrar modal y mostrar mensaje
                     document.getElementById('upload-modal').style.display = 'none';
                     alert('¡Libro publicado correctamente! Estará disponible después de la moderación.');
@@ -2969,59 +2661,762 @@
                 publishBtn.disabled = false;
             }
         }
+              // ============================
+        // FUNCIONES ORIGINALES DEL SISTEMA
+        // ============================
+
+        function switchSection(sectionId) {
+            // Verificar si es un invitado intentando acceder al perfil
+            if (sectionId === 'perfil' && currentUserType === 'guest') {
+                showLoginPrompt();
+                return;
+            }
+           
+            // Cambiar sección normalmente
+            document.querySelectorAll('.main-section').forEach(section => {
+                section.classList.remove('active');
+            });
+           
+            document.getElementById(sectionId).classList.add('active');
+           
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+           
+            // Actualizar contenido específico de la sección
+            if (sectionId === 'inicio') {
+                updateBooksStats();
+                displayFeaturedBooks();
+                displayRecommendedBooks();
+            } else if (sectionId === 'biblioteca') {
+                displayGenreFilters();
+                displayBooks();
+            } else if (sectionId === 'perfil' && currentUserType === 'logged') {
+                updateProfile();
+                if (isAdmin()) {
+                    loadAdminPanel();
+                }
+            }
+        }
+
+        function initWritingSystem() {
+            // Configurar eventos para los tabs de escritura
+            document.querySelectorAll('.writing-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchWritingTab(tabId);
+                });
+            });
+           
+            // Configurar navegación entre tabs
+            document.getElementById('next-to-cover').addEventListener('click', function() {
+                if (validateBasicInfo()) {
+                    switchWritingTab('cover-design');
+                }
+            });
+           
+            document.getElementById('back-to-basic').addEventListener('click', function() {
+                switchWritingTab('basic-info');
+            });
+           
+            document.getElementById('next-to-content').addEventListener('click', function() {
+                switchWritingTab('content-editor');
+            });
+           
+            document.getElementById('back-to-cover').addEventListener('click', function() {
+                switchWritingTab('cover-design');
+            });
+           
+            document.getElementById('next-to-preview').addEventListener('click', function() {
+                updatePreview();
+                switchWritingTab('preview');
+            });
+           
+            document.getElementById('back-to-content').addEventListener('click', function() {
+                switchWritingTab('content-editor');
+            });
+           
+            // Inicializar sistemas específicos
+            initTextEditor();
+            initCoverSystem();
+            initChapterSystem();
+            initAutoSave();
+        }
+
+        function switchWritingTab(tabId) {
+            // Ocultar todos los paneles
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+           
+            // Desactivar todas las pestañas
+            document.querySelectorAll('.writing-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+           
+            // Activar la pestaña y panel correspondiente
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-panel`).classList.add('active');
+        }
+
+        function validateBasicInfo() {
+            const title = document.getElementById('book-title').value.trim();
+            const author = document.getElementById('book-author').value.trim();
+            const genre = document.getElementById('book-genre').value;
+            const description = document.getElementById('book-description').value.trim();
+           
+            if (!title) {
+                alert('Por favor, ingresa un título para el libro.');
+                return false;
+            }
+           
+            if (!author) {
+                alert('Por favor, ingresa el nombre del autor.');
+                return false;
+            }
+           
+            if (!genre) {
+                alert('Por favor, selecciona un género.');
+                return false;
+            }
+           
+            if (!description || description.length < 50) {
+                alert('Por favor, ingresa una descripción de al menos 50 caracteres.');
+                return false;
+            }
+           
+            // Guardar datos básicos
+            currentBookData.title = title;
+            currentBookData.author = author;
+            currentBookData.genre = genre;
+            currentBookData.description = description;
+           
+            return true;
+        }
+
+        function initTextEditor() {
+            const editor = document.getElementById('book-content');
+            const toolbar = document.getElementById('editor-toolbar');
+           
+            // Configurar botones de formato
+            toolbar.querySelectorAll('.editor-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    const value = this.getAttribute('data-value');
+                   
+                    if (command === 'formatBlock') {
+                        document.execCommand('formatBlock', false, value);
+                    } else {
+                        document.execCommand(command, false, null);
+                    }
+                   
+                    // Actualizar estadísticas
+                    updateEditorStats();
+                });
+            });
+           
+            // Actualizar estadísticas mientras se escribe
+            editor.addEventListener('input', updateEditorStats);
+           
+            // Configurar botón de capítulos
+            document.getElementById('add-chapter-btn').addEventListener('click', function() {
+                addChapter();
+            });
+        }
+
+        function updateEditorStats() {
+            const content = document.getElementById('book-content').textContent;
+            const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+            const pages = Math.ceil(words / WORDS_PER_PAGE);
+           
+            // Actualizar datos
+            currentBookData.content = document.getElementById('book-content').innerHTML;
+            currentBookData.wordCount = words;
+            currentBookData.pageCount = pages;
+           
+            // Actualizar UI
+            document.getElementById('word-count').textContent = `${words} palabras`;
+            document.getElementById('page-count').textContent = `${pages} páginas`;
+        }
+
+        function initCoverSystem() {
+            // Configurar subida de archivo
+            document.getElementById('book-cover-upload').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validar tipo y tamaño
+                    if (!file.type.match('image.*')) {
+                        alert('Por favor, selecciona un archivo de imagen.');
+                        return;
+                    }
+                   
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('La imagen debe ser menor a 2MB.');
+                        return;
+                    }
+                   
+                    // Mostrar vista previa
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('cover-preview');
+                        preview.innerHTML = `<img src="${e.target.result}" alt="Vista previa de portada">`;
+                        currentBookData.coverImage = file;
+                        currentBookData.coverType = 'custom';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+           
+            // Generar opciones de portada prediseñadas
+            generateCoverOptions();
+        }
+
+        function generateCoverOptions() {
+            const container = document.getElementById('cover-options');
+            const designs = [
+                { id: 'design1', bg: '#6a5af9', color: '#ffffff', name: 'Clásico' },
+                { id: 'design2', bg: '#d66efd', color: '#ffffff', name: 'Moderno' },
+                { id: 'design3', bg: '#ff6b8b', color: '#ffffff', name: 'Romántico' },
+                { id: 'design4', bg: '#2c3e50', color: '#ffffff', name: 'Elegante' },
+                { id: 'design5', bg: '#27ae60', color: '#ffffff', name: 'Natural' },
+                { id: 'design6', bg: '#f39c12', color: '#ffffff', name: 'Energético' }
+            ];
+           
+            designs.forEach(design => {
+                const option = document.createElement('div');
+                option.className = 'cover-option';
+                option.innerHTML = `
+                    <div class="cover-design" style="background: ${design.bg}; color: ${design.color}">
+                        ${currentBookData.title ? currentBookData.title.substring(0, 3) : 'TIT'}
+                    </div>
+                    <div>${design.name}</div>
+                `;
+               
+                option.addEventListener('click', function() {
+                    // Deseleccionar opciones anteriores
+                    document.querySelectorAll('.cover-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                   
+                    // Seleccionar esta opción
+                    this.classList.add('selected');
+                   
+                    // Actualizar vista previa
+                    const preview = document.getElementById('cover-preview');
+                    preview.innerHTML = `
+                        <div class="cover-design" style="background: ${design.bg}; color: ${design.color}; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                            <h3 style="margin: 0; font-size: 1.5rem;">${currentBookData.title || 'Título'}</h3>
+                            <p style="margin: 5px 0 0 0;">por ${currentBookData.author || 'Autor'}</p>
+                        </div>
+                    `;
+                   
+                    // Guardar diseño seleccionado
+                    currentBookData.coverDesign = design;
+                    currentBookData.coverType = 'generated';
+                });
+               
+                container.appendChild(option);
+            });
+        }
+
+        function initChapterSystem() {
+            // Configurar gestión de capítulos
+            document.getElementById('manage-chapters-btn').addEventListener('click', function() {
+                showChapterManager();
+            });
+        }
+
+        function addChapter() {
+            const content = document.getElementById('book-content');
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            const selectedText = range.toString();
+           
+            if (!selectedText) {
+                alert('Selecciona un texto para convertirlo en título de capítulo.');
+                return;
+            }
+           
+            // Crear elemento de capítulo
+            const chapterId = 'chapter_' + Date.now();
+            const chapterElement = document.createElement('h2');
+            chapterElement.id = chapterId;
+            chapterElement.contentEditable = 'false';
+            chapterElement.textContent = selectedText;
+            chapterElement.style.borderLeft = '4px solid var(--secondary)';
+            chapterElement.style.paddingLeft = '10px';
+            chapterElement.style.marginTop = '20px';
+           
+            // Reemplazar texto seleccionado con el capítulo
+            range.deleteContents();
+            range.insertNode(chapterElement);
+           
+            // Agregar a la lista de capítulos
+            currentBookData.chapters.push({
+                id: chapterId,
+                title: selectedText,
+                position: currentBookData.chapters.length
+            });
+           
+            // Actualizar lista de capítulos
+            updateChapterList();
+        }
+
+        function updateChapterList() {
+            const container = document.getElementById('chapter-list');
+            container.innerHTML = '';
+           
+            currentBookData.chapters.forEach((chapter, index) => {
+                const item = document.createElement('div');
+                item.className = 'chapter-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>Capítulo ${index + 1}:</strong> ${chapter.title}
+                    </div>
+                    <div class="chapter-actions">
+                        <button class="chapter-btn edit-chapter" data-id="${chapter.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="chapter-btn delete-chapter" data-id="${chapter.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+               
+                container.appendChild(item);
+            });
+        }
+
+        function initAutoSave() {
+            // Guardar borrador cada 30 segundos
+            autoSaveInterval = setInterval(() => {
+                if (currentBookData.title || currentBookData.content) {
+                    localStorage.setItem('publibros_draft', JSON.stringify(currentBookData));
+                    console.log('Borrador guardado automáticamente');
+                }
+            }, 30000);
+           
+            // Cargar borrador si existe
+            const draft = localStorage.getItem('publibros_draft');
+            if (draft) {
+                try {
+                    const draftData = JSON.parse(draft);
+                    if (confirm('¿Deseas recuperar el borrador guardado?')) {
+                        currentBookData = { ...currentBookData, ...draftData };
+                        document.getElementById('book-title').value = currentBookData.title || '';
+                        document.getElementById('book-author').value = currentBookData.author || '';
+                        document.getElementById('book-genre').value = currentBookData.genre || '';
+                        document.getElementById('book-description').value = currentBookData.description || '';
+                        document.getElementById('book-content').innerHTML = currentBookData.content || '';
+                        updateEditorStats();
+                        updateChapterList();
+                    }
+                } catch (error) {
+                    console.error('Error cargando borrador:', error);
+                }
+            }
+        }
+
+        function updatePreview() {
+            // Actualizar información básica
+            document.getElementById('preview-title').textContent = currentBookData.title || 'Título del Libro';
+            document.getElementById('preview-author').textContent = currentBookData.author || 'Autor';
+            document.getElementById('preview-book-title').textContent = currentBookData.title || 'Título del Libro';
+            document.getElementById('preview-book-author').textContent = `por ${currentBookData.author || 'Autor'}`;
+            document.getElementById('preview-description').textContent = currentBookData.description || 'Descripción del libro';
+            document.getElementById('preview-genre').textContent = genreNames[currentBookData.genre] || 'Género';
+           
+            // Actualizar contenido (primeras 500 caracteres)
+            const contentText = currentBookData.content ?
+                currentBookData.content.replace(/<[^>]*>/g, '').substring(0, 500) + '...' :
+                'El contenido aparecerá aquí...';
+            document.getElementById('preview-content-text').textContent = contentText;
+           
+            // Actualizar portada
+            if (currentBookData.coverType === 'generated' && currentBookData.coverDesign) {
+                const design = currentBookData.coverDesign;
+                const previewCover = document.getElementById('preview-cover');
+                previewCover.style.background = design.bg;
+                previewCover.innerHTML = `
+                    <div class="cover-text">
+                        <h3 style="color: ${design.color}">${currentBookData.title || 'Título'}</h3>
+                        <p style="color: ${design.color}">por ${currentBookData.author || 'Autor'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadReviews(bookId) {
+            try {
+                const reviewsSnapshot = await reviewsRef
+                    .where('bookId', '==', bookId)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+               
+                const container = document.getElementById('reviews-container');
+                container.innerHTML = '';
+               
+                if (reviewsSnapshot.empty) {
+                    container.innerHTML = '<p>No hay reseñas aún. ¡Sé el primero en reseñar!</p>';
+                    return;
+                }
+               
+                reviewsSnapshot.forEach(doc => {
+                    const review = doc.data();
+                    const reviewElement = createReviewElement(review);
+                    container.appendChild(reviewElement);
+                });
+            } catch (error) {
+                console.error("Error cargando reseñas:", error);
+            }
+        }
+
+        function createReviewElement(review) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review';
+           
+            // Crear estrellas según la calificación
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= review.rating ? '★' : '☆';
+            }
+           
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <div class="review-author">${review.userName}</div>
+                    <div class="review-date">${review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString() : 'Fecha no disponible'}</div>
+                </div>
+                <div class="review-rating">${stars}</div>
+                <div class="review-content">${review.content}</div>
+            `;
+           
+            return reviewDiv;
+        }
+              async function loadAdminPanel() {
+            document.getElementById('admin-panel').style.display = 'block';
+            await loadPendingBooks();
+            await loadReportedBooks();
+            await loadUsersForManagement();
+        }
+
+        async function loadPendingBooks() {
+            try {
+                const pendingSnapshot = await booksRef
+                    .where('status', '==', 'pending')
+                    .get();
+               
+                const container = document.getElementById('pending-books-container');
+                container.innerHTML = '';
+               
+                if (pendingSnapshot.empty) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><h3>No hay libros pendientes</h3><p>Todos los libros han sido revisados.</p></div>';
+                    return;
+                }
+               
+                pendingSnapshot.forEach(doc => {
+                    const book = { id: doc.id, ...doc.data() };
+                    const bookCard = createAdminBookCard(book, 'pending');
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error cargando libros pendientes:", error);
+            }
+        }
+
+        async function loadReportedBooks() {
+            try {
+                const reportedSnapshot = await booksRef
+                    .where('reported', '==', true)
+                    .get();
+               
+                const container = document.getElementById('reported-books-container');
+                container.innerHTML = '';
+               
+                if (reportedSnapshot.empty) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-flag"></i><h3>No hay libros reportados</h3><p>No se han reportado libros recientemente.</p></div>';
+                    return;
+                }
+               
+                reportedSnapshot.forEach(doc => {
+                    const book = { id: doc.id, ...doc.data() };
+                    const bookElement = createAdminBookCard(book, 'reported');
+                    container.appendChild(bookElement);
+                });
+            } catch (error) {
+                console.error("Error cargando libros reportados:", error);
+            }
+        }
+
+        function createAdminBookCard(book, type) {
+            const card = document.createElement('div');
+            card.className = type === 'pending' ? 'book-card' : 'user-management-item';
+           
+            if (type === 'pending') {
+                card.innerHTML = `
+                    <div class="book-cover">
+                        ${book.title.split(' ').map(word => word[0]).join('')}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">por ${book.author}</div>
+                        <div class="book-description">${book.description}</div>
+                        <div class="book-genre">${genreNames[book.genre]}</div>
+                        <div class="admin-actions">
+                            <button class="btn" onclick="approveBook('${book.id}')">Aprobar</button>
+                            <button class="btn btn-danger" onclick="rejectBook('${book.id}')">Rechazar</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                card.innerHTML = `
+                    <div>
+                        <strong>${book.title}</strong> por ${book.author}
+                        <div class="report-reason">
+                            <strong>Reportes:</strong> ${book.reportCount || 0}
+                            ${book.reports ? book.reports.map(report => `<p>${report.reason}</p>`).join('') : ''}
+                        </div>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn" onclick="dismissReports('${book.id}')">Descartar</button>
+                        <button class="btn btn-danger" onclick="deleteBook('${book.id}')">Eliminar</button>
+                    </div>
+                `;
+            }
+           
+            return card;
+        }
+
+        async function loadUsersForManagement() {
+            try {
+                const usersSnapshot = await usersRef.get();
+                const container = document.getElementById('users-container');
+                container.innerHTML = '';
+               
+                usersSnapshot.forEach(doc => {
+                    const user = { id: doc.id, ...doc.data() };
+                    const userElement = createUserManagementElement(user);
+                    container.appendChild(userElement);
+                });
+            } catch (error) {
+                console.error("Error cargando usuarios:", error);
+            }
+        }
+
+        function createUserManagementElement(user) {
+            const element = document.createElement('div');
+            element.className = 'user-management-item';
+           
+            element.innerHTML = `
+                <div>
+                    <strong>${user.name}</strong> (${user.email})
+                    <br>
+                    <small>Registrado: ${user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'}</small>
+                    <br>
+                    <span class="verification-badge ${user.emailVerified ? '' : 'unverified'}">
+                        <i class="fas fa-${user.emailVerified ? 'check' : 'times'}-circle"></i>
+                        ${user.emailVerified ? 'Verificado' : 'No verificado'}
+                    </span>
+                    ${user.role === 'admin' ? '<span class="admin-badge">Admin</span>' : ''}
+                </div>
+                <div class="user-actions">
+                    ${user.role !== 'admin' ?
+                        `<button class="btn" onclick="makeAdmin('${user.id}')">Hacer Admin</button>` :
+                        ''
+                    }
+                    <button class="btn btn-danger" onclick="deleteUser('${user.id}')">Eliminar</button>
+                </div>
+            `;
+           
+            return element;
+        }
+
+        async function approveBook(bookId) {
+            if (confirm('¿Estás seguro de que quieres aprobar este libro?')) {
+                try {
+                    await booksRef.doc(bookId).update({
+                        status: 'approved'
+                    });
+                    alert('Libro aprobado correctamente.');
+                    loadPendingBooks();
+                } catch (error) {
+                    console.error("Error aprobando libro:", error);
+                    alert('Error al aprobar el libro.');
+                }
+            }
+        }
+
+        async function rejectBook(bookId) {
+            const reason = prompt('Ingresa el motivo del rechazo:');
+            if (reason) {
+                try {
+                    await booksRef.doc(bookId).update({
+                        status: 'rejected',
+                        rejectionReason: reason
+                    });
+                    alert('Libro rechazado correctamente.');
+                    loadPendingBooks();
+                } catch (error) {
+                    console.error("Error rechazando libro:", error);
+                    alert('Error al rechazar el libro.');
+                }
+            }
+        }
+
+        async function dismissReports(bookId) {
+            if (confirm('¿Descartar todos los reportes de este libro?')) {
+                try {
+                    await booksRef.doc(bookId).update({
+                        reported: false,
+                        reportCount: 0,
+                        reports: []
+                    });
+                    alert('Reportes descartados.');
+                    loadReportedBooks();
+                } catch (error) {
+                    console.error("Error descartando reportes:", error);
+                    alert('Error al descartar reportes.');
+                }
+            }
+        }
+
+        async function deleteBook(bookId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este libro? Esta acción no se puede deshacer.')) {
+                try {
+                    await booksRef.doc(bookId).delete();
+                    alert('Libro eliminado correctamente.');
+                    loadReportedBooks();
+                } catch (error) {
+                    console.error("Error eliminando libro:", error);
+                    alert('Error al eliminar el libro.');
+                }
+            }
+        }
+
+        async function makeAdmin(userId) {
+            if (confirm('¿Estás seguro de que quieres hacer administrador a este usuario?')) {
+                try {
+                    await usersRef.doc(userId).update({
+                        role: 'admin'
+                    });
+                    alert('Usuario convertido en administrador.');
+                    loadUsersForManagement();
+                } catch (error) {
+                    console.error("Error haciendo admin:", error);
+                    alert('Error al hacer administrador al usuario.');
+                }
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.')) {
+                try {
+                    await usersRef.doc(userId).delete();
+                    alert('Usuario eliminado correctamente.');
+                    loadUsersForManagement();
+                } catch (error) {
+                    console.error("Error eliminando usuario:", error);
+                    alert('Error al eliminar el usuario.');
+                }
+            }
+        }
+
+        async function loadUserAvatar(userId) {
+            try {
+                const userData = await getUserData(userId);
+                if (userData && userData.avatarUrl) {
+                    const avatar = document.getElementById('user-avatar');
+                    avatar.innerHTML = `<img src="${userData.avatarUrl}" alt="Avatar">`;
+                }
+            } catch (error) {
+                console.error("Error cargando avatar:", error);
+            }
+        }
+
+        async function saveUserData(userId, userData) {
+            try {
+                await usersRef.doc(userId).set(userData, { merge: true });
+                return true;
+            } catch (error) {
+                console.error("Error guardando datos de usuario:", error);
+                return false;
+            }
+        }
+
+        async function getUserData(userId) {
+            try {
+                const doc = await usersRef.doc(userId).get();
+                return doc.exists ? doc.data() : null;
+            } catch (error) {
+                console.error("Error obteniendo datos de usuario:", error);
+                return null;
+            }
+        }
+
+        async function saveBook(bookData) {
+            try {
+                const docRef = await booksRef.add(bookData);
+                return docRef.id;
+            } catch (error) {
+                console.error("Error guardando libro:", error);
+                return null;
+            }
+        }
+
+        async function getAllBooks() {
+            try {
+                const snapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+                const books = [];
+                snapshot.forEach(doc => {
+                    books.push({ id: doc.id, ...doc.data() });
+                });
+                return books;
+            } catch (error) {
+                console.error("Error obteniendo libros:", error);
+                return [];
+            }
+        }
+
+        async function updateBook(bookId, updates) {
+            try {
+                await booksRef.doc(bookId).update(updates);
+                return true;
+            } catch (error) {
+                console.error("Error actualizando libro:", error);
+                return false;
+            }
+        }
 
         async function uploadCoverImage(imageFile, userId) {
             try {
                 const storageRef = storage.ref();
-                const coverRef = storageRef.child(`covers/${userId}_${Date.now()}_${imageFile.name}`);
-                const snapshot = await coverRef.put(imageFile);
+                const imageRef = storageRef.child(`covers/${userId}/${Date.now()}_${imageFile.name}`);
+                const snapshot = await imageRef.put(imageFile);
                 const downloadURL = await snapshot.ref.getDownloadURL();
                 return downloadURL;
             } catch (error) {
-                console.error("Error subiendo portada:", error);
-                throw error;
+                console.error("Error subiendo imagen:", error);
+                return null;
             }
         }
-
-        // ============================
-        // ACTUALIZAR LA FUNCIÓN createBookCard PARA MOSTRAR PORTADAS
-        // ============================
 
         function createBookCard(book) {
             const bookCard = document.createElement('div');
             bookCard.className = 'book-card';
-            
-            // Determinar el estilo de la portada
-            let coverStyle = '';
-            let coverContent = '';
-            
-            if (book.coverUrl) {
-                // Usar imagen de portada personalizada
-                coverStyle = `background-image: url('${book.coverUrl}');`;
-                coverContent = `<div class="cover-text" style="display: none;"></div>`;
-            } else if (book.coverDesign) {
-                // Usar diseño generado
-                coverStyle = `background: ${book.coverDesign.bgColor}; color: ${book.coverDesign.textColor};`;
-                coverContent = `
-                    <div class="cover-text">
-                        <h3>${book.title.split(' ').map(word => word[0]).join('')}</h3>
-                        <p>${book.author}</p>
-                    </div>
-                `;
-            } else {
-                // Usar diseño por defecto
-                coverStyle = 'background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;';
-                coverContent = `
-                    <div class="cover-text">
-                        <h3>${book.title.split(' ').map(word => word[0]).join('')}</h3>
-                        <p>${book.author}</p>
-                    </div>
-                `;
-            }
-            
+           
+            // Determinar si el libro tiene portada personalizada
+            const coverStyle = book.coverUrl ?
+                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
+                '';
+           
             bookCard.innerHTML = `
-                <div class="book-cover" style="${coverStyle}">
-                    ${coverContent}
+                <div class="book-cover" ${coverStyle}>
+                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
+                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
                 </div>
                 <div class="book-actions">
                     <div class="book-action like-btn" data-book-id="${book.id}">
@@ -3049,196 +3444,124 @@
                     </div>
                 </div>
             `;
-            
+           
+            // Configurar eventos
             bookCard.querySelector('.like-btn').addEventListener('click', function() {
                 handleLikeBook(book.id);
             });
-            
+           
             bookCard.querySelector('.read-btn').addEventListener('click', function() {
                 openReader(book);
             });
-            
+           
             return bookCard;
         }
-
-        // ============================
-        // FUNCIONES AUXILIARES MEJORADAS
-        // ============================
 
         async function updateBookViews(bookId) {
             try {
                 const bookDoc = await booksRef.doc(bookId).get();
-                const currentViews = bookDoc.data().views || 0;
-                
+                const book = bookDoc.data();
+                const currentViews = book.views || 0;
+               
                 await booksRef.doc(bookId).update({
-                    views: currentViews + 1,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    views: currentViews + 1
                 });
             } catch (error) {
                 console.error("Error actualizando vistas:", error);
             }
         }
 
-        // ============================
-        // LISTENERS DE TIEMPO REAL
-        // ============================
-
         function startRealTimeListeners() {
-            // Listener para libros
-            booksListener = booksRef.orderBy('createdAt', 'desc').onSnapshot(
-                (snapshot) => {
-                    console.log("Actualización en tiempo real de libros recibida");
+            // Listener para libros aprobados
+            booksListener = booksRef
+                .where('status', '==', 'approved')
+                .onSnapshot(snapshot => {
+                    displayBooks();
+                    displayFeaturedBooks();
+                    displayRecommendedBooks();
                     updateBooksStats();
-                    updateProfileStats();
-                    
-                    if (document.getElementById('biblioteca').classList.contains('active')) {
-                        displayBooks();
-                    }
-                    
-                    if (document.getElementById('inicio').classList.contains('active')) {
-                        displayFeaturedBooks();
-                        displayRecommendedBooks();
-                    }
-                },
-                (error) => {
+                }, error => {
                     console.error("Error en listener de libros:", error);
-                }
-            );
-            
-            usersListener = usersRef.onSnapshot(
-                (snapshot) => {
-                    console.log("Actualización en tiempo real de usuarios recibida");
-                    updateUsersStats();
-                },
-                (error) => {
-                    console.error("Error en listener de usuarios:", error);
-                }
-            );
+                });
         }
 
         function stopRealTimeListeners() {
             if (booksListener) {
                 booksListener();
-                booksListener = null;
             }
             if (usersListener) {
                 usersListener();
-                usersListener = null;
             }
         }
 
-        // ============================
-        // ACTUALIZACIONES DE ESTADÍSTICAS EN TIEMPO REAL
-        // ============================
-
         async function updateBooksStats() {
             try {
-                const snapshot = await booksRef.get();
-                let totalBooks = 0;
+                const booksSnapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+                const usersSnapshot = await usersRef.get();
+               
                 let totalLikes = 0;
-                
-                snapshot.forEach((doc) => {
-                    totalBooks++;
+                booksSnapshot.forEach(doc => {
                     const book = doc.data();
                     totalLikes += book.likes || 0;
                 });
-                
-                document.getElementById('total-books').textContent = totalBooks;
+               
+                document.getElementById('total-books').textContent = booksSnapshot.size;
+                document.getElementById('total-authors').textContent = usersSnapshot.size;
                 document.getElementById('total-likes').textContent = totalLikes;
-                
-                console.log(`Estadísticas actualizadas: ${totalBooks} libros, ${totalLikes} likes`);
             } catch (error) {
-                console.error("Error actualizando estadísticas de libros:", error);
+                console.error("Error actualizando estadísticas:", error);
             }
         }
 
         async function updateUsersStats() {
-            try {
-                const snapshot = await usersRef.get();
-                const totalAuthors = snapshot.size;
-                
-                document.getElementById('total-authors').textContent = totalAuthors;
-                
-                console.log(`Estadísticas actualizadas: ${totalAuthors} autores`);
-            } catch (error) {
-                console.error("Error actualizando estadísticas de usuarios:", error);
-            }
+            // Esta función se puede expandir según sea necesario
         }
 
         async function updateProfileStats() {
             const currentUser = auth.currentUser;
             if (!currentUser) return;
-            
+           
             try {
-                const booksSnapshot = await booksRef.get();
-                let userBooksCount = 0;
-                let userLikesCount = 0;
-                
-                booksSnapshot.forEach((doc) => {
+                const userData = await getUserData(currentUser.uid);
+                const userBooksSnapshot = await booksRef
+                    .where('authorId', '==', currentUser.uid)
+                    .get();
+               
+                let totalLikes = 0;
+                userBooksSnapshot.forEach(doc => {
                     const book = doc.data();
-                    if (book.authorId === currentUser.uid) {
-                        userBooksCount++;
-                        userLikesCount += book.likes || 0;
-                    }
+                    totalLikes += book.likes || 0;
                 });
-                
-                document.getElementById('profile-books').textContent = userBooksCount;
-                document.getElementById('profile-likes').textContent = userLikesCount;
-                
-                console.log(`Perfil actualizado: ${userBooksCount} libros, ${userLikesCount} likes`);
+               
+                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
+                document.getElementById('profile-likes').textContent = totalLikes;
+               
+                // Actualizar reseñas (simplificado)
+                const reviewsCount = userData?.myReviews?.length || 0;
+                document.getElementById('profile-reviews').textContent = reviewsCount;
             } catch (error) {
-                console.error("Error actualizando estadísticas del perfil:", error);
+                console.error("Error actualizando estadísticas de perfil:", error);
             }
         }
 
-        // ============================
-        // FUNCIONES DE NAVEGACIÓN Y UI
-        // ============================
-
-        function switchSection(sectionId) {
-            document.querySelectorAll('.main-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            document.getElementById(sectionId).classList.add('active');
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-section') === sectionId) {
-                    link.classList.add('active');
-                }
-            });
-            
-            stopRealTimeListeners();
-            
-            if (sectionId === 'inicio') {
-                startRealTimeListeners();
-                loadHomeData();
-            } else if (sectionId === 'biblioteca') {
-                startRealTimeListeners();
-                displayBooks();
-                displayGenreFilters();
-            } else if (sectionId === 'perfil') {
-                startRealTimeListeners();
-                updateProfile();
-                loadAdminPanel();
-            }
+        function isAdmin() {
+            // Esta función debería verificar si el usuario actual es admin
+            // Por ahora, retornamos false por simplicidad
+            return false;
         }
-
-        // ============================
-        // VERIFICACIÓN DE EMAIL
-        // ============================
 
         async function resendEmailVerification() {
             const user = auth.currentUser;
-            if (!user) return;
-
-            try {
-                await user.sendEmailVerification();
-                alert('Se ha enviado un nuevo email de verificación. Por favor, revisa tu bandeja de entrada.');
-            } catch (error) {
-                console.error("Error reenviando verificación:", error);
-                alert('Error al reenviar el email de verificación. Intenta nuevamente.');
+            if (user) {
+                try {
+                    await user.sendEmailVerification();
+                    alert('Correo de verificación enviado. Revisa tu bandeja de entrada.');
+                } catch (error) {
+                    console.error("Error reenviando verificación:", error);
+                    alert('Error al reenviar el correo de verificación.');
+                }
             }
         }
 
@@ -3248,260 +3571,379 @@
                 user.reload().then(() => {
                     const verificationBadge = document.getElementById('verification-badge');
                     const resendButton = document.getElementById('resend-verification');
-                    
+                   
                     if (user.emailVerified) {
                         verificationBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verificado';
                         verificationBadge.className = 'verification-badge';
-                        if (resendButton) resendButton.style.display = 'none';
-                        
-                        saveUserData(user.uid, { emailVerified: true });
+                        verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'none';
                     } else {
                         verificationBadge.innerHTML = '<i class="fas fa-times-circle"></i> No verificado';
                         verificationBadge.className = 'verification-badge unverified';
-                        if (resendButton) resendButton.style.display = 'inline-block';
                         verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'block';
                     }
                 });
             }
         }
 
-        // ============================
-        // RECUPERACIÓN DE CONTRASEÑA
-        // ============================
-
         function handlePasswordReset() {
-            const email = prompt('Por favor, ingresa tu email para restablecer la contraseña:');
-            
+            const email = prompt('Ingresa tu correo electrónico para restablecer la contraseña:');
             if (email) {
                 auth.sendPasswordResetEmail(email)
                     .then(() => {
-                        alert('Se ha enviado un email para restablecer tu contraseña. Revisa tu bandeja de entrada.');
+                        alert('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
                     })
-                    .catch((error) => {
-                        let errorMessage = "Error al enviar el email de recuperación";
-                        switch(error.code) {
-                            case 'auth/user-not-found':
-                                errorMessage = 'No existe una cuenta con este email.';
-                                break;
-                            case 'auth/invalid-email':
-                                errorMessage = 'El formato del email no es válido.';
-                                break;
-                            default:
-                                errorMessage = error.message;
-                        }
-                        alert(errorMessage);
+                    .catch(error => {
+                        console.error("Error enviando correo de restablecimiento:", error);
+                        alert('Error al enviar el correo de restablecimiento.');
                     });
             }
         }
-
-        // ============================
-        // SISTEMA DE LIKES EN TIEMPO REAL
-        // ============================
-
-        async function handleLikeBook(bookId) {
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                alert('Debes iniciar sesión para dar like a un libro');
-                return;
-            }
-            
+              async function handleLoginFormSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
             try {
-                const bookDoc = await booksRef.doc(bookId).get();
-                const book = bookDoc.data();
-                const userData = await getUserData(currentUser.uid);
-                
-                let likedBooks = userData?.likedBooks || [];
-                let currentLikes = book.likes || 0;
-                let isLiked = likedBooks.includes(bookId);
-                
-                if (isLiked) {
-                    likedBooks = likedBooks.filter(id => id !== bookId);
-                    currentLikes = Math.max(0, currentLikes - 1);
-                } else {
-                    likedBooks.push(bookId);
-                    currentLikes += 1;
-                }
-                
-                await booksRef.doc(bookId).update({
-                    likes: currentLikes
-                });
-                
-                await saveUserData(currentUser.uid, {
-                    likedBooks: likedBooks
-                });
-                
-                console.log(`Like ${isLiked ? 'quitado' : 'agregado'} al libro ${bookId}`);
+                await auth.signInWithEmailAndPassword(email, password);
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('login-form').reset();
+               
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
             } catch (error) {
-                console.error("Error manejando like:", error);
-                alert('Error al procesar el like. Intenta nuevamente.');
+                alert('Error al iniciar sesión: ' + error.message);
             }
         }
 
-        // ============================
-        // FUNCIONES DE INTERFAZ
-        // ============================
+        async function handleRegisterFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+           
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden.');
+                return;
+            }
+           
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+               
+                await user.updateProfile({
+                    displayName: name
+                });
+               
+                await saveUserData(user.uid, {
+                    name: name,
+                    email: email,
+                    bio: '',
+                    likedBooks: [],
+                    myReviews: [],
+                    favoriteGenres: [],
+                    emailVerified: false,
+                    role: 'user',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+               
+                // Enviar verificación por email
+                await user.sendEmailVerification();
+               
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('register-form').reset();
+               
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
+               
+                alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
+            } catch (error) {
+                alert('Error al registrar usuario: ' + error.message);
+            }
+        }
 
-        async function loadHomeData() {
-            await displayFeaturedBooks();
-            await displayRecommendedBooks();
+        async function handleEditProfileFormSubmit(e) {
+            e.preventDefault();
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+           
+            const name = document.getElementById('edit-user-name').value;
+            const bio = document.getElementById('edit-user-bio').value;
+            const avatarFile = document.getElementById('edit-user-avatar').files[0];
+           
+            try {
+                // Actualizar perfil en Firebase Auth
+                await currentUser.updateProfile({
+                    displayName: name
+                });
+               
+                // Guardar datos adicionales en Firestore
+                const userData = {
+                    name: name,
+                    bio: bio,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+               
+                // Subir avatar si se seleccionó uno
+                if (avatarFile) {
+                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
+                    if (avatarUrl) {
+                        userData.avatarUrl = avatarUrl;
+                    }
+                }
+               
+                await saveUserData(currentUser.uid, userData);
+               
+                document.getElementById('edit-profile-modal').style.display = 'none';
+                updateProfile();
+                alert('Perfil actualizado correctamente.');
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+                alert('Error al actualizar el perfil.');
+            }
         }
 
         async function displayFeaturedBooks() {
-            const container = document.getElementById('featured-books-container');
-            const books = await getAllBooks();
-            
-            const featuredBooks = books.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
-            
-            if (featuredBooks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros destacados</h3><p>Sé el primero en publicar un libro.</p></div>';
-                return;
+            try {
+                const books = await getAllBooks();
+                const container = document.getElementById('featured-books-container');
+                container.innerHTML = '';
+               
+                // Ordenar por likes y tomar los primeros 6
+                const featuredBooks = books
+                    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+                    .slice(0, 6);
+               
+                if (featuredBooks.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros destacados</h3><p>¡Sé el primero en publicar un libro!</p></div>';
+                    return;
+                }
+               
+                featuredBooks.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros destacados:", error);
             }
-            
-            container.innerHTML = '';
-            featuredBooks.forEach(book => {
-                const bookCard = createBookCard(book);
-                container.appendChild(bookCard);
-            });
         }
 
         async function displayRecommendedBooks() {
-            const container = document.getElementById('recommended-books-container');
-            const books = await getAllBooks();
-            
-            const recommendedBooks = books.sort(() => 0.5 - Math.random()).slice(0, 3);
-            
-            if (recommendedBooks.length === 0) {
+            try {
+                const books = await getAllBooks();
+                const container = document.getElementById('recommended-books-container');
                 container.innerHTML = '';
-                document.getElementById('recommended-section').style.display = 'none';
-                return;
+               
+                // Simular recomendaciones basadas en géneros populares
+                const recommendedBooks = books
+                    .sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+                    .slice(0, 6);
+               
+                if (recommendedBooks.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No hay recomendaciones</h3><p>Explora más libros para obtener recomendaciones personalizadas.</p></div>';
+                    return;
+                }
+               
+                recommendedBooks.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    // Añadir badge de recomendación
+                    const badge = document.createElement('div');
+                    badge.className = 'recommendation-badge';
+                    badge.textContent = 'Recomendado';
+                    bookCard.querySelector('.book-cover').appendChild(badge);
+                   
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros recomendados:", error);
             }
-            
-            container.innerHTML = '';
-            recommendedBooks.forEach(book => {
-                const bookCard = createBookCard(book);
-                const badge = document.createElement('div');
-                badge.className = 'recommendation-badge';
-                badge.innerHTML = '<i class="fas fa-star"></i> Recomendado';
-                bookCard.querySelector('.book-cover').appendChild(badge);
-                container.appendChild(bookCard);
-            });
         }
 
         function displayGenreFilters() {
-            const genreContainer = document.getElementById('genre-filter-container');
-            genreContainer.innerHTML = '';
-            
+            const container = document.getElementById('genre-filter-container');
+            container.innerHTML = '';
+           
+            // Añadir opción "Todos"
             const allChip = document.createElement('div');
-            allChip.className = `genre-chip ${selectedGenre === 'all' ? 'active' : ''}`;
+            allChip.className = 'genre-chip active';
             allChip.textContent = 'Todos';
-            allChip.setAttribute('data-genre', 'all');
             allChip.addEventListener('click', function() {
                 selectedGenre = 'all';
-                displayBooks();
-                updateGenreFilters();
-            });
-            genreContainer.appendChild(allChip);
-            
-            genres.forEach(genre => {
-                const genreChip = document.createElement('div');
-                genreChip.className = `genre-chip ${selectedGenre === genre ? 'active' : ''}`;
-                genreChip.textContent = genreNames[genre];
-                genreChip.setAttribute('data-genre', genre);
-                genreChip.addEventListener('click', function() {
-                    selectedGenre = genre;
-                    displayBooks();
-                    updateGenreFilters();
+                document.querySelectorAll('.genre-chip').forEach(chip => {
+                    chip.classList.remove('active');
                 });
-                genreContainer.appendChild(genreChip);
+                this.classList.add('active');
+                displayBooks();
             });
-        }
-
-        function updateGenreFilters() {
-            document.querySelectorAll('.genre-chip').forEach(chip => {
-                chip.classList.remove('active');
-                if (chip.getAttribute('data-genre') === selectedGenre) {
-                    chip.classList.add('active');
-                }
+            container.appendChild(allChip);
+           
+            // Añadir chips para cada género
+            genres.forEach(genre => {
+                const chip = document.createElement('div');
+                chip.className = 'genre-chip';
+                chip.textContent = genreNames[genre];
+                chip.addEventListener('click', function() {
+                    selectedGenre = genre;
+                    document.querySelectorAll('.genre-chip').forEach(chip => {
+                        chip.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    displayBooks();
+                });
+                container.appendChild(chip);
             });
         }
 
         async function displayBooks() {
-            const container = document.getElementById('books-container');
-            const books = await getAllBooks();
-            
-            let filteredBooks = books;
-            
-            if (selectedGenre !== 'all') {
-                filteredBooks = filteredBooks.filter(book => book.genre === selectedGenre);
+            try {
+                let books = await getAllBooks();
+                const container = document.getElementById('books-container');
+                container.innerHTML = '';
+               
+                // Aplicar filtros
+                if (selectedGenre !== 'all') {
+                    books = books.filter(book => book.genre === selectedGenre);
+                }
+               
+                if (searchTerm) {
+                    books = books.filter(book =>
+                        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.description.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+               
+                // Aplicar filtro adicional (mis libros, favoritos, etc.)
+                if (currentFilter === 'my-books' && auth.currentUser) {
+                    books = books.filter(book => book.authorId === auth.currentUser.uid);
+                } else if (currentFilter === 'liked' && auth.currentUser) {
+                    const userData = await getUserData(auth.currentUser.uid);
+                    const likedBooks = userData?.likedBooks || [];
+                    books = books.filter(book => likedBooks.includes(book.id));
+                }
+               
+                if (books.length === 0) {
+                    let message = '';
+                    if (searchTerm) {
+                        message = `<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>No hay resultados para "${searchTerm}".</p></div>`;
+                    } else if (selectedGenre !== 'all') {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros en este género</h3><p>No se encontraron libros en la categoría ${genreNames[selectedGenre]}.</p></div>`;
+                    } else if (currentFilter === 'my-books') {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No has publicado libros aún</h3><p>¡Publica tu primer libro y compártelo con la comunidad!</p><button class="btn" id="upload-first-empty">Publicar Libro</button></div>`;
+                    } else if (currentFilter === 'liked') {
+                        message = `<div class="empty-state"><i class="fas fa-heart"></i><h3>No tienes libros favoritos</h3><p>Haz clic en el corazón de los libros que te gusten para agregarlos aquí.</p></div>`;
+                    } else {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros disponibles</h3><p>¡Sé el primero en publicar un libro!</p></div>`;
+                    }
+                    container.innerHTML = message;
+                   
+                    // Configurar botón de subida si existe
+                    const uploadBtn = document.getElementById('upload-first-empty');
+                    if (uploadBtn) {
+                        uploadBtn.addEventListener('click', function() {
+                            document.getElementById('upload-modal').style.display = 'flex';
+                        });
+                    }
+                   
+                    return;
+                }
+               
+                books.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros:", error);
             }
-            
-            if (searchTerm) {
-                filteredBooks = filteredBooks.filter(book => 
-                    book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    book.description.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-            }
-            
-            const currentUser = auth.currentUser;
-            if (currentUser && currentFilter === 'my-books') {
-                filteredBooks = filteredBooks.filter(book => book.authorId === currentUser.uid);
-            } else if (currentUser && currentFilter === 'liked') {
-                const userData = await getUserData(currentUser.uid);
-                const likedBookIds = userData?.likedBooks || [];
-                filteredBooks = filteredBooks.filter(book => likedBookIds.includes(book.id));
-            }
-            
-            if (filteredBooks.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><h3>No se encontraron libros</h3><p>Intenta cambiar los filtros de búsqueda.</p></div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            filteredBooks.forEach(book => {
-                const bookCard = createBookCard(book);
-                container.appendChild(bookCard);
-            });
         }
 
         async function updateProfile() {
             const currentUser = auth.currentUser;
-            
             if (!currentUser) {
-                document.getElementById('perfil').innerHTML = `
-                    <div class="container">
-                        <div class="empty-state">
-                            <i class="fas fa-user"></i>
-                            <h3>Inicia sesión para ver tu perfil</h3>
-                            <p>Necesitas tener una cuenta para acceder a esta sección.</p>
-                            <button class="btn" id="login-from-profile">Iniciar Sesión</button>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('login-from-profile').addEventListener('click', function() {
-                    document.getElementById('auth-modal').style.display = 'flex';
-                });
-                
+                // Mostrar estado de no autenticado
+                document.getElementById('profile-user-name').textContent = 'No autenticado';
+                document.getElementById('profile-user-email').textContent = 'Inicia sesión para ver tu perfil';
+                document.getElementById('profile-user-bio').textContent = '';
+                document.getElementById('edit-profile-btn').style.display = 'none';
                 return;
             }
-            
-            const userData = await getUserData(currentUser.uid);
-            
-            document.getElementById('profile-user-name').textContent = userData?.name || currentUser.displayName || 'Usuario';
-            document.getElementById('profile-user-email').textContent = currentUser.email;
-            document.getElementById('profile-user-bio').textContent = userData?.bio || "Aquí puedes agregar una breve biografía sobre ti.";
-            
-            loadUserAvatar(currentUser.uid);
-            
-            checkEmailVerification();
+           
+            try {
+                const userData = await getUserData(currentUser.uid);
+               
+                // Actualizar información básica
+                document.getElementById('profile-user-name').textContent = currentUser.displayName || 'Usuario';
+                document.getElementById('profile-user-email').textContent = currentUser.email;
+                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
+               
+                // Actualizar avatar
+                if (userData?.avatarUrl) {
+                    document.getElementById('user-avatar').innerHTML = `
+                        <img src="${userData.avatarUrl}" alt="Avatar">
+                        <div class="edit-overlay" id="edit-avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    `;
+                }
+               
+                // Actualizar formulario de edición
+                document.getElementById('edit-user-name').value = currentUser.displayName || '';
+                document.getElementById('edit-user-bio').value = userData?.bio || '';
+               
+                // Actualizar estadísticas
+                await updateProfileStats();
+               
+                // Mostrar/ocultar elementos según el estado de verificación
+                checkEmailVerification();
+               
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+            }
         }
-
-        // ============================
+              // ============================
         // INICIALIZACIÓN
         // ============================
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Verificar modo oscuro
+            checkDarkModePreference();
+            
+            // Mostrar modal de bienvenida al cargar la página si no hay sesión
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // Usuario autenticado
+                    currentUserType = 'logged';
+                    document.getElementById('guest-notification').style.display = 'none';
+                    document.getElementById('welcome-modal').style.display = 'none';
+                   
+                    checkEmailVerification();
+                    setInterval(checkEmailVerification, 30000);
+                   
+                    if (document.getElementById('perfil').classList.contains('active')) {
+                        updateProfile();
+                    }
+                } else {
+                    // No hay usuario autenticado, mostrar modal de bienvenida
+                    setTimeout(() => {
+                        showWelcomeModal();
+                    }, 1000);
+                }
+            });
+
+            // Cerrar notificación de invitado
+            document.getElementById('close-guest-notification').addEventListener('click', function() {
+                document.getElementById('guest-notification').style.display = 'none';
+            });
+
+            // Mejorar cuenta desde notificación de invitado
+            document.getElementById('upgrade-account').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('auth-modal').style.display = 'flex';
+            });
+
             // Configurar navegación
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -3529,6 +3971,22 @@
             });
 
             document.getElementById('upload-book-btn').addEventListener('click', function() {
+                if (!isActionAllowed('upload_books')) {
+                    showLoginPrompt();
+                    return;
+                }
+                document.getElementById('upload-modal').style.display = 'flex';
+            });
+
+            document.getElementById('explore-library').addEventListener('click', function() {
+                switchSection('biblioteca');
+            });
+
+            document.getElementById('upload-first-book').addEventListener('click', function() {
+                if (!isActionAllowed('upload_books')) {
+                    showLoginPrompt();
+                    return;
+                }
                 document.getElementById('upload-modal').style.display = 'flex';
             });
 
@@ -3555,10 +4013,10 @@
             document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const formId = this.getAttribute('data-form');
-                    
+                   
                     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
-                    
+                   
                     document.querySelectorAll('.auth-form').forEach(form => {
                         form.classList.remove('active');
                     });
@@ -3638,25 +4096,32 @@
                     displayCurrentPage();
                 }
             });
+
             document.getElementById('next-page').addEventListener('click', function() {
+                if (currentUserType === 'guest') {
+                    if (!handleGuestPageReading()) {
+                        return;
+                    }
+                }
+               
                 if (currentPage < bookPages.length - 1) {
                     currentPage++;
                     displayCurrentPage();
                 }
             });
-            
+           
             // Configurar el envío de reseñas
             document.getElementById('submit-review').addEventListener('click', submitReview);
-            
+           
             // Configurar tabs del panel de administración
             document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
-                    
+                   
                     // Actualizar botones activos
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    
+                   
                     // Mostrar contenido activo
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.classList.remove('active');
@@ -3668,30 +4133,8 @@
             // Inicializar el sistema de escritura mejorado
             initWritingSystem();
 
-            // Configurar listener para cambios de autenticación
-            auth.onAuthStateChanged((user) => {
-                const authStatus = document.getElementById('auth-status');
-                const authBtn = document.getElementById('auth-btn');
-                
-                if (user) {
-                    authStatus.textContent = user.displayName || user.email;
-                    authBtn.innerHTML = `<i class="fas fa-user"></i> <span id="auth-status">${user.displayName || user.email}</span>`;
-                    
-                    checkEmailVerification();
-                    setInterval(checkEmailVerification, 30000);
-                    
-                    if (document.getElementById('perfil').classList.contains('active')) {
-                        updateProfile();
-                    }
-                } else {
-                    authStatus.textContent = 'Iniciar Sesión';
-                    authBtn.innerHTML = `<i class="fas fa-user"></i> <span id="auth-status">Iniciar Sesión</span>`;
-                    
-                    if (document.getElementById('perfil').classList.contains('active')) {
-                        updateProfile();
-                    }
-                }
-            });
+            // Configurar el botón de modo oscuro
+            document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
 
             // Iniciar en la sección de inicio
             switchSection('inicio');
@@ -3701,138 +4144,6 @@
         window.addEventListener('beforeunload', function() {
             stopRealTimeListeners();
         });
-
-        // ============================
-        // MANEJO DE FORMULARIOS
-        // ============================
-
-        async function handleLoginFormSubmit(e) {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('login-form').reset();
-            } catch (error) {
-                let errorMessage = "Error al iniciar sesión";
-                switch(error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = 'No existe una cuenta con este email.';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage = 'Contraseña incorrecta.';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = 'El formato del email no es válido.';
-                        break;
-                    default:
-                        errorMessage = error.message;
-                }
-                alert(errorMessage);
-            }
-        }
-
-        async function handleRegisterFormSubmit(e) {
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert('Las contraseñas no coinciden.');
-                return;
-            }
-            
-            if (password.length < 6) {
-                alert('La contraseña debe tener al menos 6 caracteres.');
-                return;
-            }
-            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                await user.sendEmailVerification();
-                
-                await user.updateProfile({
-                    displayName: name
-                });
-                
-                // Verificar si es el primer usuario y hacerlo admin
-                const usersSnapshot = await usersRef.get();
-                const isFirstUser = usersSnapshot.empty;
-                
-                await saveUserData(user.uid, {
-                    name: name,
-                    email: email,
-                    bio: '',
-                    avatar: null,
-                    likedBooks: [],
-                    myReviews: [],
-                    favoriteGenres: [],
-                    emailVerified: false,
-                    role: isFirstUser ? 'admin' : 'user',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('register-form').reset();
-                alert('¡Registro exitoso! Se ha enviado un email de verificación. Por favor, verifica tu cuenta.');
-            } catch (error) {
-                let errorMessage = "Error al registrar usuario";
-                switch(error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage = 'Este email ya está registrado.';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = 'El formato del email no es válido.';
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage = 'La contraseña es demasiado débil.';
-                        break;
-                    default:
-                        errorMessage = error.message;
-                }
-                alert(errorMessage);
-            }
-        }
-
-        async function handleEditProfileFormSubmit(e) {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-
-            const name = document.getElementById('edit-user-name').value;
-            const bio = document.getElementById('edit-user-bio').value;
-            const avatarFile = document.getElementById('edit-user-avatar').files[0];
-
-            try {
-                await currentUser.updateProfile({
-                    displayName: name
-                });
-
-                const userData = {
-                    name: name,
-                    bio: bio
-                };
-
-                if (avatarFile) {
-                    const storageRef = storage.ref();
-                    const avatarRef = storageRef.child(`avatars/${currentUser.uid}`);
-                    await avatarRef.put(avatarFile);
-                    userData.avatar = await avatarRef.getDownloadURL();
-                }
-
-                await saveUserData(currentUser.uid, userData);
-
-                document.getElementById('edit-profile-modal').style.display = 'none';
-                updateProfile();
-                alert('Perfil actualizado correctamente.');
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-                alert('Error al actualizar el perfil. Intenta nuevamente.');
-            }
-        }
     </script>
 </body>
 </html>
