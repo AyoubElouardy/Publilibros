@@ -135,6 +135,13 @@
             align-items: center;
         }
 
+        .user-display-name {
+            color: white;
+            margin-right: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
         .user-actions button {
             background: transparent;
             border: none;
@@ -412,9 +419,10 @@
         .book-description {
             font-size: 0.9rem;
             margin-bottom: 1rem;
-            height: 60px;
+            height: 40px;
             overflow: hidden;
             color: var(--text-color);
+            line-height: 1.4;
         }
 
         .book-genre {
@@ -676,11 +684,6 @@
             color: var(--text-color);
         }
 
-        .user-email {
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-
         .user-bio {
             color: var(--text-muted);
             margin-bottom: 1rem;
@@ -705,581 +708,7 @@
             font-size: 0.9rem;
             color: var(--text-muted);
         }
-</style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-book-open"></i>Publi<span>libros</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="nav-link active" data-section="inicio">Inicio</a></li>
-                    <li><a href="#" class="nav-link" data-section="biblioteca">Biblioteca</a></li>
-                    <li><a href="#" class="nav-link" data-section="perfil">Mi Perfil</a></li>
-                </ul>
-            </nav>
-            <div class="user-actions">
-                <button id="auth-btn"><i class="fas fa-user"></i> <span id="auth-status">Iniciar Sesión</span></button>
-                <button id="theme-toggle"><i class="fas fa-moon"></i></button>
-            </div>
-        </div>
-    </header>
-      <!-- Modal de Bienvenida (nuevo) -->
-    <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>¡Bienvenido a Publibros!</h3>
-            </div>
-            <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
-            <div class="welcome-options">
-                <div class="welcome-option" id="login-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </div>
-                    <h4>Iniciar Sesión</h4>
-                    <p>Accede con tu cuenta existente</p>
-                </div>
-                <div class="welcome-option" id="register-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h4>Registrarse</h4>
-                    <p>Crea una nueva cuenta y descubre todas las funciones</p>
-                </div>
-                <div class="welcome-option" id="guest-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h4>Modo Invitado</h4>
-                    <p>Explora con acceso limitado a funciones básicas</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notificación de estado de invitado (nuevo) -->
-    <div id="guest-notification" class="guest-notification" style="display: none;">
-        <i class="fas fa-info-circle"></i>
-        <span>Estás navegando como invitado. Algunas funciones están limitadas. <a href="#" id="upgrade-account">Mejora tu cuenta</a> para acceder a todo.</span>
-        <span class="close" id="close-guest-notification">&times;</span>
-    </div>
-
-    <!-- Sección Inicio -->
-    <section id="inicio" class="main-section active">
-        <div class="container">
-            <div class="hero">
-                <h1>Descubre y Comparte Historias Únicas</h1>
-                <p>Publibros es una plataforma elegante donde autores y lectores se conectan. Comparte tus creaciones, descubre nuevos talentos y forma parte de una comunidad literaria vibrante.</p>
-                <button class="btn" id="explore-library">Explorar Biblioteca</button>
-                <button class="btn btn-outline" id="upload-first-book">Publica tu Primer Libro</button>
-            </div>
-            <div class="featured-books">
-                <h2 class="section-title">Libros Destacados</h2>
-                <div class="books-grid" id="featured-books-container">
-                    <!-- Los libros destacados se cargarán aquí -->
-                </div>
-            </div>
-            <!-- Nueva sección: Libros Recomendados -->
-            <div class="recommended-books" id="recommended-section">
-                <h2 class="section-title">Libros Recomendados para Ti</h2>
-                <div class="books-grid" id="recommended-books-container">
-                    <!-- Los libros recomendados se cargarán aquí -->
-                </div>
-            </div>
-            <div class="stats-section">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="stat-value" id="total-books">0</div>
-                        <div class="stat-label">Libros Publicados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-value" id="total-authors">0</div>
-                        <div class="stat-label">Autores Registrados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="stat-value" id="total-likes">0</div>
-                        <div class="stat-label">Likes Totales</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Biblioteca -->
-    <section id="biblioteca" class="main-section">
-        <div class="container">
-            <h2 class="section-title">Biblioteca de Libros</h2>
-           
-            <div class="library-actions">
-                <button class="btn" id="upload-book-btn">
-                    <i class="fas fa-plus"></i> Subir Nuevo Libro
-                </button>
-                <div class="search-filter">
-                    <input type="text" id="search-books" class="form-control" placeholder="Buscar libros...">
-                    <select id="filter-books" class="form-control">
-                        <option value="all">Todos</option>
-                        <option value="liked">Me gusta</option>
-                        <option value="my-books">Mis libros</option>
-                    </select>
-                </div>
-            </div>
-           
-            <!-- Filtros de género -->
-            <div class="genre-filter" id="genre-filter-container">
-                <!-- Los filtros de género se cargarán aquí -->
-            </div>
-            <div class="books-grid" id="books-container">
-                <!-- Los libros se cargarán aquí -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Perfil -->
-    <section id="perfil" class="main-section">
-        <div class="container">
-            <h2 class="section-title">Mi Perfil</h2>
-           
-            <div class="user-profile">
-                <div class="user-avatar" id="user-avatar">
-                    <div class="avatar-placeholder" id="avatar-placeholder">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="edit-overlay" id="edit-avatar-overlay">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </div>
-                <div class="user-info">
-                    <h2 class="user-name" id="profile-user-name">Usuario
-                        <span id="verification-badge" class="verification-badge unverified" style="display: none;">
-                            <i class="fas fa-times-circle"></i> No verificado
-                        </span>
-                        <span id="admin-badge" class="admin-badge" style="display: none;">Admin</span>
-                    </h2>
-                    <p class="user-email" id="profile-user-email">email@ejemplo.com</p>
-                    <p class="user-bio" id="profile-user-bio">Aquí puedes agregar una breve biografía sobre ti.</p>
-                    <div class="user-stats">
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-books">0</div>
-                            <div class="stat-label">Libros Publicados</div>
-                        </div>
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-likes">0</div>
-                            <div class="stat-label">Likes Recibidos</div>
-                        </div>
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-reviews">0</div>
-                            <div class="stat-label">Reseñas Escritas</div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn" id="edit-profile-btn">Editar Perfil</button>
-                <button class="btn btn-secondary" id="resend-verification" style="display: none;">
-                    <i class="fas fa-envelope"></i> Reenviar Verificación
-                </button>
-            </div>
-
-            <!-- Panel de Administración -->
-            <div id="admin-panel" class="admin-panel" style="display: none;">
-                <h3 class="section-title">Panel de Moderación</h3>
-               
-                <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="pending-books">Libros Pendientes</button>
-                    <button class="tab-btn" data-tab="reported-books">Libros Reportados</button>
-                    <button class="tab-btn" data-tab="user-management">Gestión de Usuarios</button>
-                </div>
-               
-                <div class="tab-content active" id="pending-books-tab">
-                    <h3>Libros Pendientes de Aprobación</h3>
-                    <div class="books-grid" id="pending-books-container">
-                        <!-- Los libros pendientes se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="reported-books-tab">
-                    <h3>Libros Reportados</h3>
-                    <div id="reported-books-container">
-                        <!-- Los libros reportados se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="user-management-tab">
-                    <h3>Gestión de Usuarios</h3>
-                    <div id="users-container">
-                        <!-- Los usuarios se cargarán aquí -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-tabs">
-                <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="my-books">Mis Libros</button>
-                    <button class="tab-btn" data-tab="liked-books">Libros que Me Gustan</button>
-                    <button class="tab-btn" data-tab="my-reviews">Mis Reseñas</button>
-                </div>
-               
-                <div class="tab-content active" id="my-books-tab">
-                    <h3>Mis Libros Publicados</h3>
-                    <div class="books-grid" id="my-books-container">
-                        <!-- Los libros del usuario se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="liked-books-tab">
-                    <h3>Libros que Me Gustan</h3>
-                    <div class="books-grid" id="liked-books-container">
-                        <!-- Los libros que le gustan al usuario se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="my-reviews-tab">
-                    <h3>Mis Reseñas</h3>
-                    <div id="my-reviews-container">
-                        <!-- Las reseñas del usuario se cargarán aquí -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Modal para autenticación -->
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="auth-modal-title">Iniciar Sesión</h3>
-                <button class="close-modal" id="close-auth-modal">&times;</button>
-            </div>
-           
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-form="login">Iniciar Sesión</button>
-                <button class="auth-tab" data-form="register">Registrarse</button>
-            </div>
-           
-            <form id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" class="form-control" required>
-                    <div class="error-message" id="login-email-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" class="form-control" required>
-                    <div class="error-message" id="login-password-error"></div>
-                </div>
-                <button type="submit" class="btn">Iniciar Sesión</button>
-                <div class="form-footer">
-                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
-                    <br>
-                    ¿No tienes cuenta? <a id="switch-to-register">Regístrate aquí</a>
-                </div>
-            </form>
-           
-            <form id="register-form" class="auth-form">
-                <div class="form-group">
-                    <label for="register-name">Nombre</label>
-                    <input type="text" id="register-name" class="form-control" required>
-                    <div class="error-message" id="register-name-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" class="form-control" required>
-                    <div class="error-message" id="register-email-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Contraseña</label>
-                    <input type="password" id="register-password" class="form-control" required>
-                    <div class="error-message" id="register-password-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-confirm-password">Confirmar Contraseña</label>
-                    <input type="password" id="register-confirm-password" class="form-control" required>
-                    <div class="error-message" id="register-confirm-password-error"></div>
-                </div>
-                <button type="submit" class="btn">Registrarse</button>
-                <div class="form-footer">
-                    ¿Ya tienes cuenta? <a id="switch-to-login">Inicia sesión aquí</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal para subir libro MEJORADO -->
-    <div id="upload-modal" class="modal writing-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Publicar Nuevo Libro</h3>
-                <button class="close-modal" id="close-upload-modal">&times;</button>
-            </div>
-           
-            <div class="writing-tabs">
-                <button class="writing-tab active" data-tab="basic-info">Información Básica</button>
-                <button class="writing-tab" data-tab="cover-design">Portada</button>
-                <button class="writing-tab" data-tab="content-editor">Contenido</button>
-                <button class="writing-tab" data-tab="preview">Vista Previa</button>
-            </div>
-           
-            <form id="upload-form">
-                <!-- Pestaña 1: Información Básica -->
-                <div class="tab-panel active" id="basic-info-panel">
-                    <div class="form-group">
-                        <label for="book-title">Título del Libro</label>
-                        <input type="text" id="book-title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-author">Autor</label>
-                        <input type="text" id="book-author" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-genre">Género</label>
-                        <select id="book-genre" class="form-control" required>
-                            <option value="">Selecciona un género</option>
-                            <option value="romance">Romance</option>
-                            <option value="thriller">Thriller</option>
-                            <option value="terror">Terror</option>
-                            <option value="fantasia">Fantasía</option>
-                            <option value="ciencia-ficcion">Ciencia Ficción</option>
-                            <option value="misterio">Misterio</option>
-                            <option value="aventura">Aventura</option>
-                            <option value="drama">Drama</option>
-                            <option value="poesia">Poesía</option>
-                            <option value="biografia">Biografía</option>
-                            <option value="historico">Histórico</option>
-                            <option value="infantil">Infantil</option>
-                            <option value="juvenil">Juvenil</option>
-                            <option value="autoayuda">Autoayuda</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-description">Descripción</label>
-                        <textarea id="book-description" class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" id="next-to-cover">Siguiente: Portada</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 2: Diseño de Portada -->
-                <div class="tab-panel" id="cover-design-panel">
-                    <div class="cover-upload-section">
-                        <h4>Portada del Libro</h4>
-                        <p>Puedes subir una imagen personalizada o elegir uno de nuestros diseños.</p>
-                       
-                        <div class="form-group">
-                            <label for="book-cover-upload">Subir Imagen de Portada</label>
-                            <input type="file" id="book-cover-upload" class="form-control" accept="image/*">
-                            <small>Formatos: JPG, PNG. Tamaño máximo: 2MB</small>
-                        </div>
-                       
-                        <div class="cover-preview" id="cover-preview">
-                            <div id="cover-placeholder">
-                                <i class="fas fa-book fa-3x" style="color: #7f8c8d;"></i>
-                                <p style="margin-top: 10px; color: #7f8c8d;">Vista previa de portada</p>
-                            </div>
-                        </div>
-                       
-                        <h5>O elige un diseño prediseñado:</h5>
-                        <div class="cover-options" id="cover-options">
-                            <!-- Los diseños de portada se generarán dinámicamente -->
-                        </div>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                        <button type="button" class="btn btn-secondary" id="back-to-basic">Anterior: Información</button>
-                        <button type="button" class="btn btn-secondary" id="next-to-content">Siguiente: Contenido</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 3: Editor de Contenido -->
-                <div class="tab-panel" id="content-editor-panel">
-                    <div class="form-group">
-                        <label>Editor de Contenido</label>
-                        <div class="editor-container">
-                            <div class="editor-toolbar" id="editor-toolbar">
-                                <button type="button" class="editor-btn" data-command="bold" title="Negrita"><i class="fas fa-bold"></i></button>
-                                <button type="button" class="editor-btn" data-command="italic" title="Itálica"><i class="fas fa-italic"></i></button>
-                                <button type="button" class="editor-btn" data-command="underline" title="Subrayado"><i class="fas fa-underline"></i></button>
-                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista"><i class="fas fa-list-ul"></i></button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H1" title="Título 1">T1</button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H2" title="Título 2">T2</button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="P" title="Párrafo">P</button>
-                                <button type="button" class="editor-btn" id="add-chapter-btn" title="Añadir capítulo"><i class="fas fa-bookmark"></i> Capítulo</button>
-                            </div>
-                            <div class="editor-content" id="book-content" contenteditable="true"></div>
-                            <div class="editor-stats">
-                                <span id="word-count">0 palabras</span>
-                                <span id="page-count">0 páginas</span>
-                            </div>
-                        </div>
-                    </div>
-                   
-                    <div class="chapters-section">
-                        <h4>Capítulos</h4>
-                        <div class="chapter-list" id="chapter-list">
-                            <!-- Los capítulos se añadirán aquí dinámicamente -->
-                        </div>
-                        <button type="button" class="btn btn-secondary" id="manage-chapters-btn">
-                            <i class="fas fa-cog"></i> Gestionar Capítulos
-                        </button>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between;">
-                        <button type="button" class="btn btn-secondary" id="back-to-cover">Anterior: Portada</button>
-                        <button type="button" class="btn btn-secondary" id="next-to-preview">Siguiente: Vista Previa</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 4: Vista Previa -->
-                <div class="tab-panel" id="preview-panel">
-                    <div class="book-preview">
-                        <h4>Vista Previa de tu Libro</h4>
-                        <div class="book-card" style="max-width: 300px; margin: 0 auto 2rem;">
-                            <div class="book-cover" id="preview-cover">
-                                <div class="cover-text" id="preview-cover-text">
-                                    <h3 id="preview-title">Título del Libro</h3>
-                                    <p id="preview-author">por Autor</p>
-                                </div>
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title" id="preview-book-title">Título del Libro</div>
-                                <div class="book-author" id="preview-book-author">por Autor</div>
-                                <div class="book-description" id="preview-description">Descripción del libro</div>
-                                <div class="book-genre" id="preview-genre">Género</div>
-                            </div>
-                        </div>
-                       
-                        <div class="preview-content">
-                            <h5>Contenido (primeras 500 palabras):</h5>
-                            <div class="preview-text" id="preview-content-text" style="
-                                background: var(--input-bg);
-                                padding: 1rem;
-                                border-radius: 8px;
-                                max-height: 200px;
-                                overflow-y: auto;
-                                white-space: pre-line;
-                                color: var(--text-color);
-                            "></div>
-                        </div>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                        <button type="button" class="btn btn-secondary" id="back-to-content">Anterior: Contenido</button>
-                        <button type="submit" class="btn" id="publish-book-btn">Publicar Libro</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal para editar perfil -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Editar Perfil</h3>
-                <button class="close-modal" id="close-edit-profile-modal">&times;</button>
-            </div>
-            <form id="edit-profile-form">
-                <div class="form-group">
-                    <label for="edit-user-name">Nombre</label>
-                    <input type="text" id="edit-user-name" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-user-bio">Biografía</label>
-                    <textarea id="edit-user-bio" class="form-control" placeholder="Cuéntanos sobre ti..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="edit-user-avatar">Foto de Perfil</label>
-                    <input type="file" id="edit-user-avatar" class="form-control" accept="image/*">
-                    <small>Selecciona una imagen para tu perfil (máx. 2MB)</small>
-                </div>
-                <button type="submit" class="btn">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Lector de Libros (oculto inicialmente) -->
-    <section id="reader" style="display: none;">
-        <div class="container">
-            <div class="reader-container">
-                <div class="reader-header">
-                    <h2 id="reader-title">Título del Libro</h2>
-                    <button id="close-reader" class="btn">Cerrar</button>
-                </div>
-                <div class="reader-content" id="reader-content">
-                    <!-- El contenido del libro se cargará aquí -->
-                </div>
-                <div class="reader-controls">
-                    <button id="prev-page" class="btn"><i class="fas fa-chevron-left"></i> Anterior</button>
-                    <span id="page-info">Página 1 de 1</span>
-                    <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
-                </div>
-                <!-- Sección de reseñas -->
-                <div class="reviews-section">
-                    <h3>Reseñas</h3>
-                    <div class="review-form">
-                        <h4>Deja tu reseña</h4>
-                        <div class="form-group">
-                            <label for="review-rating">Calificación</label>
-                            <select id="review-rating" class="form-control">
-                                <option value="5">★★★★★ Excelente</option>
-                                <option value="4">★★★★ Muy Bueno</option>
-                                <option value="3">★★★ Bueno</option>
-                                <option value="2">★★ Regular</option>
-                                <option value="1">★ Malo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="review-content">Tu reseña</label>
-                            <textarea id="review-content" class="form-control" placeholder="Comparte tu opinión sobre este libro..."></textarea>
-                        </div>
-                        <button id="submit-review" class="btn">Enviar Reseña</button>
-                    </div>
-                    <div id="reviews-container">
-                        <!-- Las reseñas se cargarán aquí dinámicamente -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Publibros</h3>
-                    <p>Una plataforma elegante para compartir y descubrir libros de autores emergentes y establecidos.</p>
-                    <p>Conectamos a lectores y escritores en una comunidad literaria vibrante.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Enlaces Rápidos</h3>
-                    <p><a href="#" class="nav-link-footer" data-section="inicio">Inicio</a></p>
-                    <p><a href="#" class="nav-link-footer" data-section="biblioteca">Biblioteca</a></p>
-                    <p><a href="#" class="nav-link-footer" data-section="perfil">Mi Perfil</a></p>
-                </div>
-                <div class="footer-section">
-                    <h3>Sobre Nosotros</h3>
-                    <p>Publibros nació con la misión de crear un espacio donde los amantes de la literatura puedan compartir sus creaciones y descubrir nuevas voces.</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Publibros. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-      <style>
-        /* Pestañas del perfil */
+              /* Pestañas del perfil */
         .profile-tabs {
             margin-top: 3rem;
         }
@@ -2028,7 +1457,570 @@
     </style>
 </head>
 <body>
-    <!-- Firebase SDK -->
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>Publi<span>libros</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-section="inicio">Inicio</a></li>
+                    <li><a href="#" class="nav-link" data-section="biblioteca">Biblioteca</a></li>
+                    <li><a href="#" class="nav-link" data-section="perfil">Mi Perfil</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <!-- Mostrar nombre del usuario cuando esté logueado -->
+                <span id="user-display-name" class="user-display-name"></span>
+                <button id="auth-btn"><i class="fas fa-user"></i> <span id="auth-status">Iniciar Sesión</span></button>
+                <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+        <!-- Modal de Bienvenida -->
+    <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>¡Bienvenido a Publibros!</h3>
+            </div>
+            <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
+            <div class="welcome-options">
+                <div class="welcome-option" id="login-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h4>Iniciar Sesión</h4>
+                    <p>Accede con tu cuenta existente</p>
+                </div>
+                <div class="welcome-option" id="register-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4>Registrarse</h4>
+                    <p>Crea una nueva cuenta y descubre todas las funciones</p>
+                </div>
+                <div class="welcome-option" id="guest-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>Modo Invitado</h4>
+                    <p>Explora con acceso limitado a funciones básicas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación de estado de invitado -->
+    <div id="guest-notification" class="guest-notification" style="display: none;">
+        <i class="fas fa-info-circle"></i>
+        <span>Estás navegando como invitado. Algunas funciones están limitadas. <a href="#" id="upgrade-account">Mejora tu cuenta</a> para acceder a todo.</span>
+        <span class="close" id="close-guest-notification">&times;</span>
+    </div>
+
+    <!-- Sección Inicio -->
+    <section id="inicio" class="main-section active">
+        <div class="container">
+            <div class="hero">
+                <h1>Descubre y Comparte Historias Únicas</h1>
+                <p>Publibros es una plataforma elegante donde autores y lectores se conectan. Comparte tus creaciones, descubre nuevos talentos y forma parte de una comunidad literaria vibrante.</p>
+                <button class="btn" id="explore-library">Explorar Biblioteca</button>
+                <button class="btn btn-outline" id="upload-first-book">Publica tu Primer Libro</button>
+            </div>
+            <div class="featured-books">
+                <h2 class="section-title">Libros Destacados</h2>
+                <div class="books-grid" id="featured-books-container">
+                    <!-- Los libros destacados se cargarán aquí -->
+                </div>
+            </div>
+            <!-- Nueva sección: Libros Recomendados -->
+            <div class="recommended-books" id="recommended-section">
+                <h2 class="section-title">Libros Recomendados para Ti</h2>
+                <div class="books-grid" id="recommended-books-container">
+                    <!-- Los libros recomendados se cargarán aquí -->
+                </div>
+            </div>
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-value" id="total-books">0</div>
+                        <div class="stat-label">Libros Publicados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="total-authors">0</div>
+                        <div class="stat-label">Autores Registrados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-value" id="total-likes">0</div>
+                        <div class="stat-label">Likes Totales</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Biblioteca -->
+    <section id="biblioteca" class="main-section">
+        <div class="container">
+            <h2 class="section-title">Biblioteca de Libros</h2>
+           
+            <div class="library-actions">
+                <button class="btn" id="upload-book-btn">
+                    <i class="fas fa-plus"></i> Subir Nuevo Libro
+                </button>
+                <div class="search-filter">
+                    <input type="text" id="search-books" class="form-control" placeholder="Buscar libros...">
+                    <select id="filter-books" class="form-control">
+                        <option value="all">Todos</option>
+                        <option value="liked">Me gusta</option>
+                        <option value="my-books">Mis libros</option>
+                    </select>
+                </div>
+            </div>
+           
+            <!-- Filtros de género -->
+            <div class="genre-filter" id="genre-filter-container">
+                <!-- Los filtros de género se cargarán aquí -->
+            </div>
+            <div class="books-grid" id="books-container">
+                <!-- Los libros se cargarán aquí -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Perfil -->
+    <section id="perfil" class="main-section">
+        <div class="container">
+            <h2 class="section-title">Mi Perfil</h2>
+           
+            <div class="user-profile">
+                <div class="user-avatar" id="user-avatar">
+                    <div class="avatar-placeholder" id="avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="edit-overlay" id="edit-avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <h2 class="user-name" id="profile-user-name">Usuario</h2>
+                    <!-- Email oculto para privacidad -->
+                    <p class="user-bio" id="profile-user-bio">Aquí puedes agregar una breve biografía sobre ti.</p>
+                    <div class="user-stats">
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-books">0</div>
+                            <div class="stat-label">Libros Publicados</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-likes">0</div>
+                            <div class="stat-label">Likes Recibidos</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-reviews">0</div>
+                            <div class="stat-label">Reseñas Escritas</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" id="edit-profile-btn">Editar Perfil</button>
+            </div>
+
+            <!-- Panel de Administración -->
+            <div id="admin-panel" class="admin-panel" style="display: none;">
+                <h3 class="section-title">Panel de Moderación</h3>
+               
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="pending-books">Libros Pendientes</button>
+                    <button class="tab-btn" data-tab="reported-books">Libros Reportados</button>
+                    <button class="tab-btn" data-tab="user-management">Gestión de Usuarios</button>
+                </div>
+               
+                <div class="tab-content active" id="pending-books-tab">
+                    <h3>Libros Pendientes de Aprobación</h3>
+                    <div class="books-grid" id="pending-books-container">
+                        <!-- Los libros pendientes se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="reported-books-tab">
+                    <h3>Libros Reportados</h3>
+                    <div id="reported-books-container">
+                        <!-- Los libros reportados se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="user-management-tab">
+                    <h3>Gestión de Usuarios</h3>
+                    <div id="users-container">
+                        <!-- Los usuarios se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-tabs">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="my-books">Mis Libros</button>
+                    <button class="tab-btn" data-tab="liked-books">Libros que Me Gustan</button>
+                    <button class="tab-btn" data-tab="my-reviews">Mis Reseñas</button>
+                </div>
+               
+                <div class="tab-content active" id="my-books-tab">
+                    <h3>Mis Libros Publicados</h3>
+                    <div class="books-grid" id="my-books-container">
+                        <!-- Los libros del usuario se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="liked-books-tab">
+                    <h3>Libros que Me Gustan</h3>
+                    <div class="books-grid" id="liked-books-container">
+                        <!-- Los libros que le gustan al usuario se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="my-reviews-tab">
+                    <h3>Mis Reseñas</h3>
+                    <div id="my-reviews-container">
+                        <!-- Las reseñas del usuario se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para autenticación -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="auth-modal-title">Iniciar Sesión</h3>
+                <button class="close-modal" id="close-auth-modal">&times;</button>
+            </div>
+           
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-form="login">Iniciar Sesión</button>
+                <button class="auth-tab" data-form="register">Registrarse</button>
+            </div>
+           
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+                <div class="form-footer">
+                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
+                    <br>
+                    ¿No tienes cuenta? <a id="switch-to-register">Regístrate aquí</a>
+                </div>
+            </form>
+           
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-name">Nombre</label>
+                    <input type="text" id="register-name" class="form-control" required>
+                    <div class="error-message" id="register-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" class="form-control" required>
+                    <div class="error-message" id="register-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Contraseña</label>
+                    <input type="password" id="register-password" class="form-control" required>
+                    <div class="error-message" id="register-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirmar Contraseña</label>
+                    <input type="password" id="register-confirm-password" class="form-control" required>
+                    <div class="error-message" id="register-confirm-password-error"></div>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+                <div class="form-footer">
+                    ¿Ya tienes cuenta? <a id="switch-to-login">Inicia sesión aquí</a>
+                </div>
+            </form>
+        </div>
+    </div>
+      <!-- Modal para subir libro MEJORADO -->
+    <div id="upload-modal" class="modal writing-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Publicar Nuevo Libro</h3>
+                <button class="close-modal" id="close-upload-modal">&times;</button>
+            </div>
+           
+            <div class="writing-tabs">
+                <button class="writing-tab active" data-tab="basic-info">Información Básica</button>
+                <button class="writing-tab" data-tab="cover-design">Portada</button>
+                <button class="writing-tab" data-tab="content-editor">Contenido</button>
+                <button class="writing-tab" data-tab="preview">Vista Previa</button>
+            </div>
+           
+            <form id="upload-form">
+                <!-- Pestaña 1: Información Básica -->
+                <div class="tab-panel active" id="basic-info-panel">
+                    <div class="form-group">
+                        <label for="book-title">Título del Libro</label>
+                        <input type="text" id="book-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-author">Autor</label>
+                        <input type="text" id="book-author" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-genre">Género</label>
+                        <select id="book-genre" class="form-control" required>
+                            <option value="">Selecciona un género</option>
+                            <option value="romance">Romance</option>
+                            <option value="thriller">Thriller</option>
+                            <option value="terror">Terror</option>
+                            <option value="fantasia">Fantasía</option>
+                            <option value="ciencia-ficcion">Ciencia Ficción</option>
+                            <option value="misterio">Misterio</option>
+                            <option value="aventura">Aventura</option>
+                            <option value="drama">Drama</option>
+                            <option value="poesia">Poesía</option>
+                            <option value="biografia">Biografía</option>
+                            <option value="historico">Histórico</option>
+                            <option value="infantil">Infantil</option>
+                            <option value="juvenil">Juvenil</option>
+                            <option value="autoayuda">Autoayuda</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-description">Descripción</label>
+                        <textarea id="book-description" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" id="next-to-cover">Siguiente: Portada</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 2: Diseño de Portada -->
+                <div class="tab-panel" id="cover-design-panel">
+                    <div class="cover-upload-section">
+                        <h4>Portada del Libro</h4>
+                        <p>Puedes subir una imagen personalizada o elegir uno de nuestros diseños.</p>
+                       
+                        <div class="form-group">
+                            <label for="book-cover-upload">Subir Imagen de Portada</label>
+                            <input type="file" id="book-cover-upload" class="form-control" accept="image/*">
+                            <small>Formatos: JPG, PNG. Tamaño máximo: 2MB</small>
+                        </div>
+                       
+                        <div class="cover-preview" id="cover-preview">
+                            <div id="cover-placeholder">
+                                <i class="fas fa-book fa-3x" style="color: #7f8c8d;"></i>
+                                <p style="margin-top: 10px; color: #7f8c8d;">Vista previa de portada</p>
+                            </div>
+                        </div>
+                       
+                        <h5>O elige un diseño prediseñado:</h5>
+                        <div class="cover-options" id="cover-options">
+                            <!-- Los diseños de portada se generarán dinámicamente -->
+                        </div>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" id="back-to-basic">Anterior: Información</button>
+                        <button type="button" class="btn btn-secondary" id="next-to-content">Siguiente: Contenido</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 3: Editor de Contenido -->
+                <div class="tab-panel" id="content-editor-panel">
+                    <div class="form-group">
+                        <label>Editor de Contenido</label>
+                        <div class="editor-container">
+                            <div class="editor-toolbar" id="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Negrita"><i class="fas fa-bold"></i></button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Itálica"><i class="fas fa-italic"></i></button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Subrayado"><i class="fas fa-underline"></i></button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H1" title="Título 1">T1</button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H2" title="Título 2">T2</button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="P" title="Párrafo">P</button>
+                                <button type="button" class="editor-btn" id="add-chapter-btn" title="Añadir capítulo"><i class="fas fa-bookmark"></i> Capítulo</button>
+                            </div>
+                            <div class="editor-content" id="book-content" contenteditable="true"></div>
+                            <div class="editor-stats">
+                                <span id="word-count">0 palabras</span>
+                                <span id="page-count">0 páginas</span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="chapters-section">
+                        <h4>Capítulos</h4>
+                        <div class="chapter-list" id="chapter-list">
+                            <!-- Los capítulos se añadirán aquí dinámicamente -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="manage-chapters-btn">
+                            <i class="fas fa-cog"></i> Gestionar Capítulos
+                        </button>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-secondary" id="back-to-cover">Anterior: Portada</button>
+                        <button type="button" class="btn btn-secondary" id="next-to-preview">Siguiente: Vista Previa</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 4: Vista Previa -->
+                <div class="tab-panel" id="preview-panel">
+                    <div class="book-preview">
+                        <h4>Vista Previa de tu Libro</h4>
+                        <div class="book-card" style="max-width: 300px; margin: 0 auto 2rem;">
+                            <div class="book-cover" id="preview-cover">
+                                <div class="cover-text" id="preview-cover-text">
+                                    <h3 id="preview-title">Título del Libro</h3>
+                                    <p id="preview-author">por Autor</p>
+                                </div>
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title" id="preview-book-title">Título del Libro</div>
+                                <div class="book-author" id="preview-book-author">por Autor</div>
+                                <div class="book-description" id="preview-description">Descripción del libro</div>
+                                <div class="book-genre" id="preview-genre">Género</div>
+                            </div>
+                        </div>
+                       
+                        <div class="preview-content">
+                            <h5>Contenido (primeras 500 palabras):</h5>
+                            <div class="preview-text" id="preview-content-text" style="
+                                background: var(--input-bg);
+                                padding: 1rem;
+                                border-radius: 8px;
+                                max-height: 200px;
+                                overflow-y: auto;
+                                white-space: pre-line;
+                                color: var(--text-color);
+                            "></div>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" id="back-to-content">Anterior: Contenido</button>
+                        <button type="submit" class="btn" id="publish-book-btn">Publicar Libro</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Perfil</h3>
+                <button class="close-modal" id="close-edit-profile-modal">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label for="edit-user-name">Nombre</label>
+                    <input type="text" id="edit-user-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-user-bio">Biografía</label>
+                    <textarea id="edit-user-bio" class="form-control" placeholder="Cuéntanos sobre ti..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-user-avatar">Foto de Perfil</label>
+                    <input type="file" id="edit-user-avatar" class="form-control" accept="image/*">
+                    <small>Selecciona una imagen para tu perfil (máx. 2MB)</small>
+                </div>
+                <button type="submit" class="btn">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lector de Libros (oculto inicialmente) -->
+    <section id="reader" style="display: none;">
+        <div class="container">
+            <div class="reader-container">
+                <div class="reader-header">
+                    <h2 id="reader-title">Título del Libro</h2>
+                    <button id="close-reader" class="btn">Cerrar</button>
+                </div>
+                <div class="reader-content" id="reader-content">
+                    <!-- El contenido del libro se cargará aquí -->
+                </div>
+                <div class="reader-controls">
+                    <button id="prev-page" class="btn"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <span id="page-info">Página 1 de 1</span>
+                    <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <!-- Sección de reseñas -->
+                <div class="reviews-section">
+                    <h3>Reseñas</h3>
+                    <div class="review-form">
+                        <h4>Deja tu reseña</h4>
+                        <div class="form-group">
+                            <label for="review-rating">Calificación</label>
+                            <select id="review-rating" class="form-control">
+                                <option value="5">★★★★★ Excelente</option>
+                                <option value="4">★★★★ Muy Bueno</option>
+                                <option value="3">★★★ Bueno</option>
+                                <option value="2">★★ Regular</option>
+                                <option value="1">★ Malo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="review-content">Tu reseña</label>
+                            <textarea id="review-content" class="form-control" placeholder="Comparte tu opinión sobre este libro..."></textarea>
+                        </div>
+                        <button id="submit-review" class="btn">Enviar Reseña</button>
+                    </div>
+                    <div id="reviews-container">
+                        <!-- Las reseñas se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Publibros</h3>
+                    <p>Una plataforma elegante para compartir y descubrir libros de autores emergentes y establecidos.</p>
+                    <p>Conectamos a lectores y escritores en una comunidad literaria vibrante.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <p><a href="#" class="nav-link-footer" data-section="inicio">Inicio</a></p>
+                    <p><a href="#" class="nav-link-footer" data-section="biblioteca">Biblioteca</a></p>
+                    <p><a href="#" class="nav-link-footer" data-section="perfil">Mi Perfil</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Publibros nació con la misión de crear un espacio donde los amantes de la literatura puedan compartir sus creaciones y descubrir nuevas voces.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Publibros. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+      <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -2159,6 +2151,242 @@
         // Listeners de tiempo real
         let booksListener = null;
         let usersListener = null;
+
+        // ============================
+        // FUNCIONES MEJORADAS
+        // ============================
+
+        // Función para mostrar el nombre del usuario en el header
+        function updateUserDisplayName() {
+            const user = auth.currentUser;
+            const displayNameElement = document.getElementById('user-display-name');
+            
+            if (user) {
+                const userName = user.displayName || user.email.split('@')[0];
+                displayNameElement.textContent = `Hola, ${userName}`;
+                displayNameElement.style.display = 'inline';
+            } else {
+                displayNameElement.style.display = 'none';
+            }
+        }
+
+        // Función para crear tarjetas de libro con descripciones cortas y portadas mejoradas
+        function createBookCard(book) {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+           
+            // Generar colores de portada basados en el título para consistencia
+            const titleHash = book.title.split('').reduce((a, b) => {
+                a = ((a << 5) - a) + b.charCodeAt(0);
+                return a & a;
+            }, 0);
+            
+            const hue = Math.abs(titleHash % 360);
+            const gradient = `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${hue + 30}, 70%, 60%))`;
+            
+            // Determinar si el libro tiene portada personalizada
+            const coverStyle = book.coverUrl ?
+                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
+                `style="background: ${gradient};"`;
+           
+            // Acortar descripción (máximo 80 caracteres)
+            const shortDescription = book.description.length > 80 ? 
+                book.description.substring(0, 80) + '...' : book.description;
+           
+            bookCard.innerHTML = `
+                <div class="book-cover" ${coverStyle}>
+                    ${!book.coverUrl ? 
+                        `<div class="cover-text">
+                            <h3>${book.title}</h3>
+                            <p>${book.author}</p>
+                        </div>` : 
+                        ''
+                    }
+                </div>
+                <div class="book-actions">
+                    <div class="book-action like-btn" data-book-id="${book.id}">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="book-action read-btn" data-book-id="${book.id}">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">por ${book.author}</div>
+                    <div class="book-description">${shortDescription}</div>
+                    <div class="book-genre">${genreNames[book.genre]}</div>
+                    <div class="book-stats">
+                        <div class="book-stat">
+                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
+                        </div>
+                        <div class="book-stat">
+                            <i class="fas fa-eye"></i> ${book.views || 0}
+                        </div>
+                    </div>
+                </div>
+            `;
+           
+            // Configurar eventos
+            bookCard.querySelector('.like-btn').addEventListener('click', function() {
+                handleLikeBook(book.id);
+            });
+           
+            bookCard.querySelector('.read-btn').addEventListener('click', function() {
+                openReader(book);
+            });
+           
+            return bookCard;
+        }
+
+        // Función para actualizar perfil (ocultando información de login)
+        async function updateProfile() {
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                // Mostrar estado de no autenticado
+                document.getElementById('profile-user-name').textContent = 'No autenticado';
+                document.getElementById('profile-user-bio').textContent = 'Inicia sesión para ver tu perfil';
+                document.getElementById('edit-profile-btn').style.display = 'none';
+                return;
+            }
+           
+            try {
+                const userData = await getUserData(currentUser.uid);
+               
+                // Actualizar información básica (sin mostrar email)
+                const userName = currentUser.displayName || currentUser.email.split('@')[0];
+                document.getElementById('profile-user-name').textContent = userName;
+                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
+               
+                // Actualizar avatar
+                if (userData?.avatarUrl) {
+                    document.getElementById('user-avatar').innerHTML = `
+                        <img src="${userData.avatarUrl}" alt="Avatar">
+                        <div class="edit-overlay" id="edit-avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    `;
+                }
+               
+                // Actualizar formulario de edición
+                document.getElementById('edit-user-name').value = currentUser.displayName || '';
+                document.getElementById('edit-user-bio').value = userData?.bio || '';
+               
+                // Actualizar estadísticas
+                await updateProfileStats();
+               
+                // Actualizar nombre en el header
+                updateUserDisplayName();
+               
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+            }
+        }
+
+        // Función para generar opciones de portada mejoradas
+        function generateCoverOptions() {
+            const container = document.getElementById('cover-options');
+            container.innerHTML = '';
+            
+            // Diseños de portada más atractivos
+            const designs = [
+                { 
+                    id: 'design1', 
+                    bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                    color: '#ffffff', 
+                    name: 'Clásico Elegante',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design2', 
+                    bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', 
+                    color: '#ffffff', 
+                    name: 'Romántico',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design3', 
+                    bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', 
+                    color: '#ffffff', 
+                    name: 'Ciencia Ficción',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design4', 
+                    bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', 
+                    color: '#ffffff', 
+                    name: 'Aventura',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design5', 
+                    bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', 
+                    color: '#ffffff', 
+                    name: 'Drama',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design6', 
+                    bg: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', 
+                    color: '#ffffff', 
+                    name: 'Misterio',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design7', 
+                    bg: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', 
+                    color: '#2c3e50', 
+                    name: 'Suave',
+                    pattern: 'none'
+                },
+                { 
+                    id: 'design8', 
+                    bg: 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)', 
+                    color: '#ffffff', 
+                    name: 'Fantasía',
+                    pattern: 'none'
+                }
+            ];
+           
+            designs.forEach(design => {
+                const option = document.createElement('div');
+                option.className = 'cover-option';
+                option.innerHTML = `
+                    <div class="cover-design" style="background: ${design.bg}; color: ${design.color}; border-radius: 4px;">
+                        <div style="text-align: center; padding: 10px;">
+                            <div style="font-size: 0.8rem; font-weight: bold;">${currentBookData.title ? currentBookData.title.substring(0, 10) + (currentBookData.title.length > 10 ? '...' : '') : 'TÍTULO'}</div>
+                            <div style="font-size: 0.6rem; margin-top: 5px;">${currentBookData.author ? currentBookData.author.substring(0, 12) + (currentBookData.author.length > 12 ? '...' : '') : 'AUTOR'}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.8rem;">${design.name}</div>
+                `;
+               
+                option.addEventListener('click', function() {
+                    // Deseleccionar opciones anteriores
+                    document.querySelectorAll('.cover-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                   
+                    // Seleccionar esta opción
+                    this.classList.add('selected');
+                   
+                    // Actualizar vista previa
+                    const preview = document.getElementById('cover-preview');
+                    preview.innerHTML = `
+                        <div class="cover-design" style="background: ${design.bg}; color: ${design.color}; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 4px;">
+                            <h3 style="margin: 0; font-size: 1.2rem; text-align: center; padding: 0 10px;">${currentBookData.title || 'Título del Libro'}</h3>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9rem;">por ${currentBookData.author || 'Autor'}</p>
+                        </div>
+                    `;
+                   
+                    // Guardar diseño seleccionado
+                    currentBookData.coverDesign = design;
+                    currentBookData.coverType = 'generated';
+                });
+               
+                container.appendChild(option);
+            });
+        }
               // ============================
         // SISTEMA DE CONTROL DE ACCESO
         // ============================
@@ -2552,8 +2780,7 @@
                 alert('Error al enviar la reseña. Intenta nuevamente.');
             }
         }
-
-        // ============================
+              // ============================
         // MODIFICACIONES AL SISTEMA DE SUBIDA
         // ============================
 
@@ -2661,7 +2888,8 @@
                 publishBtn.disabled = false;
             }
         }
-              // ============================
+
+        // ============================
         // FUNCIONES ORIGINALES DEL SISTEMA
         // ============================
 
@@ -2874,54 +3102,6 @@
             generateCoverOptions();
         }
 
-        function generateCoverOptions() {
-            const container = document.getElementById('cover-options');
-            const designs = [
-                { id: 'design1', bg: '#6a5af9', color: '#ffffff', name: 'Clásico' },
-                { id: 'design2', bg: '#d66efd', color: '#ffffff', name: 'Moderno' },
-                { id: 'design3', bg: '#ff6b8b', color: '#ffffff', name: 'Romántico' },
-                { id: 'design4', bg: '#2c3e50', color: '#ffffff', name: 'Elegante' },
-                { id: 'design5', bg: '#27ae60', color: '#ffffff', name: 'Natural' },
-                { id: 'design6', bg: '#f39c12', color: '#ffffff', name: 'Energético' }
-            ];
-           
-            designs.forEach(design => {
-                const option = document.createElement('div');
-                option.className = 'cover-option';
-                option.innerHTML = `
-                    <div class="cover-design" style="background: ${design.bg}; color: ${design.color}">
-                        ${currentBookData.title ? currentBookData.title.substring(0, 3) : 'TIT'}
-                    </div>
-                    <div>${design.name}</div>
-                `;
-               
-                option.addEventListener('click', function() {
-                    // Deseleccionar opciones anteriores
-                    document.querySelectorAll('.cover-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                   
-                    // Seleccionar esta opción
-                    this.classList.add('selected');
-                   
-                    // Actualizar vista previa
-                    const preview = document.getElementById('cover-preview');
-                    preview.innerHTML = `
-                        <div class="cover-design" style="background: ${design.bg}; color: ${design.color}; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                            <h3 style="margin: 0; font-size: 1.5rem;">${currentBookData.title || 'Título'}</h3>
-                            <p style="margin: 5px 0 0 0;">por ${currentBookData.author || 'Autor'}</p>
-                        </div>
-                    `;
-                   
-                    // Guardar diseño seleccionado
-                    currentBookData.coverDesign = design;
-                    currentBookData.coverType = 'generated';
-                });
-               
-                container.appendChild(option);
-            });
-        }
-
         function initChapterSystem() {
             // Configurar gestión de capítulos
             document.getElementById('manage-chapters-btn').addEventListener('click', function() {
@@ -3048,8 +3228,7 @@
                 `;
             }
         }
-
-        async function loadReviews(bookId) {
+              async function loadReviews(bookId) {
             try {
                 const reviewsSnapshot = await reviewsRef
                     .where('bookId', '==', bookId)
@@ -3095,7 +3274,8 @@
            
             return reviewDiv;
         }
-              async function loadAdminPanel() {
+
+        async function loadAdminPanel() {
             document.getElementById('admin-panel').style.display = 'block';
             await loadPendingBooks();
             await loadReportedBooks();
@@ -3404,59 +3584,6 @@
             }
         }
 
-        function createBookCard(book) {
-            const bookCard = document.createElement('div');
-            bookCard.className = 'book-card';
-           
-            // Determinar si el libro tiene portada personalizada
-            const coverStyle = book.coverUrl ?
-                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
-                '';
-           
-            bookCard.innerHTML = `
-                <div class="book-cover" ${coverStyle}>
-                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
-                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
-                </div>
-                <div class="book-actions">
-                    <div class="book-action like-btn" data-book-id="${book.id}">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="book-action read-btn" data-book-id="${book.id}">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                </div>
-                <div class="book-info">
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">por ${book.author}</div>
-                    <div class="book-description">${book.description}</div>
-                    <div class="book-genre">${genreNames[book.genre]}</div>
-                    <div class="book-stats">
-                        <div class="book-stat">
-                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-eye"></i> ${book.views || 0}
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-file-alt"></i> ${book.pageCount || 1}
-                        </div>
-                    </div>
-                </div>
-            `;
-           
-            // Configurar eventos
-            bookCard.querySelector('.like-btn').addEventListener('click', function() {
-                handleLikeBook(book.id);
-            });
-           
-            bookCard.querySelector('.read-btn').addEventListener('click', function() {
-                openReader(book);
-            });
-           
-            return bookCard;
-        }
-
         async function updateBookViews(bookId) {
             try {
                 const bookDoc = await booksRef.doc(bookId).get();
@@ -3600,7 +3727,8 @@
                     });
             }
         }
-              async function handleLoginFormSubmit(e) {
+
+        async function handleLoginFormSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -3612,6 +3740,9 @@
                 // Actualizar tipo de usuario
                 currentUserType = 'logged';
                 document.getElementById('guest-notification').style.display = 'none';
+               
+                // Actualizar nombre en el header
+                updateUserDisplayName();
             } catch (error) {
                 alert('Error al iniciar sesión: ' + error.message);
             }
@@ -3658,6 +3789,9 @@
                 // Actualizar tipo de usuario
                 currentUserType = 'logged';
                 document.getElementById('guest-notification').style.display = 'none';
+               
+                // Actualizar nombre en el header
+                updateUserDisplayName();
                
                 alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
             } catch (error) {
@@ -3860,50 +3994,7 @@
             }
         }
 
-        async function updateProfile() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                // Mostrar estado de no autenticado
-                document.getElementById('profile-user-name').textContent = 'No autenticado';
-                document.getElementById('profile-user-email').textContent = 'Inicia sesión para ver tu perfil';
-                document.getElementById('profile-user-bio').textContent = '';
-                document.getElementById('edit-profile-btn').style.display = 'none';
-                return;
-            }
-           
-            try {
-                const userData = await getUserData(currentUser.uid);
-               
-                // Actualizar información básica
-                document.getElementById('profile-user-name').textContent = currentUser.displayName || 'Usuario';
-                document.getElementById('profile-user-email').textContent = currentUser.email;
-                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
-               
-                // Actualizar avatar
-                if (userData?.avatarUrl) {
-                    document.getElementById('user-avatar').innerHTML = `
-                        <img src="${userData.avatarUrl}" alt="Avatar">
-                        <div class="edit-overlay" id="edit-avatar-overlay">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                    `;
-                }
-               
-                // Actualizar formulario de edición
-                document.getElementById('edit-user-name').value = currentUser.displayName || '';
-                document.getElementById('edit-user-bio').value = userData?.bio || '';
-               
-                // Actualizar estadísticas
-                await updateProfileStats();
-               
-                // Mostrar/ocultar elementos según el estado de verificación
-                checkEmailVerification();
-               
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-            }
-        }
-              // ============================
+        // ============================
         // INICIALIZACIÓN
         // ============================
 
@@ -3919,6 +4010,9 @@
                     document.getElementById('guest-notification').style.display = 'none';
                     document.getElementById('welcome-modal').style.display = 'none';
                    
+                    // Actualizar nombre en el header
+                    updateUserDisplayName();
+                   
                     checkEmailVerification();
                     setInterval(checkEmailVerification, 30000);
                    
@@ -3927,6 +4021,9 @@
                     }
                 } else {
                     // No hay usuario autenticado, mostrar modal de bienvenida
+                    // Ocultar nombre en el header
+                    document.getElementById('user-display-name').style.display = 'none';
+                    
                     setTimeout(() => {
                         showWelcomeModal();
                     }, 1000);
