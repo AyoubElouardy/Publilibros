@@ -727,7 +727,7 @@
             </div>
         </div>
     </header>
-      <!-- Modal de Bienvenida (nuevo) -->
+        <!-- Modal de Bienvenida (nuevo) -->
     <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -1013,8 +1013,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal para subir libro MEJORADO -->
+      <!-- Modal para subir libro MEJORADO -->
     <div id="upload-modal" class="modal writing-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1278,7 +1277,7 @@
             </div>
         </div>
     </footer>
-      <style>
+        <style>
         /* Pestañas del perfil */
         .profile-tabs {
             margin-top: 3rem;
@@ -1836,8 +1835,7 @@
             gap: 15px;
             margin-top: 20px;
         }
-
-        /* Estilos para modal de bienvenida y estado de invitado */
+                  /* Estilos para modal de bienvenida y estado de invitado */
         .welcome-modal {
             z-index: 2000;
         }
@@ -2025,6 +2023,72 @@
         * {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        /* Estilos para el sistema de seguidores */
+        .author-followers {
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .author-followers i {
+            font-size: 0.7rem;
+        }
+
+        .author-link {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            margin-right: 5px;
+        }
+
+        .author-link:hover {
+            text-decoration: underline;
+            color: var(--primary);
+        }
+
+        .follow-btn.following {
+            color: var(--secondary);
+        }
+
+        .follow-btn:not(.following):hover {
+            color: var(--secondary);
+        }
+
+        /* Estilos para el menú de usuario */
+        .user-menu {
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-menu-item {
+            transition: var(--transition);
+        }
+
+        .user-menu-item:hover {
+            background: var(--input-bg);
+        }
+
+        /* Mejoras responsive */
+        @media (max-width: 768px) {
+            .book-actions {
+                flex-direction: row;
+                gap: 8px;
+            }
+            
+            .author-followers {
+                display: block;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2101,6 +2165,7 @@
         const usersRef = db.collection("users");
         const booksRef = db.collection("books");
         const reviewsRef = db.collection("reviews");
+        const followersRef = db.collection("followers"); // NUEVA COLECCIÓN
 
         // Géneros disponibles
         const genres = [
@@ -2159,7 +2224,7 @@
         // Listeners de tiempo real
         let booksListener = null;
         let usersListener = null;
-              // ============================
+                    // ============================
         // SISTEMA DE CONTROL DE ACCESO
         // ============================
 
@@ -2661,7 +2726,247 @@
                 publishBtn.disabled = false;
             }
         }
-              // ============================
+                    // ============================
+        // SISTEMA DE SEGUIDORES
+        // ============================
+
+        async function followAuthor(authorId) {
+            if (!isActionAllowed('follow_authors')) {
+                showLoginPrompt();
+                return;
+            }
+           
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                showLoginPrompt();
+                return;
+            }
+           
+            // No permitir seguirse a sí mismo
+            if (authorId === currentUser.uid) {
+                alert('No puedes seguirte a ti mismo.');
+                return;
+            }
+           
+            try {
+                const followId = `${currentUser.uid}_${authorId}`;
+                const followDoc = await followersRef.doc(followId).get();
+               
+                if (followDoc.exists) {
+                    // Ya está siguiendo, dejar de seguir
+                    await followersRef.doc(followId).delete();
+                    await updateFollowerCount(authorId, -1);
+                    await updateFollowingCount(currentUser.uid, -1);
+                    console.log('Dejaste de seguir al autor');
+                } else {
+                    // Seguir al autor
+                    await followersRef.doc(followId).set({
+                        followerId: currentUser.uid,
+                        authorId: authorId,
+                        followedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    await updateFollowerCount(authorId, 1);
+                    await updateFollowingCount(currentUser.uid, 1);
+                    console.log('Comenzaste a seguir al autor');
+                }
+               
+                // Actualizar la interfaz si es necesario
+                if (document.getElementById('perfil').classList.contains('active')) {
+                    updateProfile();
+                }
+            } catch (error) {
+                console.error("Error en sistema de seguidores:", error);
+                alert('Error al procesar la acción de seguir.');
+            }
+        }
+
+        async function updateFollowerCount(userId, change) {
+            try {
+                const userDoc = await usersRef.doc(userId).get();
+                const userData = userDoc.data();
+                const currentFollowers = userData.followers || 0;
+                const newCount = Math.max(0, currentFollowers + change);
+               
+                await usersRef.doc(userId).update({
+                    followers: newCount
+                });
+            } catch (error) {
+                console.error("Error actualizando contador de seguidores:", error);
+            }
+        }
+
+        async function updateFollowingCount(userId, change) {
+            try {
+                const userDoc = await usersRef.doc(userId).get();
+                const userData = userDoc.data();
+                const currentFollowing = userData.following || 0;
+                const newCount = Math.max(0, currentFollowing + change);
+               
+                await usersRef.doc(userId).update({
+                    following: newCount
+                });
+            } catch (error) {
+                console.error("Error actualizando contador de seguidos:", error);
+            }
+        }
+
+        async function isFollowing(authorId) {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return false;
+           
+            try {
+                const followId = `${currentUser.uid}_${authorId}`;
+                const followDoc = await followersRef.doc(followId).get();
+                return followDoc.exists;
+            } catch (error) {
+                console.error("Error verificando seguimiento:", error);
+                return false;
+            }
+        }
+
+        async function getFollowerCount(userId) {
+            try {
+                const userDoc = await usersRef.doc(userId).get();
+                const userData = userDoc.data();
+                return userData.followers || 0;
+            } catch (error) {
+                console.error("Error obteniendo contador de seguidores:", error);
+                return 0;
+            }
+        }
+
+        async function getFollowingCount(userId) {
+            try {
+                const userDoc = await usersRef.doc(userId).get();
+                const userData = userDoc.data();
+                return userData.following || 0;
+            } catch (error) {
+                console.error("Error obteniendo contador de seguidos:", error);
+                return 0;
+            }
+        }
+
+        // Función para cargar el contador de seguidores del autor
+        async function loadAuthorFollowersCount(authorId, bookCard) {
+            try {
+                const followerCount = await getFollowerCount(authorId);
+                const followerElement = bookCard.querySelector(`.author-followers[data-author-id="${authorId}"] .follower-count`);
+                if (followerElement) {
+                    followerElement.textContent = followerCount;
+                }
+            } catch (error) {
+                console.error("Error cargando seguidores del autor:", error);
+            }
+        }
+
+        // ============================
+        // ACTUALIZACIÓN DE INTERFAZ AL INICIAR SESIÓN
+        // ============================
+
+        function updateAuthUI() {
+            const currentUser = auth.currentUser;
+            const authStatus = document.getElementById('auth-status');
+            const authBtn = document.getElementById('auth-btn');
+           
+            if (currentUser) {
+                // Usuario ha iniciado sesión - mostrar nombre de usuario
+                authStatus.textContent = currentUser.displayName || currentUser.email;
+                authStatus.style.fontWeight = 'bold';
+               
+                // Cambiar el ícono a un ícono de usuario
+                const icon = authBtn.querySelector('i');
+                icon.className = 'fas fa-user-circle';
+               
+                // Cambiar la funcionalidad del botón para mostrar menú de usuario
+                authBtn.onclick = function() {
+                    showUserMenu();
+                };
+            } else {
+                // Usuario no ha iniciado sesión - mostrar "Iniciar Sesión"
+                authStatus.textContent = 'Iniciar Sesión';
+                authStatus.style.fontWeight = 'normal';
+               
+                // Restaurar ícono original
+                const icon = authBtn.querySelector('i');
+                icon.className = 'fas fa-user';
+               
+                // Restaurar funcionalidad original
+                authBtn.onclick = function() {
+                    document.getElementById('auth-modal').style.display = 'flex';
+                };
+            }
+        }
+
+        // Función para mostrar menú de usuario
+        function showUserMenu() {
+            // Crear menú desplegable
+            const userMenu = document.createElement('div');
+            userMenu.className = 'user-menu';
+            userMenu.style.cssText = `
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                box-shadow: 0 4px 12px var(--shadow-color);
+                padding: 10px 0;
+                min-width: 150px;
+                z-index: 1000;
+            `;
+           
+            userMenu.innerHTML = `
+                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-user" style="margin-right: 8px;"></i>
+                    Mi Perfil
+                </div>
+                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                    Configuración
+                </div>
+                <div class="user-menu-item" id="logout-btn" style="padding: 8px 15px; cursor: pointer; color: var(--accent);">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
+                    Cerrar Sesión
+                </div>
+            `;
+           
+            document.body.appendChild(userMenu);
+           
+            // Configurar eventos del menú
+            userMenu.querySelector('.user-menu-item:first-child').addEventListener('click', function() {
+                switchSection('perfil');
+                document.body.removeChild(userMenu);
+            });
+           
+            userMenu.querySelector('#logout-btn').addEventListener('click', function() {
+                auth.signOut();
+                document.body.removeChild(userMenu);
+            });
+           
+            // Cerrar menú al hacer clic fuera
+            setTimeout(() => {
+                const closeMenu = function(e) {
+                    if (!userMenu.contains(e.target) && !document.getElementById('auth-btn').contains(e.target)) {
+                        document.body.removeChild(userMenu);
+                        document.removeEventListener('click', closeMenu);
+                    }
+                };
+                document.addEventListener('click', closeMenu);
+            }, 100);
+        }
+
+        // Función para cerrar sesión
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                // Los listeners se actualizarán automáticamente a través de onAuthStateChanged
+            } catch (error) {
+                console.error("Error cerrando sesión:", error);
+                alert('Error al cerrar sesión.');
+            }
+        }
+
+        // ============================
         // FUNCIONES ORIGINALES DEL SISTEMA
         // ============================
 
@@ -3048,8 +3353,7 @@
                 `;
             }
         }
-
-        async function loadReviews(bookId) {
+              async function loadReviews(bookId) {
             try {
                 const reviewsSnapshot = await reviewsRef
                     .where('bookId', '==', bookId)
@@ -3095,245 +3399,199 @@
            
             return reviewDiv;
         }
-              async function loadAdminPanel() {
-            document.getElementById('admin-panel').style.display = 'block';
-            await loadPendingBooks();
-            await loadReportedBooks();
-            await loadUsersForManagement();
-        }
 
-        async function loadPendingBooks() {
+        // ============================
+        // FUNCIONES DE REGISTRO Y AUTENTICACIÓN
+        // ============================
+
+        async function handleLoginFormSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
             try {
-                const pendingSnapshot = await booksRef
-                    .where('status', '==', 'pending')
-                    .get();
+                await auth.signInWithEmailAndPassword(email, password);
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('login-form').reset();
                
-                const container = document.getElementById('pending-books-container');
-                container.innerHTML = '';
-               
-                if (pendingSnapshot.empty) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><h3>No hay libros pendientes</h3><p>Todos los libros han sido revisados.</p></div>';
-                    return;
-                }
-               
-                pendingSnapshot.forEach(doc => {
-                    const book = { id: doc.id, ...doc.data() };
-                    const bookCard = createAdminBookCard(book, 'pending');
-                    container.appendChild(bookCard);
-                });
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
             } catch (error) {
-                console.error("Error cargando libros pendientes:", error);
+                alert('Error al iniciar sesión: ' + error.message);
             }
         }
 
-        async function loadReportedBooks() {
-            try {
-                const reportedSnapshot = await booksRef
-                    .where('reported', '==', true)
-                    .get();
-               
-                const container = document.getElementById('reported-books-container');
-                container.innerHTML = '';
-               
-                if (reportedSnapshot.empty) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-flag"></i><h3>No hay libros reportados</h3><p>No se han reportado libros recientemente.</p></div>';
-                    return;
-                }
-               
-                reportedSnapshot.forEach(doc => {
-                    const book = { id: doc.id, ...doc.data() };
-                    const bookElement = createAdminBookCard(book, 'reported');
-                    container.appendChild(bookElement);
-                });
-            } catch (error) {
-                console.error("Error cargando libros reportados:", error);
-            }
-        }
-
-        function createAdminBookCard(book, type) {
-            const card = document.createElement('div');
-            card.className = type === 'pending' ? 'book-card' : 'user-management-item';
+        async function handleRegisterFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
            
-            if (type === 'pending') {
-                card.innerHTML = `
-                    <div class="book-cover">
-                        ${book.title.split(' ').map(word => word[0]).join('')}
-                    </div>
-                    <div class="book-info">
-                        <div class="book-title">${book.title}</div>
-                        <div class="book-author">por ${book.author}</div>
-                        <div class="book-description">${book.description}</div>
-                        <div class="book-genre">${genreNames[book.genre]}</div>
-                        <div class="admin-actions">
-                            <button class="btn" onclick="approveBook('${book.id}')">Aprobar</button>
-                            <button class="btn btn-danger" onclick="rejectBook('${book.id}')">Rechazar</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                card.innerHTML = `
-                    <div>
-                        <strong>${book.title}</strong> por ${book.author}
-                        <div class="report-reason">
-                            <strong>Reportes:</strong> ${book.reportCount || 0}
-                            ${book.reports ? book.reports.map(report => `<p>${report.reason}</p>`).join('') : ''}
-                        </div>
-                    </div>
-                    <div class="admin-actions">
-                        <button class="btn" onclick="dismissReports('${book.id}')">Descartar</button>
-                        <button class="btn btn-danger" onclick="deleteBook('${book.id}')">Eliminar</button>
-                    </div>
-                `;
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden.');
+                return;
             }
            
-            return card;
-        }
-
-        async function loadUsersForManagement() {
             try {
-                const usersSnapshot = await usersRef.get();
-                const container = document.getElementById('users-container');
-                container.innerHTML = '';
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
                
-                usersSnapshot.forEach(doc => {
-                    const user = { id: doc.id, ...doc.data() };
-                    const userElement = createUserManagementElement(user);
-                    container.appendChild(userElement);
+                await user.updateProfile({
+                    displayName: name
                 });
+               
+                // Guardar datos del usuario con información de seguidores
+                await saveUserData(user.uid, {
+                    name: name,
+                    email: email,
+                    bio: '',
+                    likedBooks: [],
+                    myReviews: [],
+                    favoriteGenres: [],
+                    emailVerified: false,
+                    role: 'user',
+                    followers: 0, // Inicializar contador de seguidores
+                    following: 0, // Inicializar contador de seguidos
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+               
+                // Enviar verificación por email
+                await user.sendEmailVerification();
+               
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('register-form').reset();
+               
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
+               
+                alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
             } catch (error) {
-                console.error("Error cargando usuarios:", error);
+                alert('Error al registrar usuario: ' + error.message);
             }
         }
 
-        function createUserManagementElement(user) {
-            const element = document.createElement('div');
-            element.className = 'user-management-item';
+        async function handleEditProfileFormSubmit(e) {
+            e.preventDefault();
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
            
-            element.innerHTML = `
-                <div>
-                    <strong>${user.name}</strong> (${user.email})
-                    <br>
-                    <small>Registrado: ${user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'}</small>
-                    <br>
-                    <span class="verification-badge ${user.emailVerified ? '' : 'unverified'}">
-                        <i class="fas fa-${user.emailVerified ? 'check' : 'times'}-circle"></i>
-                        ${user.emailVerified ? 'Verificado' : 'No verificado'}
-                    </span>
-                    ${user.role === 'admin' ? '<span class="admin-badge">Admin</span>' : ''}
-                </div>
-                <div class="user-actions">
-                    ${user.role !== 'admin' ?
-                        `<button class="btn" onclick="makeAdmin('${user.id}')">Hacer Admin</button>` :
-                        ''
+            const name = document.getElementById('edit-user-name').value;
+            const bio = document.getElementById('edit-user-bio').value;
+            const avatarFile = document.getElementById('edit-user-avatar').files[0];
+           
+            try {
+                // Actualizar perfil en Firebase Auth
+                await currentUser.updateProfile({
+                    displayName: name
+                });
+               
+                // Guardar datos adicionales en Firestore
+                const userData = {
+                    name: name,
+                    bio: bio,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+               
+                // Subir avatar si se seleccionó uno
+                if (avatarFile) {
+                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
+                    if (avatarUrl) {
+                        userData.avatarUrl = avatarUrl;
                     }
-                    <button class="btn btn-danger" onclick="deleteUser('${user.id}')">Eliminar</button>
+                }
+               
+                await saveUserData(currentUser.uid, userData);
+               
+                document.getElementById('edit-profile-modal').style.display = 'none';
+                updateProfile();
+                alert('Perfil actualizado correctamente.');
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+                alert('Error al actualizar el perfil.');
+            }
+        }
+
+        // ============================
+        // FUNCIONES DE TARJETAS DE LIBROS
+        // ============================
+
+        function createBookCard(book) {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+           
+            // Determinar si el libro tiene portada personalizada
+            const coverStyle = book.coverUrl ?
+                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
+                '';
+           
+            bookCard.innerHTML = `
+                <div class="book-cover" ${coverStyle}>
+                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
+                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
+                </div>
+                <div class="book-actions">
+                    <div class="book-action like-btn" data-book-id="${book.id}">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="book-action read-btn" data-book-id="${book.id}">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="book-action follow-btn" data-author-id="${book.authorId}">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">
+                        por 
+                        <a href="#" class="author-link" data-author-id="${book.authorId}">
+                            ${book.author}
+                        </a>
+                        <span class="author-followers" data-author-id="${book.authorId}">
+                            <i class="fas fa-users"></i> <span class="follower-count">0</span>
+                        </span>
+                    </div>
+                    <div class="book-description">${book.description}</div>
+                    <div class="book-genre">${genreNames[book.genre]}</div>
+                    <div class="book-stats">
+                        <div class="book-stat">
+                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
+                        </div>
+                        <div class="book-stat">
+                            <i class="fas fa-eye"></i> ${book.views || 0}
+                        </div>
+                        <div class="book-stat">
+                            <i class="fas fa-file-alt"></i> ${book.pageCount || 1}
+                        </div>
+                    </div>
                 </div>
             `;
            
-            return element;
+            // Configurar eventos
+            bookCard.querySelector('.like-btn').addEventListener('click', function() {
+                handleLikeBook(book.id);
+            });
+           
+            bookCard.querySelector('.read-btn').addEventListener('click', function() {
+                openReader(book);
+            });
+           
+            bookCard.querySelector('.follow-btn').addEventListener('click', function() {
+                const authorId = this.getAttribute('data-author-id');
+                followAuthor(authorId);
+            });
+           
+            // Cargar contador de seguidores del autor
+            loadAuthorFollowersCount(book.authorId, bookCard);
+           
+            return bookCard;
         }
 
-        async function approveBook(bookId) {
-            if (confirm('¿Estás seguro de que quieres aprobar este libro?')) {
-                try {
-                    await booksRef.doc(bookId).update({
-                        status: 'approved'
-                    });
-                    alert('Libro aprobado correctamente.');
-                    loadPendingBooks();
-                } catch (error) {
-                    console.error("Error aprobando libro:", error);
-                    alert('Error al aprobar el libro.');
-                }
-            }
-        }
-
-        async function rejectBook(bookId) {
-            const reason = prompt('Ingresa el motivo del rechazo:');
-            if (reason) {
-                try {
-                    await booksRef.doc(bookId).update({
-                        status: 'rejected',
-                        rejectionReason: reason
-                    });
-                    alert('Libro rechazado correctamente.');
-                    loadPendingBooks();
-                } catch (error) {
-                    console.error("Error rechazando libro:", error);
-                    alert('Error al rechazar el libro.');
-                }
-            }
-        }
-
-        async function dismissReports(bookId) {
-            if (confirm('¿Descartar todos los reportes de este libro?')) {
-                try {
-                    await booksRef.doc(bookId).update({
-                        reported: false,
-                        reportCount: 0,
-                        reports: []
-                    });
-                    alert('Reportes descartados.');
-                    loadReportedBooks();
-                } catch (error) {
-                    console.error("Error descartando reportes:", error);
-                    alert('Error al descartar reportes.');
-                }
-            }
-        }
-
-        async function deleteBook(bookId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este libro? Esta acción no se puede deshacer.')) {
-                try {
-                    await booksRef.doc(bookId).delete();
-                    alert('Libro eliminado correctamente.');
-                    loadReportedBooks();
-                } catch (error) {
-                    console.error("Error eliminando libro:", error);
-                    alert('Error al eliminar el libro.');
-                }
-            }
-        }
-
-        async function makeAdmin(userId) {
-            if (confirm('¿Estás seguro de que quieres hacer administrador a este usuario?')) {
-                try {
-                    await usersRef.doc(userId).update({
-                        role: 'admin'
-                    });
-                    alert('Usuario convertido en administrador.');
-                    loadUsersForManagement();
-                } catch (error) {
-                    console.error("Error haciendo admin:", error);
-                    alert('Error al hacer administrador al usuario.');
-                }
-            }
-        }
-
-        async function deleteUser(userId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.')) {
-                try {
-                    await usersRef.doc(userId).delete();
-                    alert('Usuario eliminado correctamente.');
-                    loadUsersForManagement();
-                } catch (error) {
-                    console.error("Error eliminando usuario:", error);
-                    alert('Error al eliminar el usuario.');
-                }
-            }
-        }
-
-        async function loadUserAvatar(userId) {
-            try {
-                const userData = await getUserData(userId);
-                if (userData && userData.avatarUrl) {
-                    const avatar = document.getElementById('user-avatar');
-                    avatar.innerHTML = `<img src="${userData.avatarUrl}" alt="Avatar">`;
-                }
-            } catch (error) {
-                console.error("Error cargando avatar:", error);
-            }
-        }
+        // ============================
+        // FUNCIONES DE BASE DE DATOS
+        // ============================
 
         async function saveUserData(userId, userData) {
             try {
@@ -3404,59 +3662,6 @@
             }
         }
 
-        function createBookCard(book) {
-            const bookCard = document.createElement('div');
-            bookCard.className = 'book-card';
-           
-            // Determinar si el libro tiene portada personalizada
-            const coverStyle = book.coverUrl ?
-                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
-                '';
-           
-            bookCard.innerHTML = `
-                <div class="book-cover" ${coverStyle}>
-                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
-                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
-                </div>
-                <div class="book-actions">
-                    <div class="book-action like-btn" data-book-id="${book.id}">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="book-action read-btn" data-book-id="${book.id}">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                </div>
-                <div class="book-info">
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">por ${book.author}</div>
-                    <div class="book-description">${book.description}</div>
-                    <div class="book-genre">${genreNames[book.genre]}</div>
-                    <div class="book-stats">
-                        <div class="book-stat">
-                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-eye"></i> ${book.views || 0}
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-file-alt"></i> ${book.pageCount || 1}
-                        </div>
-                    </div>
-                </div>
-            `;
-           
-            // Configurar eventos
-            bookCard.querySelector('.like-btn').addEventListener('click', function() {
-                handleLikeBook(book.id);
-            });
-           
-            bookCard.querySelector('.read-btn').addEventListener('click', function() {
-                openReader(book);
-            });
-           
-            return bookCard;
-        }
-
         async function updateBookViews(bookId) {
             try {
                 const bookDoc = await booksRef.doc(bookId).get();
@@ -3471,240 +3676,9 @@
             }
         }
 
-        function startRealTimeListeners() {
-            // Listener para libros aprobados
-            booksListener = booksRef
-                .where('status', '==', 'approved')
-                .onSnapshot(snapshot => {
-                    displayBooks();
-                    displayFeaturedBooks();
-                    displayRecommendedBooks();
-                    updateBooksStats();
-                }, error => {
-                    console.error("Error en listener de libros:", error);
-                });
-        }
-
-        function stopRealTimeListeners() {
-            if (booksListener) {
-                booksListener();
-            }
-            if (usersListener) {
-                usersListener();
-            }
-        }
-
-        async function updateBooksStats() {
-            try {
-                const booksSnapshot = await booksRef
-                    .where('status', '==', 'approved')
-                    .get();
-                const usersSnapshot = await usersRef.get();
-               
-                let totalLikes = 0;
-                booksSnapshot.forEach(doc => {
-                    const book = doc.data();
-                    totalLikes += book.likes || 0;
-                });
-               
-                document.getElementById('total-books').textContent = booksSnapshot.size;
-                document.getElementById('total-authors').textContent = usersSnapshot.size;
-                document.getElementById('total-likes').textContent = totalLikes;
-            } catch (error) {
-                console.error("Error actualizando estadísticas:", error);
-            }
-        }
-
-        async function updateUsersStats() {
-            // Esta función se puede expandir según sea necesario
-        }
-
-        async function updateProfileStats() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-           
-            try {
-                const userData = await getUserData(currentUser.uid);
-                const userBooksSnapshot = await booksRef
-                    .where('authorId', '==', currentUser.uid)
-                    .get();
-               
-                let totalLikes = 0;
-                userBooksSnapshot.forEach(doc => {
-                    const book = doc.data();
-                    totalLikes += book.likes || 0;
-                });
-               
-                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
-                document.getElementById('profile-likes').textContent = totalLikes;
-               
-                // Actualizar reseñas (simplificado)
-                const reviewsCount = userData?.myReviews?.length || 0;
-                document.getElementById('profile-reviews').textContent = reviewsCount;
-            } catch (error) {
-                console.error("Error actualizando estadísticas de perfil:", error);
-            }
-        }
-
-        function isAdmin() {
-            // Esta función debería verificar si el usuario actual es admin
-            // Por ahora, retornamos false por simplicidad
-            return false;
-        }
-
-        async function resendEmailVerification() {
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    await user.sendEmailVerification();
-                    alert('Correo de verificación enviado. Revisa tu bandeja de entrada.');
-                } catch (error) {
-                    console.error("Error reenviando verificación:", error);
-                    alert('Error al reenviar el correo de verificación.');
-                }
-            }
-        }
-
-        function checkEmailVerification() {
-            const user = auth.currentUser;
-            if (user) {
-                user.reload().then(() => {
-                    const verificationBadge = document.getElementById('verification-badge');
-                    const resendButton = document.getElementById('resend-verification');
-                   
-                    if (user.emailVerified) {
-                        verificationBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verificado';
-                        verificationBadge.className = 'verification-badge';
-                        verificationBadge.style.display = 'inline-flex';
-                        resendButton.style.display = 'none';
-                    } else {
-                        verificationBadge.innerHTML = '<i class="fas fa-times-circle"></i> No verificado';
-                        verificationBadge.className = 'verification-badge unverified';
-                        verificationBadge.style.display = 'inline-flex';
-                        resendButton.style.display = 'block';
-                    }
-                });
-            }
-        }
-
-        function handlePasswordReset() {
-            const email = prompt('Ingresa tu correo electrónico para restablecer la contraseña:');
-            if (email) {
-                auth.sendPasswordResetEmail(email)
-                    .then(() => {
-                        alert('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
-                    })
-                    .catch(error => {
-                        console.error("Error enviando correo de restablecimiento:", error);
-                        alert('Error al enviar el correo de restablecimiento.');
-                    });
-            }
-        }
-              async function handleLoginFormSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('login-form').reset();
-               
-                // Actualizar tipo de usuario
-                currentUserType = 'logged';
-                document.getElementById('guest-notification').style.display = 'none';
-            } catch (error) {
-                alert('Error al iniciar sesión: ' + error.message);
-            }
-        }
-
-        async function handleRegisterFormSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-           
-            if (password !== confirmPassword) {
-                alert('Las contraseñas no coinciden.');
-                return;
-            }
-           
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-               
-                await user.updateProfile({
-                    displayName: name
-                });
-               
-                await saveUserData(user.uid, {
-                    name: name,
-                    email: email,
-                    bio: '',
-                    likedBooks: [],
-                    myReviews: [],
-                    favoriteGenres: [],
-                    emailVerified: false,
-                    role: 'user',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-               
-                // Enviar verificación por email
-                await user.sendEmailVerification();
-               
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('register-form').reset();
-               
-                // Actualizar tipo de usuario
-                currentUserType = 'logged';
-                document.getElementById('guest-notification').style.display = 'none';
-               
-                alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
-            } catch (error) {
-                alert('Error al registrar usuario: ' + error.message);
-            }
-        }
-
-        async function handleEditProfileFormSubmit(e) {
-            e.preventDefault();
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-           
-            const name = document.getElementById('edit-user-name').value;
-            const bio = document.getElementById('edit-user-bio').value;
-            const avatarFile = document.getElementById('edit-user-avatar').files[0];
-           
-            try {
-                // Actualizar perfil en Firebase Auth
-                await currentUser.updateProfile({
-                    displayName: name
-                });
-               
-                // Guardar datos adicionales en Firestore
-                const userData = {
-                    name: name,
-                    bio: bio,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-               
-                // Subir avatar si se seleccionó uno
-                if (avatarFile) {
-                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
-                    if (avatarUrl) {
-                        userData.avatarUrl = avatarUrl;
-                    }
-                }
-               
-                await saveUserData(currentUser.uid, userData);
-               
-                document.getElementById('edit-profile-modal').style.display = 'none';
-                updateProfile();
-                alert('Perfil actualizado correctamente.');
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-                alert('Error al actualizar el perfil.');
-            }
-        }
+        // ============================
+        // FUNCIONES DE INTERFAZ
+        // ============================
 
         async function displayFeaturedBooks() {
             try {
@@ -3893,7 +3867,7 @@
                 document.getElementById('edit-user-name').value = currentUser.displayName || '';
                 document.getElementById('edit-user-bio').value = userData?.bio || '';
                
-                // Actualizar estadísticas
+                // Actualizar estadísticas incluyendo seguidores
                 await updateProfileStats();
                
                 // Mostrar/ocultar elementos según el estado de verificación
@@ -3903,7 +3877,173 @@
                 console.error("Error actualizando perfil:", error);
             }
         }
-              // ============================
+
+        async function updateProfileStats() {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+           
+            try {
+                const userData = await getUserData(currentUser.uid);
+                const userBooksSnapshot = await booksRef
+                    .where('authorId', '==', currentUser.uid)
+                    .get();
+               
+                let totalLikes = 0;
+                userBooksSnapshot.forEach(doc => {
+                    const book = doc.data();
+                    totalLikes += book.likes || 0;
+                });
+               
+                // Obtener contadores de seguidores
+                const followerCount = userData?.followers || 0;
+                const followingCount = userData?.following || 0;
+               
+                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
+                document.getElementById('profile-likes').textContent = totalLikes;
+               
+                // Actualizar reseñas (simplificado)
+                const reviewsCount = userData?.myReviews?.length || 0;
+                document.getElementById('profile-reviews').textContent = reviewsCount;
+               
+                // Añadir estadísticas de seguidores al perfil
+                const userStatsContainer = document.querySelector('.user-stats');
+                if (userStatsContainer) {
+                    // Verificar si ya existen los elementos de seguidores
+                    let followersStat = document.getElementById('profile-followers');
+                    let followingStat = document.getElementById('profile-following');
+                   
+                    if (!followersStat) {
+                        // Crear elementos de seguidores si no existen
+                        followersStat = document.createElement('div');
+                        followersStat.className = 'user-stat';
+                        followersStat.id = 'profile-followers';
+                        followersStat.innerHTML = `
+                            <div class="stat-value">${followerCount}</div>
+                            <div class="stat-label">Seguidores</div>
+                        `;
+                       
+                        followingStat = document.createElement('div');
+                        followingStat.className = 'user-stat';
+                        followingStat.id = 'profile-following';
+                        followingStat.innerHTML = `
+                            <div class="stat-value">${followingCount}</div>
+                            <div class="stat-label">Siguiendo</div>
+                        `;
+                       
+                        userStatsContainer.appendChild(followersStat);
+                        userStatsContainer.appendChild(followingStat);
+                    } else {
+                        // Actualizar los valores existentes
+                        followersStat.querySelector('.stat-value').textContent = followerCount;
+                        followingStat.querySelector('.stat-value').textContent = followingCount;
+                    }
+                }
+               
+            } catch (error) {
+                console.error("Error actualizando estadísticas de perfil:", error);
+            }
+        }
+
+        async function updateBooksStats() {
+            try {
+                const booksSnapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+                const usersSnapshot = await usersRef.get();
+               
+                let totalLikes = 0;
+                booksSnapshot.forEach(doc => {
+                    const book = doc.data();
+                    totalLikes += book.likes || 0;
+                });
+               
+                document.getElementById('total-books').textContent = booksSnapshot.size;
+                document.getElementById('total-authors').textContent = usersSnapshot.size;
+                document.getElementById('total-likes').textContent = totalLikes;
+            } catch (error) {
+                console.error("Error actualizando estadísticas:", error);
+            }
+        }
+
+        function startRealTimeListeners() {
+            // Listener para libros aprobados
+            booksListener = booksRef
+                .where('status', '==', 'approved')
+                .onSnapshot(snapshot => {
+                    displayBooks();
+                    displayFeaturedBooks();
+                    displayRecommendedBooks();
+                    updateBooksStats();
+                }, error => {
+                    console.error("Error en listener de libros:", error);
+                });
+        }
+
+        function stopRealTimeListeners() {
+            if (booksListener) {
+                booksListener();
+            }
+            if (usersListener) {
+                usersListener();
+            }
+        }
+
+        function isAdmin() {
+            // Esta función debería verificar si el usuario actual es admin
+            // Por ahora, retornamos false por simplicidad
+            return false;
+        }
+
+        async function resendEmailVerification() {
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await user.sendEmailVerification();
+                    alert('Correo de verificación enviado. Revisa tu bandeja de entrada.');
+                } catch (error) {
+                    console.error("Error reenviando verificación:", error);
+                    alert('Error al reenviar el correo de verificación.');
+                }
+            }
+        }
+
+        function checkEmailVerification() {
+            const user = auth.currentUser;
+            if (user) {
+                user.reload().then(() => {
+                    const verificationBadge = document.getElementById('verification-badge');
+                    const resendButton = document.getElementById('resend-verification');
+                   
+                    if (user.emailVerified) {
+                        verificationBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verificado';
+                        verificationBadge.className = 'verification-badge';
+                        verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'none';
+                    } else {
+                        verificationBadge.innerHTML = '<i class="fas fa-times-circle"></i> No verificado';
+                        verificationBadge.className = 'verification-badge unverified';
+                        verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'block';
+                    }
+                });
+            }
+        }
+
+        function handlePasswordReset() {
+            const email = prompt('Ingresa tu correo electrónico para restablecer la contraseña:');
+            if (email) {
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        alert('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
+                    })
+                    .catch(error => {
+                        console.error("Error enviando correo de restablecimiento:", error);
+                        alert('Error al enviar el correo de restablecimiento.');
+                    });
+            }
+        }
+
+        // ============================
         // INICIALIZACIÓN
         // ============================
 
@@ -3911,13 +4051,16 @@
             // Verificar modo oscuro
             checkDarkModePreference();
             
-            // Mostrar modal de bienvenida al cargar la página si no hay sesión
+            // Configurar listener de autenticación
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     // Usuario autenticado
                     currentUserType = 'logged';
                     document.getElementById('guest-notification').style.display = 'none';
                     document.getElementById('welcome-modal').style.display = 'none';
+                   
+                    // Actualizar interfaz de usuario
+                    updateAuthUI();
                    
                     checkEmailVerification();
                     setInterval(checkEmailVerification, 30000);
@@ -3926,7 +4069,9 @@
                         updateProfile();
                     }
                 } else {
-                    // No hay usuario autenticado, mostrar modal de bienvenida
+                    // No hay usuario autenticado
+                    currentUserType = null;
+                    updateAuthUI(); // Restaurar botón de inicio de sesión
                     setTimeout(() => {
                         showWelcomeModal();
                     }, 1000);
