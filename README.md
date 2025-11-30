@@ -133,20 +133,187 @@
         .user-actions {
             display: flex;
             align-items: center;
+            gap: 15px;
+        }
+
+        /* Buscador global simplificado - dentro de user-actions */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 5px 15px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .search-box.expanded {
+            width: 250px;
+            opacity: 1;
+        }
+
+        #global-search {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 0;
+            width: 100%;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        #global-search::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Resultados de búsqueda */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            z-index: 1000;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .search-results.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .search-result-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .search-result-item:hover {
+            background: var(--input-bg);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-cover {
+            width: 40px;
+            height: 50px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            background: var(--gradient);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .search-result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-author {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .search-result-genre {
+            font-size: 0.7rem;
+            color: var(--secondary);
+            background: rgba(214, 110, 253, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .search-loading {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .search-loading .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-top: 2px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
         }
 
         .user-actions button {
             background: transparent;
             border: none;
             color: white;
-            margin-left: 15px;
             cursor: pointer;
             font-size: 1.1rem;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
         }
 
         .user-actions button:hover {
-            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
             transform: translateY(-2px);
         }
 
@@ -721,13 +888,30 @@
                     <li><a href="#" class="nav-link" data-section="perfil">Mi Perfil</a></li>
                 </ul>
             </nav>
+            
             <div class="user-actions">
-                <button id="auth-btn"><i class="fas fa-user"></i> <span id="auth-status">Iniciar Sesión</span></button>
-                <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+                <!-- Buscador global simplificado - ahora dentro de user-actions -->
+                <div class="search-container">
+                    <button class="search-toggle" id="search-toggle">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <div class="search-box" id="search-box">
+                        <input type="text" id="global-search" placeholder="Buscar libros, autores...">
+                    </div>
+                    <div class="search-results" id="search-results"></div>
+                </div>
+                
+                <button id="auth-btn">
+                    <i class="fas fa-user"></i> 
+                    <span id="auth-status">Iniciar Sesión</span>
+                </button>
+                <button id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </div>
     </header>
-        <!-- Modal de Bienvenida (nuevo) -->
+      <!-- Modal de Bienvenida (nuevo) -->
     <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -1013,7 +1197,8 @@
             </form>
         </div>
     </div>
-      <!-- Modal para subir libro MEJORADO -->
+
+    <!-- Modal para subir libro MEJORADO -->
     <div id="upload-modal" class="modal writing-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1277,7 +1462,7 @@
             </div>
         </div>
     </footer>
-        <style>
+      <style>
         /* Pestañas del perfil */
         .profile-tabs {
             margin-top: 3rem;
@@ -1835,7 +2020,8 @@
             gap: 15px;
             margin-top: 20px;
         }
-                  /* Estilos para modal de bienvenida y estado de invitado */
+       
+        /* Estilos para modal de bienvenida y estado de invitado */
         .welcome-modal {
             z-index: 2000;
         }
@@ -1972,6 +2158,7 @@
             }
             .user-actions {
                 margin-top: 1rem;
+                justify-content: center;
             }
             .hero h1 {
                 font-size: 2.5rem;
@@ -2016,6 +2203,21 @@
                 left: 20px;
                 right: 20px;
                 max-width: none;
+            }
+
+            .search-box.expanded {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-results {
+                width: 280px;
+                right: -30px;
+            }
+            
+            .search-box.expanded {
+                width: 180px;
             }
         }
 
@@ -2089,10 +2291,14 @@
                 margin-top: 5px;
             }
         }
+
+        /* Animación para resultados de búsqueda */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
-</head>
-<body>
-    <!-- Firebase SDK -->
+      <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -2165,7 +2371,7 @@
         const usersRef = db.collection("users");
         const booksRef = db.collection("books");
         const reviewsRef = db.collection("reviews");
-        const followersRef = db.collection("followers"); // NUEVA COLECCIÓN
+        const followersRef = db.collection("followers");
 
         // Géneros disponibles
         const genres = [
@@ -2199,7 +2405,7 @@
             genre: '',
             description: '',
             content: '',
-            coverType: 'custom', // 'custom' o 'generated'
+            coverType: 'custom',
             coverImage: null,
             coverDesign: null,
             chapters: [],
@@ -2221,10 +2427,206 @@
         let searchTerm = '';
         let currentFilter = 'all';
 
+        // Variables para el buscador global
+        let searchTimeout = null;
+        let currentSearchTerm = '';
+
         // Listeners de tiempo real
         let booksListener = null;
         let usersListener = null;
-                    // ============================
+
+        // ============================
+        // SISTEMA DE BÚSQUEDA GLOBAL
+        // ============================
+
+        // Función para inicializar el buscador global
+        function initGlobalSearch() {
+            const searchToggle = document.getElementById('search-toggle');
+            const searchBox = document.getElementById('search-box');
+            const searchInput = document.getElementById('global-search');
+            const searchResults = document.getElementById('search-results');
+
+            // Alternar visibilidad del buscador
+            searchToggle.addEventListener('click', function() {
+                searchBox.classList.toggle('expanded');
+                if (searchBox.classList.contains('expanded')) {
+                    searchInput.focus();
+                } else {
+                    searchInput.value = '';
+                    hideSearchResults();
+                }
+            });
+
+            // Buscar al escribir
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.trim();
+                currentSearchTerm = term;
+                
+                clearTimeout(searchTimeout);
+                
+                if (term.length >= 2) {
+                    searchTimeout = setTimeout(() => {
+                        performGlobalSearch(term);
+                    }, 500);
+                } else {
+                    hideSearchResults();
+                }
+            });
+
+            // Buscar al presionar Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const term = searchInput.value.trim();
+                    if (term.length >= 2) {
+                        performGlobalSearch(term);
+                    }
+                }
+            });
+
+            // Ocultar resultados al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!searchResults.contains(e.target) && 
+                    !searchInput.contains(e.target) && 
+                    !searchToggle.contains(e.target)) {
+                    hideSearchResults();
+                }
+            });
+
+            // Mostrar resultados cuando el input está enfocado y hay término
+            searchInput.addEventListener('focus', function() {
+                if (currentSearchTerm.length >= 2) {
+                    performGlobalSearch(currentSearchTerm);
+                }
+            });
+        }
+
+        // Función para realizar búsqueda global
+        async function performGlobalSearch(term) {
+            const searchResults = document.getElementById('search-results');
+            
+            // Mostrar loading
+            searchResults.innerHTML = `
+                <div class="search-loading">
+                    <span class="loading"></span> Buscando...
+                </div>
+            `;
+            searchResults.classList.add('active');
+
+            try {
+                // Buscar en libros
+                const booksSnapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+
+                const results = [];
+                
+                booksSnapshot.forEach(doc => {
+                    const book = { id: doc.id, ...doc.data(), type: 'book' };
+                    const searchableText = `${book.title} ${book.author} ${book.description} ${genreNames[book.genre] || ''}`.toLowerCase();
+                    
+                    if (searchableText.includes(term.toLowerCase())) {
+                        // Calcular relevancia
+                        let relevance = 0;
+                        
+                        // Título coincide exactamente
+                        if (book.title.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 10;
+                        }
+                        
+                        // Autor coincide
+                        if (book.author.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 5;
+                        }
+                        
+                        // Género coincide
+                        if (genreNames[book.genre]?.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 3;
+                        }
+                        
+                        // Descripción contiene el término
+                        if (book.description.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 1;
+                        }
+                        
+                        book.relevance = relevance;
+                        results.push(book);
+                    }
+                });
+
+                // Ordenar por relevancia
+                results.sort((a, b) => b.relevance - a.relevance);
+                
+                displaySearchResults(results, term);
+                
+            } catch (error) {
+                console.error("Error en búsqueda global:", error);
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Error al realizar la búsqueda</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Función para mostrar resultados de búsqueda
+        function displaySearchResults(results, term) {
+            const searchResults = document.getElementById('search-results');
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No se encontraron resultados para "<strong>${term}</strong>"</p>
+                        <small>Intenta con otros términos de búsqueda</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            results.slice(0, 8).forEach(book => {
+                const coverHtml = book.coverUrl ? 
+                    `<div class="search-result-cover" style="background-image: url('${book.coverUrl}'); background-size: cover;"></div>` :
+                    `<div class="search-result-cover">${book.title.split(' ').map(word => word[0]).join('').substring(0, 2)}</div>`;
+                
+                html += `
+                    <div class="search-result-item" data-book-id="${book.id}">
+                        ${coverHtml}
+                        <div class="search-result-info">
+                            <div class="search-result-title">${book.title}</div>
+                            <div class="search-result-author">por ${book.author}</div>
+                            <div class="search-result-genre">${genreNames[book.genre] || book.genre}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            searchResults.innerHTML = html;
+
+            // Configurar eventos para los resultados
+            searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    const book = results.find(b => b.id === bookId);
+                    if (book) {
+                        openReader(book);
+                        hideSearchResults();
+                        document.getElementById('search-box').classList.remove('expanded');
+                        document.getElementById('global-search').value = '';
+                    }
+                });
+            });
+        }
+
+        // Función para ocultar resultados de búsqueda
+        function hideSearchResults() {
+            const searchResults = document.getElementById('search-results');
+            searchResults.classList.remove('active');
+        }
+
+        // ============================
         // SISTEMA DE CONTROL DE ACCESO
         // ============================
 
@@ -2366,44 +2768,574 @@
             return false;
         }
 
-        // Función para manejar la lectura de páginas como invitado
-        function handleGuestPageReading() {
-            guestPagesRead++;
-           
-            if (guestPagesRead >= MAX_GUEST_PAGES) {
-                // Mostrar advertencia de límite alcanzado
-                const warning = document.createElement('div');
-                warning.className = 'page-limit-warning';
-                warning.innerHTML = `
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Límite de lectura alcanzado</strong>
-                    <p>Has leído ${MAX_GUEST_PAGES} páginas como invitado. <a href="#" id="register-from-limit">Regístrate</a> para continuar leyendo.</p>
-                `;
-               
-                const readerContent = document.getElementById('reader-content');
-                readerContent.parentNode.insertBefore(warning, readerContent.nextSibling);
-               
-                // Deshabilitar botones de navegación
-                document.getElementById('prev-page').disabled = true;
-                document.getElementById('next-page').disabled = true;
-               
-                // Configurar enlace de registro
-                document.getElementById('register-from-limit').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.getElementById('auth-modal').style.display = 'flex';
-                });
-               
-                return false;
+        // ============================
+        // FUNCIONES ORIGINALES DEL SISTEMA
+        // ============================
+
+        // Función para cambiar de sección
+        function switchSection(sectionId) {
+            // Verificar si es un invitado intentando acceder al perfil
+            if (sectionId === 'perfil' && currentUserType === 'guest') {
+                showLoginPrompt();
+                return;
             }
            
-            return true;
+            // Cambiar sección normalmente
+            document.querySelectorAll('.main-section').forEach(section => {
+                section.classList.remove('active');
+            });
+           
+            document.getElementById(sectionId).classList.add('active');
+           
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+           
+            // Actualizar contenido específico de la sección
+            if (sectionId === 'inicio') {
+                updateBooksStats();
+                displayFeaturedBooks();
+                displayRecommendedBooks();
+            } else if (sectionId === 'biblioteca') {
+                displayGenreFilters();
+                displayBooks();
+            } else if (sectionId === 'perfil' && currentUserType === 'logged') {
+                updateProfile();
+                if (isAdmin()) {
+                    loadAdminPanel();
+                }
+            }
+        }
+
+        // Función para actualizar la interfaz de autenticación
+        function updateAuthUI() {
+            const currentUser = auth.currentUser;
+            const authStatus = document.getElementById('auth-status');
+            const authBtn = document.getElementById('auth-btn');
+           
+            if (currentUser) {
+                // Usuario ha iniciado sesión - mostrar nombre de usuario
+                authStatus.textContent = currentUser.displayName || currentUser.email;
+                authStatus.style.fontWeight = 'bold';
+               
+                // Cambiar la funcionalidad del botón para mostrar menú de usuario
+                authBtn.onclick = function() {
+                    showUserMenu();
+                };
+            } else {
+                // Usuario no ha iniciado sesión - mostrar "Iniciar Sesión"
+                authStatus.textContent = 'Iniciar Sesión';
+                authStatus.style.fontWeight = 'normal';
+               
+                // Restaurar funcionalidad original
+                authBtn.onclick = function() {
+                    document.getElementById('auth-modal').style.display = 'flex';
+                };
+            }
+        }
+
+        // Función para mostrar menú de usuario
+        function showUserMenu() {
+            // Crear menú desplegable
+            const userMenu = document.createElement('div');
+            userMenu.className = 'user-menu';
+            userMenu.style.cssText = `
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                box-shadow: 0 4px 12px var(--shadow-color);
+                padding: 10px 0;
+                min-width: 150px;
+                z-index: 1000;
+            `;
+           
+            userMenu.innerHTML = `
+                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-user" style="margin-right: 8px;"></i>
+                    Mi Perfil
+                </div>
+                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                    Configuración
+                </div>
+                <div class="user-menu-item" id="logout-btn" style="padding: 8px 15px; cursor: pointer; color: var(--accent);">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
+                    Cerrar Sesión
+                </div>
+            `;
+           
+            document.body.appendChild(userMenu);
+           
+            // Configurar eventos del menú
+            userMenu.querySelector('.user-menu-item:first-child').addEventListener('click', function() {
+                switchSection('perfil');
+                document.body.removeChild(userMenu);
+            });
+           
+            userMenu.querySelector('#logout-btn').addEventListener('click', function() {
+                auth.signOut();
+                document.body.removeChild(userMenu);
+            });
+           
+            // Cerrar menú al hacer clic fuera
+            setTimeout(() => {
+                const closeMenu = function(e) {
+                    if (!userMenu.contains(e.target) && !document.getElementById('auth-btn').contains(e.target)) {
+                        document.body.removeChild(userMenu);
+                        document.removeEventListener('click', closeMenu);
+                    }
+                };
+                document.addEventListener('click', closeMenu);
+            }, 100);
+        }
+
+        // Función para iniciar listeners en tiempo real
+        function startRealTimeListeners() {
+            // Listener para libros aprobados
+            booksListener = booksRef
+                .where('status', '==', 'approved')
+                .onSnapshot(snapshot => {
+                    displayBooks();
+                    displayFeaturedBooks();
+                    displayRecommendedBooks();
+                    updateBooksStats();
+                }, error => {
+                    console.error("Error en listener de libros:", error);
+                });
+        }
+
+        // Función para detener listeners
+        function stopRealTimeListeners() {
+            if (booksListener) {
+                booksListener();
+            }
+            if (usersListener) {
+                usersListener();
+            }
+        }
+
+        // Función para verificar si es admin
+        function isAdmin() {
+            return false;
         }
 
         // ============================
-        // MODIFICACIONES AL LECTOR PARA INVITADOS
+        // FUNCIONES DE BASE DE DATOS
         // ============================
 
-        // Sobrescribir la función openReader para incluir control de invitados
+        async function saveUserData(userId, userData) {
+            try {
+                await usersRef.doc(userId).set(userData, { merge: true });
+                return true;
+            } catch (error) {
+                console.error("Error guardando datos de usuario:", error);
+                return false;
+            }
+        }
+
+        async function getUserData(userId) {
+            try {
+                const doc = await usersRef.doc(userId).get();
+                return doc.exists ? doc.data() : null;
+            } catch (error) {
+                console.error("Error obteniendo datos de usuario:", error);
+                return null;
+            }
+        }
+
+        async function saveBook(bookData) {
+            try {
+                const docRef = await booksRef.add(bookData);
+                return docRef.id;
+            } catch (error) {
+                console.error("Error guardando libro:", error);
+                return null;
+            }
+        }
+
+        async function getAllBooks() {
+            try {
+                const snapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+                const books = [];
+                snapshot.forEach(doc => {
+                    books.push({ id: doc.id, ...doc.data() });
+                });
+                return books;
+            } catch (error) {
+                console.error("Error obteniendo libros:", error);
+                return [];
+            }
+        }
+
+        async function updateBook(bookId, updates) {
+            try {
+                await booksRef.doc(bookId).update(updates);
+                return true;
+            } catch (error) {
+                console.error("Error actualizando libro:", error);
+                return false;
+            }
+        }
+
+        async function uploadCoverImage(imageFile, userId) {
+            try {
+                const storageRef = storage.ref();
+                const imageRef = storageRef.child(`covers/${userId}/${Date.now()}_${imageFile.name}`);
+                const snapshot = await imageRef.put(imageFile);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                return downloadURL;
+            } catch (error) {
+                console.error("Error subiendo imagen:", error);
+                return null;
+            }
+        }
+
+        async function updateBookViews(bookId) {
+            try {
+                const bookDoc = await booksRef.doc(bookId).get();
+                const book = bookDoc.data();
+                const currentViews = book.views || 0;
+               
+                await booksRef.doc(bookId).update({
+                    views: currentViews + 1
+                });
+            } catch (error) {
+                console.error("Error actualizando vistas:", error);
+            }
+        }
+
+        // ============================
+        // FUNCIONES DE INTERFAZ
+        // ============================
+
+        async function displayFeaturedBooks() {
+            try {
+                const books = await getAllBooks();
+                const container = document.getElementById('featured-books-container');
+                container.innerHTML = '';
+               
+                // Ordenar por likes y tomar los primeros 6
+                const featuredBooks = books
+                    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+                    .slice(0, 6);
+               
+                if (featuredBooks.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros destacados</h3><p>¡Sé el primero en publicar un libro!</p></div>';
+                    return;
+                }
+               
+                featuredBooks.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros destacados:", error);
+            }
+        }
+
+        async function displayRecommendedBooks() {
+            try {
+                const books = await getAllBooks();
+                const container = document.getElementById('recommended-books-container');
+                container.innerHTML = '';
+               
+                // Simular recomendaciones basadas en géneros populares
+                const recommendedBooks = books
+                    .sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+                    .slice(0, 6);
+               
+                if (recommendedBooks.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No hay recomendaciones</h3><p>Explora más libros para obtener recomendaciones personalizadas.</p></div>';
+                    return;
+                }
+               
+                recommendedBooks.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    // Añadir badge de recomendación
+                    const badge = document.createElement('div');
+                    badge.className = 'recommendation-badge';
+                    badge.textContent = 'Recomendado';
+                    bookCard.querySelector('.book-cover').appendChild(badge);
+                   
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros recomendados:", error);
+            }
+        }
+
+        function displayGenreFilters() {
+            const container = document.getElementById('genre-filter-container');
+            container.innerHTML = '';
+           
+            // Añadir opción "Todos"
+            const allChip = document.createElement('div');
+            allChip.className = 'genre-chip active';
+            allChip.textContent = 'Todos';
+            allChip.addEventListener('click', function() {
+                selectedGenre = 'all';
+                document.querySelectorAll('.genre-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                });
+                this.classList.add('active');
+                displayBooks();
+            });
+            container.appendChild(allChip);
+           
+            // Añadir chips para cada género
+            genres.forEach(genre => {
+                const chip = document.createElement('div');
+                chip.className = 'genre-chip';
+                chip.textContent = genreNames[genre];
+                chip.addEventListener('click', function() {
+                    selectedGenre = genre;
+                    document.querySelectorAll('.genre-chip').forEach(chip => {
+                        chip.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    displayBooks();
+                });
+                container.appendChild(chip);
+            });
+        }
+
+        async function displayBooks() {
+            try {
+                let books = await getAllBooks();
+                const container = document.getElementById('books-container');
+                container.innerHTML = '';
+               
+                // Aplicar filtros
+                if (selectedGenre !== 'all') {
+                    books = books.filter(book => book.genre === selectedGenre);
+                }
+               
+                if (searchTerm) {
+                    books = books.filter(book =>
+                        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.description.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+               
+                // Aplicar filtro adicional (mis libros, favoritos, etc.)
+                if (currentFilter === 'my-books' && auth.currentUser) {
+                    books = books.filter(book => book.authorId === auth.currentUser.uid);
+                } else if (currentFilter === 'liked' && auth.currentUser) {
+                    const userData = await getUserData(auth.currentUser.uid);
+                    const likedBooks = userData?.likedBooks || [];
+                    books = books.filter(book => likedBooks.includes(book.id));
+                }
+               
+                if (books.length === 0) {
+                    let message = '';
+                    if (searchTerm) {
+                        message = `<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>No hay resultados para "${searchTerm}".</p></div>`;
+                    } else if (selectedGenre !== 'all') {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros en este género</h3><p>No se encontraron libros en la categoría ${genreNames[selectedGenre]}.</p></div>`;
+                    } else if (currentFilter === 'my-books') {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No has publicado libros aún</h3><p>¡Publica tu primer libro y compártelo con la comunidad!</p><button class="btn" id="upload-first-empty">Publicar Libro</button></div>`;
+                    } else if (currentFilter === 'liked') {
+                        message = `<div class="empty-state"><i class="fas fa-heart"></i><h3>No tienes libros favoritos</h3><p>Haz clic en el corazón de los libros que te gusten para agregarlos aquí.</p></div>`;
+                    } else {
+                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros disponibles</h3><p>¡Sé el primero en publicar un libro!</p></div>`;
+                    }
+                    container.innerHTML = message;
+                   
+                    // Configurar botón de subida si existe
+                    const uploadBtn = document.getElementById('upload-first-empty');
+                    if (uploadBtn) {
+                        uploadBtn.addEventListener('click', function() {
+                            document.getElementById('upload-modal').style.display = 'flex';
+                        });
+                    }
+                   
+                    return;
+                }
+               
+                books.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    container.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error mostrando libros:", error);
+            }
+        }
+
+        function createBookCard(book) {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+           
+            // Determinar si el libro tiene portada personalizada
+            const coverStyle = book.coverUrl ?
+                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
+                '';
+           
+            bookCard.innerHTML = `
+                <div class="book-cover" ${coverStyle}>
+                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
+                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
+                </div>
+                <div class="book-actions">
+                    <div class="book-action like-btn" data-book-id="${book.id}">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="book-action read-btn" data-book-id="${book.id}">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="book-action follow-btn" data-author-id="${book.authorId}">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">
+                        por 
+                        <a href="#" class="author-link" data-author-id="${book.authorId}">
+                            ${book.author}
+                        </a>
+                        <span class="author-followers" data-author-id="${book.authorId}">
+                            <i class="fas fa-users"></i> <span class="follower-count">0</span>
+                        </span>
+                    </div>
+                    <div class="book-description">${book.description}</div>
+                    <div class="book-genre">${genreNames[book.genre]}</div>
+                    <div class="book-stats">
+                        <div class="book-stat">
+                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
+                        </div>
+                        <div class="book-stat">
+                            <i class="fas fa-eye"></i> ${book.views || 0}
+                        </div>
+                        <div class="book-stat">
+                            <i class="fas fa-file-alt"></i> ${book.pageCount || 1}
+                        </div>
+                    </div>
+                </div>
+            `;
+           
+            // Configurar eventos
+            bookCard.querySelector('.like-btn').addEventListener('click', function() {
+                handleLikeBook(book.id);
+            });
+           
+            bookCard.querySelector('.read-btn').addEventListener('click', function() {
+                openReader(book);
+            });
+           
+            bookCard.querySelector('.follow-btn').addEventListener('click', function() {
+                const authorId = this.getAttribute('data-author-id');
+                followAuthor(authorId);
+            });
+           
+            return bookCard;
+        }
+
+        async function updateProfile() {
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                // Mostrar estado de no autenticado
+                document.getElementById('profile-user-name').textContent = 'No autenticado';
+                document.getElementById('profile-user-email').textContent = 'Inicia sesión para ver tu perfil';
+                document.getElementById('profile-user-bio').textContent = '';
+                document.getElementById('edit-profile-btn').style.display = 'none';
+                return;
+            }
+           
+            try {
+                const userData = await getUserData(currentUser.uid);
+               
+                // Actualizar información básica
+                document.getElementById('profile-user-name').textContent = currentUser.displayName || 'Usuario';
+                document.getElementById('profile-user-email').textContent = currentUser.email;
+                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
+               
+                // Actualizar avatar
+                if (userData?.avatarUrl) {
+                    document.getElementById('user-avatar').innerHTML = `
+                        <img src="${userData.avatarUrl}" alt="Avatar">
+                        <div class="edit-overlay" id="edit-avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    `;
+                }
+               
+                // Actualizar formulario de edición
+                document.getElementById('edit-user-name').value = currentUser.displayName || '';
+                document.getElementById('edit-user-bio').value = userData?.bio || '';
+               
+                // Actualizar estadísticas
+                await updateProfileStats();
+               
+                // Mostrar/ocultar elementos según el estado de verificación
+                checkEmailVerification();
+               
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+            }
+        }
+
+        async function updateProfileStats() {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+           
+            try {
+                const userData = await getUserData(currentUser.uid);
+                const userBooksSnapshot = await booksRef
+                    .where('authorId', '==', currentUser.uid)
+                    .get();
+               
+                let totalLikes = 0;
+                userBooksSnapshot.forEach(doc => {
+                    const book = doc.data();
+                    totalLikes += book.likes || 0;
+                });
+               
+                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
+                document.getElementById('profile-likes').textContent = totalLikes;
+               
+                // Actualizar reseñas (simplificado)
+                const reviewsCount = userData?.myReviews?.length || 0;
+                document.getElementById('profile-reviews').textContent = reviewsCount;
+               
+            } catch (error) {
+                console.error("Error actualizando estadísticas de perfil:", error);
+            }
+        }
+
+        async function updateBooksStats() {
+            try {
+                const booksSnapshot = await booksRef
+                    .where('status', '==', 'approved')
+                    .get();
+                const usersSnapshot = await usersRef.get();
+               
+                let totalLikes = 0;
+                booksSnapshot.forEach(doc => {
+                    const book = doc.data();
+                    totalLikes += book.likes || 0;
+                });
+               
+                document.getElementById('total-books').textContent = booksSnapshot.size;
+                document.getElementById('total-authors').textContent = usersSnapshot.size;
+                document.getElementById('total-likes').textContent = totalLikes;
+            } catch (error) {
+                console.error("Error actualizando estadísticas:", error);
+            }
+        }
+
+        // ============================
+        // SISTEMA DE LECTOR
+        // ============================
+
         function openReader(book) {
             // Verificar permisos para usuarios invitados
             if (currentUserType === 'guest' && guestPagesRead >= MAX_GUEST_PAGES) {
@@ -2520,51 +3452,54 @@
         }
 
         // ============================
-        // MODIFICACIONES AL SISTEMA DE LIKES Y RESEÑAS
+        // SISTEMA DE RESEÑAS
         // ============================
 
-        async function handleLikeBook(bookId) {
-            if (!isActionAllowed('like_books')) {
-                showLoginPrompt();
-                return;
-            }
-           
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                showLoginPrompt();
-                return;
-            }
-           
+        async function loadReviews(bookId) {
             try {
-                const bookDoc = await booksRef.doc(bookId).get();
-                const book = bookDoc.data();
-                const userData = await getUserData(currentUser.uid);
+                const reviewsSnapshot = await reviewsRef
+                    .where('bookId', '==', bookId)
+                    .orderBy('createdAt', 'desc')
+                    .get();
                
-                let likedBooks = userData?.likedBooks || [];
-                let currentLikes = book.likes || 0;
-                let isLiked = likedBooks.includes(bookId);
+                const container = document.getElementById('reviews-container');
+                container.innerHTML = '';
                
-                if (isLiked) {
-                    likedBooks = likedBooks.filter(id => id !== bookId);
-                    currentLikes = Math.max(0, currentLikes - 1);
-                } else {
-                    likedBooks.push(bookId);
-                    currentLikes += 1;
+                if (reviewsSnapshot.empty) {
+                    container.innerHTML = '<p>No hay reseñas aún. ¡Sé el primero en reseñar!</p>';
+                    return;
                 }
                
-                await booksRef.doc(bookId).update({
-                    likes: currentLikes
+                reviewsSnapshot.forEach(doc => {
+                    const review = doc.data();
+                    const reviewElement = createReviewElement(review);
+                    container.appendChild(reviewElement);
                 });
-               
-                await saveUserData(currentUser.uid, {
-                    likedBooks: likedBooks
-                });
-               
-                console.log(`Like ${isLiked ? 'quitado' : 'agregado'} al libro ${bookId}`);
             } catch (error) {
-                console.error("Error manejando like:", error);
-                alert('Error al procesar el like. Intenta nuevamente.');
+                console.error("Error cargando reseñas:", error);
             }
+        }
+
+        function createReviewElement(review) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review';
+           
+            // Crear estrellas según la calificación
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= review.rating ? '★' : '☆';
+            }
+           
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <div class="review-author">${review.userName}</div>
+                    <div class="review-date">${review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString() : 'Fecha no disponible'}</div>
+                </div>
+                <div class="review-rating">${stars}</div>
+                <div class="review-content">${review.content}</div>
+            `;
+           
+            return reviewDiv;
         }
 
         async function submitReview() {
@@ -2619,13 +3554,11 @@
         }
 
         // ============================
-        // MODIFICACIONES AL SISTEMA DE SUBIDA
+        // SISTEMA DE LIKES Y SEGUIDORES
         // ============================
 
-        async function handleUploadFormSubmit(e) {
-            e.preventDefault();
-           
-            if (!isActionAllowed('upload_books')) {
+        async function handleLikeBook(bookId) {
+            if (!isActionAllowed('like_books')) {
                 showLoginPrompt();
                 return;
             }
@@ -2635,100 +3568,38 @@
                 showLoginPrompt();
                 return;
             }
-
-            // Validar datos mínimos
-            if (!currentBookData.title || !currentBookData.author || !currentBookData.genre || !currentBookData.description) {
-                alert('Por favor, completa toda la información básica del libro.');
-                switchWritingTab('basic-info');
-                return;
-            }
-
-            if (!currentBookData.content || currentBookData.wordCount < 100) {
-                alert('El contenido del libro debe tener al menos 100 palabras.');
-                switchWritingTab('content-editor');
-                return;
-            }
-
-            // Mostrar indicador de carga
-            const publishBtn = document.getElementById('publish-book-btn');
-            const originalText = publishBtn.innerHTML;
-            publishBtn.innerHTML = '<span class="loading"></span> Publicando...';
-            publishBtn.disabled = true;
-
+           
             try {
-                let coverUrl = null;
+                const bookDoc = await booksRef.doc(bookId).get();
+                const book = bookDoc.data();
+                const userData = await getUserData(currentUser.uid);
                
-                // Subir portada si es personalizada
-                if (currentBookData.coverType === 'custom' && currentBookData.coverImage) {
-                    coverUrl = await uploadCoverImage(currentBookData.coverImage, currentUser.uid);
-                }
+                let likedBooks = userData?.likedBooks || [];
+                let currentLikes = book.likes || 0;
+                let isLiked = likedBooks.includes(bookId);
                
-                // Preparar datos del libro
-                const bookData = {
-                    title: currentBookData.title,
-                    author: currentUser.displayName || currentBookData.author,
-                    genre: currentBookData.genre,
-                    description: currentBookData.description,
-                    content: currentBookData.content,
-                    authorId: currentUser.uid,
-                    authorEmail: currentUser.email,
-                    likes: 0,
-                    views: 0,
-                    wordCount: currentBookData.wordCount,
-                    pageCount: currentBookData.pageCount,
-                    chapters: currentBookData.chapters,
-                    coverUrl: coverUrl,
-                    coverDesign: currentBookData.coverDesign,
-                    status: 'pending',
-                    reported: false,
-                    reportCount: 0,
-                    reports: [],
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                const bookId = await saveBook(bookData);
-               
-                if (bookId) {
-                    // Limpiar borrador
-                    localStorage.removeItem('publibros_draft');
-                    clearInterval(autoSaveInterval);
-                   
-                    // Resetear formulario
-                    document.getElementById('upload-form').reset();
-                    document.getElementById('book-content').innerHTML = '';
-                    currentBookData = {
-                        title: '',
-                        author: '',
-                        genre: '',
-                        description: '',
-                        content: '',
-                        coverType: 'custom',
-                        coverImage: null,
-                        coverDesign: null,
-                        chapters: [],
-                        wordCount: 0,
-                        pageCount: 0
-                    };
-                   
-                    // Cerrar modal y mostrar mensaje
-                    document.getElementById('upload-modal').style.display = 'none';
-                    alert('¡Libro publicado correctamente! Estará disponible después de la moderación.');
+                if (isLiked) {
+                    likedBooks = likedBooks.filter(id => id !== bookId);
+                    currentLikes = Math.max(0, currentLikes - 1);
                 } else {
-                    throw new Error('Error al guardar el libro en la base de datos');
+                    likedBooks.push(bookId);
+                    currentLikes += 1;
                 }
+               
+                await booksRef.doc(bookId).update({
+                    likes: currentLikes
+                });
+               
+                await saveUserData(currentUser.uid, {
+                    likedBooks: likedBooks
+                });
+               
+                console.log(`Like ${isLiked ? 'quitado' : 'agregado'} al libro ${bookId}`);
             } catch (error) {
-                console.error("Error publicando libro:", error);
-                alert('Error al publicar el libro. Intenta nuevamente.');
-            } finally {
-                // Restaurar botón
-                publishBtn.innerHTML = originalText;
-                publishBtn.disabled = false;
+                console.error("Error manejando like:", error);
+                alert('Error al procesar el like. Intenta nuevamente.');
             }
         }
-                    // ============================
-        // SISTEMA DE SEGUIDORES
-        // ============================
 
         async function followAuthor(authorId) {
             if (!isActionAllowed('follow_authors')) {
@@ -2810,202 +3681,171 @@
             }
         }
 
-        async function isFollowing(authorId) {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return false;
-           
-            try {
-                const followId = `${currentUser.uid}_${authorId}`;
-                const followDoc = await followersRef.doc(followId).get();
-                return followDoc.exists;
-            } catch (error) {
-                console.error("Error verificando seguimiento:", error);
-                return false;
-            }
-        }
-
-        async function getFollowerCount(userId) {
-            try {
-                const userDoc = await usersRef.doc(userId).get();
-                const userData = userDoc.data();
-                return userData.followers || 0;
-            } catch (error) {
-                console.error("Error obteniendo contador de seguidores:", error);
-                return 0;
-            }
-        }
-
-        async function getFollowingCount(userId) {
-            try {
-                const userDoc = await usersRef.doc(userId).get();
-                const userData = userDoc.data();
-                return userData.following || 0;
-            } catch (error) {
-                console.error("Error obteniendo contador de seguidos:", error);
-                return 0;
-            }
-        }
-
-        // Función para cargar el contador de seguidores del autor
-        async function loadAuthorFollowersCount(authorId, bookCard) {
-            try {
-                const followerCount = await getFollowerCount(authorId);
-                const followerElement = bookCard.querySelector(`.author-followers[data-author-id="${authorId}"] .follower-count`);
-                if (followerElement) {
-                    followerElement.textContent = followerCount;
-                }
-            } catch (error) {
-                console.error("Error cargando seguidores del autor:", error);
-            }
-        }
-
         // ============================
-        // ACTUALIZACIÓN DE INTERFAZ AL INICIAR SESIÓN
+        // SISTEMA DE AUTENTICACIÓN
         // ============================
 
-        function updateAuthUI() {
-            const currentUser = auth.currentUser;
-            const authStatus = document.getElementById('auth-status');
-            const authBtn = document.getElementById('auth-btn');
-           
-            if (currentUser) {
-                // Usuario ha iniciado sesión - mostrar nombre de usuario
-                authStatus.textContent = currentUser.displayName || currentUser.email;
-                authStatus.style.fontWeight = 'bold';
-               
-                // Cambiar el ícono a un ícono de usuario
-                const icon = authBtn.querySelector('i');
-                icon.className = 'fas fa-user-circle';
-               
-                // Cambiar la funcionalidad del botón para mostrar menú de usuario
-                authBtn.onclick = function() {
-                    showUserMenu();
-                };
-            } else {
-                // Usuario no ha iniciado sesión - mostrar "Iniciar Sesión"
-                authStatus.textContent = 'Iniciar Sesión';
-                authStatus.style.fontWeight = 'normal';
-               
-                // Restaurar ícono original
-                const icon = authBtn.querySelector('i');
-                icon.className = 'fas fa-user';
-               
-                // Restaurar funcionalidad original
-                authBtn.onclick = function() {
-                    document.getElementById('auth-modal').style.display = 'flex';
-                };
-            }
-        }
-
-        // Función para mostrar menú de usuario
-        function showUserMenu() {
-            // Crear menú desplegable
-            const userMenu = document.createElement('div');
-            userMenu.className = 'user-menu';
-            userMenu.style.cssText = `
-                position: absolute;
-                top: 60px;
-                right: 20px;
-                background: var(--card-bg);
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                box-shadow: 0 4px 12px var(--shadow-color);
-                padding: 10px 0;
-                min-width: 150px;
-                z-index: 1000;
-            `;
-           
-            userMenu.innerHTML = `
-                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
-                    <i class="fas fa-user" style="margin-right: 8px;"></i>
-                    Mi Perfil
-                </div>
-                <div class="user-menu-item" style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);">
-                    <i class="fas fa-cog" style="margin-right: 8px;"></i>
-                    Configuración
-                </div>
-                <div class="user-menu-item" id="logout-btn" style="padding: 8px 15px; cursor: pointer; color: var(--accent);">
-                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
-                    Cerrar Sesión
-                </div>
-            `;
-           
-            document.body.appendChild(userMenu);
-           
-            // Configurar eventos del menú
-            userMenu.querySelector('.user-menu-item:first-child').addEventListener('click', function() {
-                switchSection('perfil');
-                document.body.removeChild(userMenu);
-            });
-           
-            userMenu.querySelector('#logout-btn').addEventListener('click', function() {
-                auth.signOut();
-                document.body.removeChild(userMenu);
-            });
-           
-            // Cerrar menú al hacer clic fuera
-            setTimeout(() => {
-                const closeMenu = function(e) {
-                    if (!userMenu.contains(e.target) && !document.getElementById('auth-btn').contains(e.target)) {
-                        document.body.removeChild(userMenu);
-                        document.removeEventListener('click', closeMenu);
-                    }
-                };
-                document.addEventListener('click', closeMenu);
-            }, 100);
-        }
-
-        // Función para cerrar sesión
-        async function handleLogout() {
+        async function handleLoginFormSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
             try {
-                await auth.signOut();
-                // Los listeners se actualizarán automáticamente a través de onAuthStateChanged
+                await auth.signInWithEmailAndPassword(email, password);
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('login-form').reset();
+               
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
             } catch (error) {
-                console.error("Error cerrando sesión:", error);
-                alert('Error al cerrar sesión.');
+                alert('Error al iniciar sesión: ' + error.message);
             }
         }
 
-        // ============================
-        // FUNCIONES ORIGINALES DEL SISTEMA
-        // ============================
-
-        function switchSection(sectionId) {
-            // Verificar si es un invitado intentando acceder al perfil
-            if (sectionId === 'perfil' && currentUserType === 'guest') {
-                showLoginPrompt();
+        async function handleRegisterFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+           
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden.');
                 return;
             }
            
-            // Cambiar sección normalmente
-            document.querySelectorAll('.main-section').forEach(section => {
-                section.classList.remove('active');
-            });
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+               
+                await user.updateProfile({
+                    displayName: name
+                });
+               
+                // Guardar datos del usuario con información de seguidores
+                await saveUserData(user.uid, {
+                    name: name,
+                    email: email,
+                    bio: '',
+                    likedBooks: [],
+                    myReviews: [],
+                    favoriteGenres: [],
+                    emailVerified: false,
+                    role: 'user',
+                    followers: 0,
+                    following: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+               
+                // Enviar verificación por email
+                await user.sendEmailVerification();
+               
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('register-form').reset();
+               
+                // Actualizar tipo de usuario
+                currentUserType = 'logged';
+                document.getElementById('guest-notification').style.display = 'none';
+               
+                alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
+            } catch (error) {
+                alert('Error al registrar usuario: ' + error.message);
+            }
+        }
+
+        async function handleEditProfileFormSubmit(e) {
+            e.preventDefault();
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
            
-            document.getElementById(sectionId).classList.add('active');
+            const name = document.getElementById('edit-user-name').value;
+            const bio = document.getElementById('edit-user-bio').value;
+            const avatarFile = document.getElementById('edit-user-avatar').files[0];
            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-section') === sectionId) {
-                    link.classList.add('active');
+            try {
+                // Actualizar perfil en Firebase Auth
+                await currentUser.updateProfile({
+                    displayName: name
+                });
+               
+                // Guardar datos adicionales en Firestore
+                const userData = {
+                    name: name,
+                    bio: bio,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+               
+                // Subir avatar si se seleccionó uno
+                if (avatarFile) {
+                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
+                    if (avatarUrl) {
+                        userData.avatarUrl = avatarUrl;
+                    }
                 }
-            });
-           
-            // Actualizar contenido específico de la sección
-            if (sectionId === 'inicio') {
-                updateBooksStats();
-                displayFeaturedBooks();
-                displayRecommendedBooks();
-            } else if (sectionId === 'biblioteca') {
-                displayGenreFilters();
-                displayBooks();
-            } else if (sectionId === 'perfil' && currentUserType === 'logged') {
+               
+                await saveUserData(currentUser.uid, userData);
+               
+                document.getElementById('edit-profile-modal').style.display = 'none';
                 updateProfile();
-                if (isAdmin()) {
-                    loadAdminPanel();
+                alert('Perfil actualizado correctamente.');
+            } catch (error) {
+                console.error("Error actualizando perfil:", error);
+                alert('Error al actualizar el perfil.');
+            }
+        }
+
+        function checkEmailVerification() {
+            const user = auth.currentUser;
+            if (user) {
+                user.reload().then(() => {
+                    const verificationBadge = document.getElementById('verification-badge');
+                    const resendButton = document.getElementById('resend-verification');
+                   
+                    if (user.emailVerified) {
+                        verificationBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verificado';
+                        verificationBadge.className = 'verification-badge';
+                        verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'none';
+                    } else {
+                        verificationBadge.innerHTML = '<i class="fas fa-times-circle"></i> No verificado';
+                        verificationBadge.className = 'verification-badge unverified';
+                        verificationBadge.style.display = 'inline-flex';
+                        resendButton.style.display = 'block';
+                    }
+                });
+            }
+        }
+
+        async function resendEmailVerification() {
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await user.sendEmailVerification();
+                    alert('Correo de verificación enviado. Revisa tu bandeja de entrada.');
+                } catch (error) {
+                    console.error("Error reenviando verificación:", error);
+                    alert('Error al reenviar el correo de verificación.');
                 }
             }
         }
+
+        function handlePasswordReset() {
+            const email = prompt('Ingresa tu correo electrónico para restablecer la contraseña:');
+            if (email) {
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        alert('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
+                    })
+                    .catch(error => {
+                        console.error("Error enviando correo de restablecimiento:", error);
+                        alert('Error al enviar el correo de restablecimiento.');
+                    });
+            }
+        }
+
+        // ============================
+        // SISTEMA DE ESCRITURA
+        // ============================
 
         function initWritingSystem() {
             // Configurar eventos para los tabs de escritura
@@ -3353,703 +4193,122 @@
                 `;
             }
         }
-              async function loadReviews(bookId) {
-            try {
-                const reviewsSnapshot = await reviewsRef
-                    .where('bookId', '==', bookId)
-                    .orderBy('createdAt', 'desc')
-                    .get();
-               
-                const container = document.getElementById('reviews-container');
-                container.innerHTML = '';
-               
-                if (reviewsSnapshot.empty) {
-                    container.innerHTML = '<p>No hay reseñas aún. ¡Sé el primero en reseñar!</p>';
-                    return;
-                }
-               
-                reviewsSnapshot.forEach(doc => {
-                    const review = doc.data();
-                    const reviewElement = createReviewElement(review);
-                    container.appendChild(reviewElement);
-                });
-            } catch (error) {
-                console.error("Error cargando reseñas:", error);
-            }
-        }
 
-        function createReviewElement(review) {
-            const reviewDiv = document.createElement('div');
-            reviewDiv.className = 'review';
-           
-            // Crear estrellas según la calificación
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                stars += i <= review.rating ? '★' : '☆';
-            }
-           
-            reviewDiv.innerHTML = `
-                <div class="review-header">
-                    <div class="review-author">${review.userName}</div>
-                    <div class="review-date">${review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString() : 'Fecha no disponible'}</div>
-                </div>
-                <div class="review-rating">${stars}</div>
-                <div class="review-content">${review.content}</div>
-            `;
-           
-            return reviewDiv;
-        }
-
-        // ============================
-        // FUNCIONES DE REGISTRO Y AUTENTICACIÓN
-        // ============================
-
-        async function handleLoginFormSubmit(e) {
+        async function handleUploadFormSubmit(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('login-form').reset();
-               
-                // Actualizar tipo de usuario
-                currentUserType = 'logged';
-                document.getElementById('guest-notification').style.display = 'none';
-            } catch (error) {
-                alert('Error al iniciar sesión: ' + error.message);
-            }
-        }
-
-        async function handleRegisterFormSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
            
-            if (password !== confirmPassword) {
-                alert('Las contraseñas no coinciden.');
+            if (!isActionAllowed('upload_books')) {
+                showLoginPrompt();
                 return;
             }
            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-               
-                await user.updateProfile({
-                    displayName: name
-                });
-               
-                // Guardar datos del usuario con información de seguidores
-                await saveUserData(user.uid, {
-                    name: name,
-                    email: email,
-                    bio: '',
-                    likedBooks: [],
-                    myReviews: [],
-                    favoriteGenres: [],
-                    emailVerified: false,
-                    role: 'user',
-                    followers: 0, // Inicializar contador de seguidores
-                    following: 0, // Inicializar contador de seguidos
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-               
-                // Enviar verificación por email
-                await user.sendEmailVerification();
-               
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('register-form').reset();
-               
-                // Actualizar tipo de usuario
-                currentUserType = 'logged';
-                document.getElementById('guest-notification').style.display = 'none';
-               
-                alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
-            } catch (error) {
-                alert('Error al registrar usuario: ' + error.message);
-            }
-        }
-
-        async function handleEditProfileFormSubmit(e) {
-            e.preventDefault();
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-           
-            const name = document.getElementById('edit-user-name').value;
-            const bio = document.getElementById('edit-user-bio').value;
-            const avatarFile = document.getElementById('edit-user-avatar').files[0];
-           
-            try {
-                // Actualizar perfil en Firebase Auth
-                await currentUser.updateProfile({
-                    displayName: name
-                });
-               
-                // Guardar datos adicionales en Firestore
-                const userData = {
-                    name: name,
-                    bio: bio,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-               
-                // Subir avatar si se seleccionó uno
-                if (avatarFile) {
-                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
-                    if (avatarUrl) {
-                        userData.avatarUrl = avatarUrl;
-                    }
-                }
-               
-                await saveUserData(currentUser.uid, userData);
-               
-                document.getElementById('edit-profile-modal').style.display = 'none';
-                updateProfile();
-                alert('Perfil actualizado correctamente.');
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-                alert('Error al actualizar el perfil.');
-            }
-        }
-
-        // ============================
-        // FUNCIONES DE TARJETAS DE LIBROS
-        // ============================
-
-        function createBookCard(book) {
-            const bookCard = document.createElement('div');
-            bookCard.className = 'book-card';
-           
-            // Determinar si el libro tiene portada personalizada
-            const coverStyle = book.coverUrl ?
-                `style="background-image: url('${book.coverUrl}'); background-size: cover; background-position: center;"` :
-                '';
-           
-            bookCard.innerHTML = `
-                <div class="book-cover" ${coverStyle}>
-                    ${!book.coverUrl ? book.title.split(' ').map(word => word[0]).join('') : ''}
-                    ${book.coverUrl ? '<div class="cover-text"><h3>' + book.title + '</h3><p>por ' + book.author + '</p></div>' : ''}
-                </div>
-                <div class="book-actions">
-                    <div class="book-action like-btn" data-book-id="${book.id}">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="book-action read-btn" data-book-id="${book.id}">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <div class="book-action follow-btn" data-author-id="${book.authorId}">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                </div>
-                <div class="book-info">
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">
-                        por 
-                        <a href="#" class="author-link" data-author-id="${book.authorId}">
-                            ${book.author}
-                        </a>
-                        <span class="author-followers" data-author-id="${book.authorId}">
-                            <i class="fas fa-users"></i> <span class="follower-count">0</span>
-                        </span>
-                    </div>
-                    <div class="book-description">${book.description}</div>
-                    <div class="book-genre">${genreNames[book.genre]}</div>
-                    <div class="book-stats">
-                        <div class="book-stat">
-                            <i class="fas fa-heart"></i> <span class="like-count">${book.likes || 0}</span>
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-eye"></i> ${book.views || 0}
-                        </div>
-                        <div class="book-stat">
-                            <i class="fas fa-file-alt"></i> ${book.pageCount || 1}
-                        </div>
-                    </div>
-                </div>
-            `;
-           
-            // Configurar eventos
-            bookCard.querySelector('.like-btn').addEventListener('click', function() {
-                handleLikeBook(book.id);
-            });
-           
-            bookCard.querySelector('.read-btn').addEventListener('click', function() {
-                openReader(book);
-            });
-           
-            bookCard.querySelector('.follow-btn').addEventListener('click', function() {
-                const authorId = this.getAttribute('data-author-id');
-                followAuthor(authorId);
-            });
-           
-            // Cargar contador de seguidores del autor
-            loadAuthorFollowersCount(book.authorId, bookCard);
-           
-            return bookCard;
-        }
-
-        // ============================
-        // FUNCIONES DE BASE DE DATOS
-        // ============================
-
-        async function saveUserData(userId, userData) {
-            try {
-                await usersRef.doc(userId).set(userData, { merge: true });
-                return true;
-            } catch (error) {
-                console.error("Error guardando datos de usuario:", error);
-                return false;
-            }
-        }
-
-        async function getUserData(userId) {
-            try {
-                const doc = await usersRef.doc(userId).get();
-                return doc.exists ? doc.data() : null;
-            } catch (error) {
-                console.error("Error obteniendo datos de usuario:", error);
-                return null;
-            }
-        }
-
-        async function saveBook(bookData) {
-            try {
-                const docRef = await booksRef.add(bookData);
-                return docRef.id;
-            } catch (error) {
-                console.error("Error guardando libro:", error);
-                return null;
-            }
-        }
-
-        async function getAllBooks() {
-            try {
-                const snapshot = await booksRef
-                    .where('status', '==', 'approved')
-                    .get();
-                const books = [];
-                snapshot.forEach(doc => {
-                    books.push({ id: doc.id, ...doc.data() });
-                });
-                return books;
-            } catch (error) {
-                console.error("Error obteniendo libros:", error);
-                return [];
-            }
-        }
-
-        async function updateBook(bookId, updates) {
-            try {
-                await booksRef.doc(bookId).update(updates);
-                return true;
-            } catch (error) {
-                console.error("Error actualizando libro:", error);
-                return false;
-            }
-        }
-
-        async function uploadCoverImage(imageFile, userId) {
-            try {
-                const storageRef = storage.ref();
-                const imageRef = storageRef.child(`covers/${userId}/${Date.now()}_${imageFile.name}`);
-                const snapshot = await imageRef.put(imageFile);
-                const downloadURL = await snapshot.ref.getDownloadURL();
-                return downloadURL;
-            } catch (error) {
-                console.error("Error subiendo imagen:", error);
-                return null;
-            }
-        }
-
-        async function updateBookViews(bookId) {
-            try {
-                const bookDoc = await booksRef.doc(bookId).get();
-                const book = bookDoc.data();
-                const currentViews = book.views || 0;
-               
-                await booksRef.doc(bookId).update({
-                    views: currentViews + 1
-                });
-            } catch (error) {
-                console.error("Error actualizando vistas:", error);
-            }
-        }
-
-        // ============================
-        // FUNCIONES DE INTERFAZ
-        // ============================
-
-        async function displayFeaturedBooks() {
-            try {
-                const books = await getAllBooks();
-                const container = document.getElementById('featured-books-container');
-                container.innerHTML = '';
-               
-                // Ordenar por likes y tomar los primeros 6
-                const featuredBooks = books
-                    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
-                    .slice(0, 6);
-               
-                if (featuredBooks.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros destacados</h3><p>¡Sé el primero en publicar un libro!</p></div>';
-                    return;
-                }
-               
-                featuredBooks.forEach(book => {
-                    const bookCard = createBookCard(book);
-                    container.appendChild(bookCard);
-                });
-            } catch (error) {
-                console.error("Error mostrando libros destacados:", error);
-            }
-        }
-
-        async function displayRecommendedBooks() {
-            try {
-                const books = await getAllBooks();
-                const container = document.getElementById('recommended-books-container');
-                container.innerHTML = '';
-               
-                // Simular recomendaciones basadas en géneros populares
-                const recommendedBooks = books
-                    .sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
-                    .slice(0, 6);
-               
-                if (recommendedBooks.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No hay recomendaciones</h3><p>Explora más libros para obtener recomendaciones personalizadas.</p></div>';
-                    return;
-                }
-               
-                recommendedBooks.forEach(book => {
-                    const bookCard = createBookCard(book);
-                    // Añadir badge de recomendación
-                    const badge = document.createElement('div');
-                    badge.className = 'recommendation-badge';
-                    badge.textContent = 'Recomendado';
-                    bookCard.querySelector('.book-cover').appendChild(badge);
-                   
-                    container.appendChild(bookCard);
-                });
-            } catch (error) {
-                console.error("Error mostrando libros recomendados:", error);
-            }
-        }
-
-        function displayGenreFilters() {
-            const container = document.getElementById('genre-filter-container');
-            container.innerHTML = '';
-           
-            // Añadir opción "Todos"
-            const allChip = document.createElement('div');
-            allChip.className = 'genre-chip active';
-            allChip.textContent = 'Todos';
-            allChip.addEventListener('click', function() {
-                selectedGenre = 'all';
-                document.querySelectorAll('.genre-chip').forEach(chip => {
-                    chip.classList.remove('active');
-                });
-                this.classList.add('active');
-                displayBooks();
-            });
-            container.appendChild(allChip);
-           
-            // Añadir chips para cada género
-            genres.forEach(genre => {
-                const chip = document.createElement('div');
-                chip.className = 'genre-chip';
-                chip.textContent = genreNames[genre];
-                chip.addEventListener('click', function() {
-                    selectedGenre = genre;
-                    document.querySelectorAll('.genre-chip').forEach(chip => {
-                        chip.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    displayBooks();
-                });
-                container.appendChild(chip);
-            });
-        }
-
-        async function displayBooks() {
-            try {
-                let books = await getAllBooks();
-                const container = document.getElementById('books-container');
-                container.innerHTML = '';
-               
-                // Aplicar filtros
-                if (selectedGenre !== 'all') {
-                    books = books.filter(book => book.genre === selectedGenre);
-                }
-               
-                if (searchTerm) {
-                    books = books.filter(book =>
-                        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        book.description.toLowerCase().includes(searchTerm.toLowerCase())
-                    );
-                }
-               
-                // Aplicar filtro adicional (mis libros, favoritos, etc.)
-                if (currentFilter === 'my-books' && auth.currentUser) {
-                    books = books.filter(book => book.authorId === auth.currentUser.uid);
-                } else if (currentFilter === 'liked' && auth.currentUser) {
-                    const userData = await getUserData(auth.currentUser.uid);
-                    const likedBooks = userData?.likedBooks || [];
-                    books = books.filter(book => likedBooks.includes(book.id));
-                }
-               
-                if (books.length === 0) {
-                    let message = '';
-                    if (searchTerm) {
-                        message = `<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>No hay resultados para "${searchTerm}".</p></div>`;
-                    } else if (selectedGenre !== 'all') {
-                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros en este género</h3><p>No se encontraron libros en la categoría ${genreNames[selectedGenre]}.</p></div>`;
-                    } else if (currentFilter === 'my-books') {
-                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No has publicado libros aún</h3><p>¡Publica tu primer libro y compártelo con la comunidad!</p><button class="btn" id="upload-first-empty">Publicar Libro</button></div>`;
-                    } else if (currentFilter === 'liked') {
-                        message = `<div class="empty-state"><i class="fas fa-heart"></i><h3>No tienes libros favoritos</h3><p>Haz clic en el corazón de los libros que te gusten para agregarlos aquí.</p></div>`;
-                    } else {
-                        message = `<div class="empty-state"><i class="fas fa-book"></i><h3>No hay libros disponibles</h3><p>¡Sé el primero en publicar un libro!</p></div>`;
-                    }
-                    container.innerHTML = message;
-                   
-                    // Configurar botón de subida si existe
-                    const uploadBtn = document.getElementById('upload-first-empty');
-                    if (uploadBtn) {
-                        uploadBtn.addEventListener('click', function() {
-                            document.getElementById('upload-modal').style.display = 'flex';
-                        });
-                    }
-                   
-                    return;
-                }
-               
-                books.forEach(book => {
-                    const bookCard = createBookCard(book);
-                    container.appendChild(bookCard);
-                });
-            } catch (error) {
-                console.error("Error mostrando libros:", error);
-            }
-        }
-
-        async function updateProfile() {
             const currentUser = auth.currentUser;
             if (!currentUser) {
-                // Mostrar estado de no autenticado
-                document.getElementById('profile-user-name').textContent = 'No autenticado';
-                document.getElementById('profile-user-email').textContent = 'Inicia sesión para ver tu perfil';
-                document.getElementById('profile-user-bio').textContent = '';
-                document.getElementById('edit-profile-btn').style.display = 'none';
+                showLoginPrompt();
                 return;
             }
-           
+
+            // Validar datos mínimos
+            if (!currentBookData.title || !currentBookData.author || !currentBookData.genre || !currentBookData.description) {
+                alert('Por favor, completa toda la información básica del libro.');
+                switchWritingTab('basic-info');
+                return;
+            }
+
+            if (!currentBookData.content || currentBookData.wordCount < 100) {
+                alert('El contenido del libro debe tener al menos 100 palabras.');
+                switchWritingTab('content-editor');
+                return;
+            }
+
+            // Mostrar indicador de carga
+            const publishBtn = document.getElementById('publish-book-btn');
+            const originalText = publishBtn.innerHTML;
+            publishBtn.innerHTML = '<span class="loading"></span> Publicando...';
+            publishBtn.disabled = true;
+
             try {
-                const userData = await getUserData(currentUser.uid);
+                let coverUrl = null;
                
-                // Actualizar información básica
-                document.getElementById('profile-user-name').textContent = currentUser.displayName || 'Usuario';
-                document.getElementById('profile-user-email').textContent = currentUser.email;
-                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
-               
-                // Actualizar avatar
-                if (userData?.avatarUrl) {
-                    document.getElementById('user-avatar').innerHTML = `
-                        <img src="${userData.avatarUrl}" alt="Avatar">
-                        <div class="edit-overlay" id="edit-avatar-overlay">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                    `;
+                // Subir portada si es personalizada
+                if (currentBookData.coverType === 'custom' && currentBookData.coverImage) {
+                    coverUrl = await uploadCoverImage(currentBookData.coverImage, currentUser.uid);
                 }
                
-                // Actualizar formulario de edición
-                document.getElementById('edit-user-name').value = currentUser.displayName || '';
-                document.getElementById('edit-user-bio').value = userData?.bio || '';
-               
-                // Actualizar estadísticas incluyendo seguidores
-                await updateProfileStats();
-               
-                // Mostrar/ocultar elementos según el estado de verificación
-                checkEmailVerification();
-               
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-            }
-        }
+                // Preparar datos del libro
+                const bookData = {
+                    title: currentBookData.title,
+                    author: currentUser.displayName || currentBookData.author,
+                    genre: currentBookData.genre,
+                    description: currentBookData.description,
+                    content: currentBookData.content,
+                    authorId: currentUser.uid,
+                    authorEmail: currentUser.email,
+                    likes: 0,
+                    views: 0,
+                    wordCount: currentBookData.wordCount,
+                    pageCount: currentBookData.pageCount,
+                    chapters: currentBookData.chapters,
+                    coverUrl: coverUrl,
+                    coverDesign: currentBookData.coverDesign,
+                    status: 'pending',
+                    reported: false,
+                    reportCount: 0,
+                    reports: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
 
-        async function updateProfileStats() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
-           
-            try {
-                const userData = await getUserData(currentUser.uid);
-                const userBooksSnapshot = await booksRef
-                    .where('authorId', '==', currentUser.uid)
-                    .get();
+                const bookId = await saveBook(bookData);
                
-                let totalLikes = 0;
-                userBooksSnapshot.forEach(doc => {
-                    const book = doc.data();
-                    totalLikes += book.likes || 0;
-                });
-               
-                // Obtener contadores de seguidores
-                const followerCount = userData?.followers || 0;
-                const followingCount = userData?.following || 0;
-               
-                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
-                document.getElementById('profile-likes').textContent = totalLikes;
-               
-                // Actualizar reseñas (simplificado)
-                const reviewsCount = userData?.myReviews?.length || 0;
-                document.getElementById('profile-reviews').textContent = reviewsCount;
-               
-                // Añadir estadísticas de seguidores al perfil
-                const userStatsContainer = document.querySelector('.user-stats');
-                if (userStatsContainer) {
-                    // Verificar si ya existen los elementos de seguidores
-                    let followersStat = document.getElementById('profile-followers');
-                    let followingStat = document.getElementById('profile-following');
+                if (bookId) {
+                    // Limpiar borrador
+                    localStorage.removeItem('publibros_draft');
+                    clearInterval(autoSaveInterval);
                    
-                    if (!followersStat) {
-                        // Crear elementos de seguidores si no existen
-                        followersStat = document.createElement('div');
-                        followersStat.className = 'user-stat';
-                        followersStat.id = 'profile-followers';
-                        followersStat.innerHTML = `
-                            <div class="stat-value">${followerCount}</div>
-                            <div class="stat-label">Seguidores</div>
-                        `;
-                       
-                        followingStat = document.createElement('div');
-                        followingStat.className = 'user-stat';
-                        followingStat.id = 'profile-following';
-                        followingStat.innerHTML = `
-                            <div class="stat-value">${followingCount}</div>
-                            <div class="stat-label">Siguiendo</div>
-                        `;
-                       
-                        userStatsContainer.appendChild(followersStat);
-                        userStatsContainer.appendChild(followingStat);
-                    } else {
-                        // Actualizar los valores existentes
-                        followersStat.querySelector('.stat-value').textContent = followerCount;
-                        followingStat.querySelector('.stat-value').textContent = followingCount;
-                    }
-                }
-               
-            } catch (error) {
-                console.error("Error actualizando estadísticas de perfil:", error);
-            }
-        }
-
-        async function updateBooksStats() {
-            try {
-                const booksSnapshot = await booksRef
-                    .where('status', '==', 'approved')
-                    .get();
-                const usersSnapshot = await usersRef.get();
-               
-                let totalLikes = 0;
-                booksSnapshot.forEach(doc => {
-                    const book = doc.data();
-                    totalLikes += book.likes || 0;
-                });
-               
-                document.getElementById('total-books').textContent = booksSnapshot.size;
-                document.getElementById('total-authors').textContent = usersSnapshot.size;
-                document.getElementById('total-likes').textContent = totalLikes;
-            } catch (error) {
-                console.error("Error actualizando estadísticas:", error);
-            }
-        }
-
-        function startRealTimeListeners() {
-            // Listener para libros aprobados
-            booksListener = booksRef
-                .where('status', '==', 'approved')
-                .onSnapshot(snapshot => {
-                    displayBooks();
-                    displayFeaturedBooks();
-                    displayRecommendedBooks();
-                    updateBooksStats();
-                }, error => {
-                    console.error("Error en listener de libros:", error);
-                });
-        }
-
-        function stopRealTimeListeners() {
-            if (booksListener) {
-                booksListener();
-            }
-            if (usersListener) {
-                usersListener();
-            }
-        }
-
-        function isAdmin() {
-            // Esta función debería verificar si el usuario actual es admin
-            // Por ahora, retornamos false por simplicidad
-            return false;
-        }
-
-        async function resendEmailVerification() {
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    await user.sendEmailVerification();
-                    alert('Correo de verificación enviado. Revisa tu bandeja de entrada.');
-                } catch (error) {
-                    console.error("Error reenviando verificación:", error);
-                    alert('Error al reenviar el correo de verificación.');
-                }
-            }
-        }
-
-        function checkEmailVerification() {
-            const user = auth.currentUser;
-            if (user) {
-                user.reload().then(() => {
-                    const verificationBadge = document.getElementById('verification-badge');
-                    const resendButton = document.getElementById('resend-verification');
+                    // Resetear formulario
+                    document.getElementById('upload-form').reset();
+                    document.getElementById('book-content').innerHTML = '';
+                    currentBookData = {
+                        title: '',
+                        author: '',
+                        genre: '',
+                        description: '',
+                        content: '',
+                        coverType: 'custom',
+                        coverImage: null,
+                        coverDesign: null,
+                        chapters: [],
+                        wordCount: 0,
+                        pageCount: 0
+                    };
                    
-                    if (user.emailVerified) {
-                        verificationBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verificado';
-                        verificationBadge.className = 'verification-badge';
-                        verificationBadge.style.display = 'inline-flex';
-                        resendButton.style.display = 'none';
-                    } else {
-                        verificationBadge.innerHTML = '<i class="fas fa-times-circle"></i> No verificado';
-                        verificationBadge.className = 'verification-badge unverified';
-                        verificationBadge.style.display = 'inline-flex';
-                        resendButton.style.display = 'block';
-                    }
-                });
-            }
-        }
-
-        function handlePasswordReset() {
-            const email = prompt('Ingresa tu correo electrónico para restablecer la contraseña:');
-            if (email) {
-                auth.sendPasswordResetEmail(email)
-                    .then(() => {
-                        alert('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
-                    })
-                    .catch(error => {
-                        console.error("Error enviando correo de restablecimiento:", error);
-                        alert('Error al enviar el correo de restablecimiento.');
-                    });
+                    // Cerrar modal y mostrar mensaje
+                    document.getElementById('upload-modal').style.display = 'none';
+                    alert('¡Libro publicado correctamente! Estará disponible después de la moderación.');
+                } else {
+                    throw new Error('Error al guardar el libro en la base de datos');
+                }
+            } catch (error) {
+                console.error("Error publicando libro:", error);
+                alert('Error al publicar el libro. Intenta nuevamente.');
+            } finally {
+                // Restaurar botón
+                publishBtn.innerHTML = originalText;
+                publishBtn.disabled = false;
             }
         }
 
         // ============================
-        // INICIALIZACIÓN
+        // INICIALIZACIÓN COMPLETA
         // ============================
 
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar modo oscuro
             checkDarkModePreference();
+            
+            // Inicializar buscador global
+            initGlobalSearch();
             
             // Configurar listener de autenticación
             auth.onAuthStateChanged((user) => {
@@ -4071,7 +4330,7 @@
                 } else {
                     // No hay usuario autenticado
                     currentUserType = null;
-                    updateAuthUI(); // Restaurar botón de inicio de sesión
+                    updateAuthUI();
                     setTimeout(() => {
                         showWelcomeModal();
                     }, 1000);
@@ -4289,6 +4548,46 @@
         window.addEventListener('beforeunload', function() {
             stopRealTimeListeners();
         });
+
+        // Función para manejar la lectura de páginas como invitado
+        function handleGuestPageReading() {
+            guestPagesRead++;
+           
+            if (guestPagesRead >= MAX_GUEST_PAGES) {
+                // Mostrar advertencia de límite alcanzado
+                const warning = document.createElement('div');
+                warning.className = 'page-limit-warning';
+                warning.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Límite de lectura alcanzado</strong>
+                    <p>Has leído ${MAX_GUEST_PAGES} páginas como invitado. <a href="#" id="register-from-limit">Regístrate</a> para continuar leyendo.</p>
+                `;
+               
+                const readerContent = document.getElementById('reader-content');
+                readerContent.parentNode.insertBefore(warning, readerContent.nextSibling);
+               
+                // Deshabilitar botones de navegación
+                document.getElementById('prev-page').disabled = true;
+                document.getElementById('next-page').disabled = true;
+               
+                // Configurar enlace de registro
+                document.getElementById('register-from-limit').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById('auth-modal').style.display = 'flex';
+                });
+               
+                return false;
+            }
+           
+            return true;
+        }
+
+        // Función para mostrar el gestor de capítulos
+        function showChapterManager() {
+            // Implementación básica del gestor de capítulos
+            alert('Gestor de capítulos - Esta funcionalidad está en desarrollo');
+        }
+
     </script>
 </body>
 </html>
