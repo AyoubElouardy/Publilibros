@@ -754,45 +754,44 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Perfil de usuario */
+        /* Perfil de usuario - MEJORADO */
         .user-profile {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 2rem;
             background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 12px;
+            padding: 2rem;
+            border-radius: 16px;
             box-shadow: 0 8px 20px var(--shadow-color);
+            position: relative;
+            gap: 2rem;
+        }
+
+        .user-avatar-container {
+            position: relative;
+            flex-shrink: 0;
         }
 
         .user-avatar {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2.5rem;
-            margin-right: 1.5rem;
+            font-size: 3rem;
             overflow: hidden;
-            position: relative;
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(106, 90, 249, 0.3);
             border: 4px solid var(--card-bg);
+            position: relative;
+            transition: var(--transition);
         }
 
-        .user-avatar::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: var(--gradient);
-            border-radius: 50%;
-            z-index: -1;
+        .user-avatar:hover {
+            transform: scale(1.05);
         }
 
         .user-avatar img {
@@ -809,27 +808,27 @@
             height: 100%;
         }
 
-        .user-avatar .edit-overlay {
+        .edit-avatar-btn {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
+            cursor: pointer;
             transition: var(--transition);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
 
-        .user-avatar:hover .edit-overlay {
-            opacity: 1;
-        }
-
-        .user-avatar .edit-overlay i {
-            color: white;
-            font-size: 1.5rem;
+        .edit-avatar-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
         }
 
         .user-info {
@@ -837,641 +836,262 @@
         }
 
         .user-name {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
             color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .user-email {
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .user-bio {
             color: var(--text-muted);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            padding: 1rem;
+            background: var(--input-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .user-bio.empty {
+            font-style: italic;
+            opacity: 0.7;
         }
 
         .user-stats {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .user-stat {
             text-align: center;
+            min-width: 100px;
         }
 
         .stat-value {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: var(--primary);
+            display: block;
         }
 
         .stat-label {
             font-size: 0.9rem;
             color: var(--text-muted);
+            margin-top: 5px;
         }
-</style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-book-open"></i>Publi<span>libros</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="nav-link active" data-section="inicio">Inicio</a></li>
-                    <li><a href="#" class="nav-link" data-section="biblioteca">Biblioteca</a></li>
-                    <li><a href="#" class="nav-link" data-section="perfil">Mi Perfil</a></li>
-                </ul>
-            </nav>
-            
-            <div class="user-actions">
-                <!-- Buscador global simplificado - ahora dentro de user-actions -->
-                <div class="search-container">
-                    <button class="search-toggle" id="search-toggle">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <div class="search-box" id="search-box">
-                        <input type="text" id="global-search" placeholder="Buscar libros, autores...">
-                    </div>
-                    <div class="search-results" id="search-results"></div>
-                </div>
-                
-                <button id="auth-btn">
-                    <i class="fas fa-user"></i> 
-                    <span id="auth-status">Iniciar Sesión</span>
-                </button>
-                <button id="theme-toggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-      <!-- Modal de Bienvenida (nuevo) -->
-    <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>¡Bienvenido a Publibros!</h3>
-            </div>
-            <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
-            <div class="welcome-options">
-                <div class="welcome-option" id="login-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </div>
-                    <h4>Iniciar Sesión</h4>
-                    <p>Accede con tu cuenta existente</p>
-                </div>
-                <div class="welcome-option" id="register-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h4>Registrarse</h4>
-                    <p>Crea una nueva cuenta y descubre todas las funciones</p>
-                </div>
-                <div class="welcome-option" id="guest-option">
-                    <div class="welcome-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h4>Modo Invitado</h4>
-                    <p>Explora con acceso limitado a funciones básicas</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Notificación de estado de invitado (nuevo) -->
-    <div id="guest-notification" class="guest-notification" style="display: none;">
-        <i class="fas fa-info-circle"></i>
-        <span>Estás navegando como invitado. Algunas funciones están limitadas. <a href="#" id="upgrade-account">Mejora tu cuenta</a> para acceder a todo.</span>
-        <span class="close" id="close-guest-notification">&times;</span>
-    </div>
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
 
-    <!-- Sección Inicio -->
-    <section id="inicio" class="main-section active">
-        <div class="container">
-            <div class="hero">
-                <h1>Descubre y Comparte Historias Únicas</h1>
-                <p>Publibros es una plataforma elegante donde autores y lectores se conectan. Comparte tus creaciones, descubre nuevos talentos y forma parte de una comunidad literaria vibrante.</p>
-                <button class="btn" id="explore-library">Explorar Biblioteca</button>
-                <button class="btn btn-outline" id="upload-first-book">Publica tu Primer Libro</button>
-            </div>
-            <div class="featured-books">
-                <h2 class="section-title">Libros Destacados</h2>
-                <div class="books-grid" id="featured-books-container">
-                    <!-- Los libros destacados se cargarán aquí -->
-                </div>
-            </div>
-            <!-- Nueva sección: Libros Recomendados -->
-            <div class="recommended-books" id="recommended-section">
-                <h2 class="section-title">Libros Recomendados para Ti</h2>
-                <div class="books-grid" id="recommended-books-container">
-                    <!-- Los libros recomendados se cargarán aquí -->
-                </div>
-            </div>
-            <div class="stats-section">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="stat-value" id="total-books">0</div>
-                        <div class="stat-label">Libros Publicados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-value" id="total-authors">0</div>
-                        <div class="stat-label">Autores Registrados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="stat-value" id="total-likes">0</div>
-                        <div class="stat-label">Likes Totales</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        /* ================================================
+           MEJORAS AÑADIDAS PARA EL SISTEMA DE PERFIL
+           ================================================ */
 
-    <!-- Sección Biblioteca -->
-    <section id="biblioteca" class="main-section">
-        <div class="container">
-            <h2 class="section-title">Biblioteca de Libros</h2>
-           
-            <div class="library-actions">
-                <button class="btn" id="upload-book-btn">
-                    <i class="fas fa-plus"></i> Subir Nuevo Libro
-                </button>
-                <div class="search-filter">
-                    <input type="text" id="search-books" class="form-control" placeholder="Buscar libros...">
-                    <select id="filter-books" class="form-control">
-                        <option value="all">Todos</option>
-                        <option value="liked">Me gusta</option>
-                        <option value="my-books">Mis libros</option>
-                    </select>
-                </div>
-            </div>
-           
-            <!-- Filtros de género -->
-            <div class="genre-filter" id="genre-filter-container">
-                <!-- Los filtros de género se cargarán aquí -->
-            </div>
-            <div class="books-grid" id="books-container">
-                <!-- Los libros se cargarán aquí -->
-            </div>
-        </div>
-    </section>
+        /* Modal de edición de avatar */
+        .avatar-modal .modal-content {
+            max-width: 500px;
+            width: 90%;
+        }
 
-    <!-- Sección Perfil -->
-    <section id="perfil" class="main-section">
-        <div class="container">
-            <h2 class="section-title">Mi Perfil</h2>
-           
-            <div class="user-profile">
-                <div class="user-avatar" id="user-avatar">
-                    <div class="avatar-placeholder" id="avatar-placeholder">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="edit-overlay" id="edit-avatar-overlay">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </div>
-                <div class="user-info">
-                    <h2 class="user-name" id="profile-user-name">Usuario
-                        <span id="verification-badge" class="verification-badge unverified" style="display: none;">
-                            <i class="fas fa-times-circle"></i> No verificado
-                        </span>
-                        <span id="admin-badge" class="admin-badge" style="display: none;">Admin</span>
-                    </h2>
-                    <p class="user-email" id="profile-user-email">email@ejemplo.com</p>
-                    <p class="user-bio" id="profile-user-bio">Aquí puedes agregar una breve biografía sobre ti.</p>
-                    <div class="user-stats">
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-books">0</div>
-                            <div class="stat-label">Libros Publicados</div>
-                        </div>
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-likes">0</div>
-                            <div class="stat-label">Likes Recibidos</div>
-                        </div>
-                        <div class="user-stat">
-                            <div class="stat-value" id="profile-reviews">0</div>
-                            <div class="stat-label">Reseñas Escritas</div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn" id="edit-profile-btn">Editar Perfil</button>
-                <button class="btn btn-secondary" id="resend-verification" style="display: none;">
-                    <i class="fas fa-envelope"></i> Reenviar Verificación
-                </button>
-            </div>
+        .avatar-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
 
-            <!-- Panel de Administración -->
-            <div id="admin-panel" class="admin-panel" style="display: none;">
-                <h3 class="section-title">Panel de Moderación</h3>
-               
-                <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="pending-books">Libros Pendientes</button>
-                    <button class="tab-btn" data-tab="reported-books">Libros Reportados</button>
-                    <button class="tab-btn" data-tab="user-management">Gestión de Usuarios</button>
-                </div>
-               
-                <div class="tab-content active" id="pending-books-tab">
-                    <h3>Libros Pendientes de Aprobación</h3>
-                    <div class="books-grid" id="pending-books-container">
-                        <!-- Los libros pendientes se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="reported-books-tab">
-                    <h3>Libros Reportados</h3>
-                    <div id="reported-books-container">
-                        <!-- Los libros reportados se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="user-management-tab">
-                    <h3>Gestión de Usuarios</h3>
-                    <div id="users-container">
-                        <!-- Los usuarios se cargarán aquí -->
-                    </div>
-                </div>
-            </div>
+        .avatar-option {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            padding: 1rem;
+            text-align: center;
+            background: var(--card-bg);
+        }
 
-            <div class="profile-tabs">
-                <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="my-books">Mis Libros</button>
-                    <button class="tab-btn" data-tab="liked-books">Libros que Me Gustan</button>
-                    <button class="tab-btn" data-tab="my-reviews">Mis Reseñas</button>
-                </div>
-               
-                <div class="tab-content active" id="my-books-tab">
-                    <h3>Mis Libros Publicados</h3>
-                    <div class="books-grid" id="my-books-container">
-                        <!-- Los libros del usuario se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="liked-books-tab">
-                    <h3>Libros que Me Gustan</h3>
-                    <div class="books-grid" id="liked-books-container">
-                        <!-- Los libros que le gustan al usuario se cargarán aquí -->
-                    </div>
-                </div>
-               
-                <div class="tab-content" id="my-reviews-tab">
-                    <h3>Mis Reseñas</h3>
-                    <div id="my-reviews-container">
-                        <!-- Las reseñas del usuario se cargarán aquí -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        .avatar-option:hover {
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
 
-    <!-- Modal para autenticación -->
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="auth-modal-title">Iniciar Sesión</h3>
-                <button class="close-modal" id="close-auth-modal">&times;</button>
-            </div>
-           
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-form="login">Iniciar Sesión</button>
-                <button class="auth-tab" data-form="register">Registrarse</button>
-            </div>
-           
-            <form id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" class="form-control" required>
-                    <div class="error-message" id="login-email-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" class="form-control" required>
-                    <div class="error-message" id="login-password-error"></div>
-                </div>
-                <button type="submit" class="btn">Iniciar Sesión</button>
-                <div class="form-footer">
-                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
-                    <br>
-                    ¿No tienes cuenta? <a id="switch-to-register">Regístrate aquí</a>
-                </div>
-            </form>
-           
-            <form id="register-form" class="auth-form">
-                <div class="form-group">
-                    <label for="register-name">Nombre</label>
-                    <input type="text" id="register-name" class="form-control" required>
-                    <div class="error-message" id="register-name-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" class="form-control" required>
-                    <div class="error-message" id="register-email-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Contraseña</label>
-                    <input type="password" id="register-password" class="form-control" required>
-                    <div class="error-message" id="register-password-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-confirm-password">Confirmar Contraseña</label>
-                    <input type="password" id="register-confirm-password" class="form-control" required>
-                    <div class="error-message" id="register-confirm-password-error"></div>
-                </div>
-                <button type="submit" class="btn">Registrarse</button>
-                <div class="form-footer">
-                    ¿Ya tienes cuenta? <a id="switch-to-login">Inicia sesión aquí</a>
-                </div>
-            </form>
-        </div>
-    </div>
+        .avatar-option.selected {
+            border-color: var(--secondary);
+            background: rgba(214, 110, 253, 0.1);
+        }
 
-    <!-- Modal para subir libro MEJORADO -->
-    <div id="upload-modal" class="modal writing-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Publicar Nuevo Libro</h3>
-                <button class="close-modal" id="close-upload-modal">&times;</button>
-            </div>
-           
-            <div class="writing-tabs">
-                <button class="writing-tab active" data-tab="basic-info">Información Básica</button>
-                <button class="writing-tab" data-tab="cover-design">Portada</button>
-                <button class="writing-tab" data-tab="content-editor">Contenido</button>
-                <button class="writing-tab" data-tab="preview">Vista Previa</button>
-            </div>
-           
-            <form id="upload-form">
-                <!-- Pestaña 1: Información Básica -->
-                <div class="tab-panel active" id="basic-info-panel">
-                    <div class="form-group">
-                        <label for="book-title">Título del Libro</label>
-                        <input type="text" id="book-title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-author">Autor</label>
-                        <input type="text" id="book-author" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-genre">Género</label>
-                        <select id="book-genre" class="form-control" required>
-                            <option value="">Selecciona un género</option>
-                            <option value="romance">Romance</option>
-                            <option value="thriller">Thriller</option>
-                            <option value="terror">Terror</option>
-                            <option value="fantasia">Fantasía</option>
-                            <option value="ciencia-ficcion">Ciencia Ficción</option>
-                            <option value="misterio">Misterio</option>
-                            <option value="aventura">Aventura</option>
-                            <option value="drama">Drama</option>
-                            <option value="poesia">Poesía</option>
-                            <option value="biografia">Biografía</option>
-                            <option value="historico">Histórico</option>
-                            <option value="infantil">Infantil</option>
-                            <option value="juvenil">Juvenil</option>
-                            <option value="autoayuda">Autoayuda</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="book-description">Descripción</label>
-                        <textarea id="book-description" class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" id="next-to-cover">Siguiente: Portada</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 2: Diseño de Portada -->
-                <div class="tab-panel" id="cover-design-panel">
-                    <div class="cover-upload-section">
-                        <h4>Portada del Libro</h4>
-                        <p>Puedes subir una imagen personalizada o elegir uno de nuestros diseños.</p>
-                       
-                        <div class="form-group">
-                            <label for="book-cover-upload">Subir Imagen de Portada</label>
-                            <input type="file" id="book-cover-upload" class="form-control" accept="image/*">
-                            <small>Formatos: JPG, PNG. Tamaño máximo: 2MB</small>
-                        </div>
-                       
-                        <div class="cover-preview" id="cover-preview">
-                            <div id="cover-placeholder">
-                                <i class="fas fa-book fa-3x" style="color: #7f8c8d;"></i>
-                                <p style="margin-top: 10px; color: #7f8c8d;">Vista previa de portada</p>
-                            </div>
-                        </div>
-                       
-                        <h5>O elige un diseño prediseñado:</h5>
-                        <div class="cover-options" id="cover-options">
-                            <!-- Los diseños de portada se generarán dinámicamente -->
-                        </div>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                        <button type="button" class="btn btn-secondary" id="back-to-basic">Anterior: Información</button>
-                        <button type="button" class="btn btn-secondary" id="next-to-content">Siguiente: Contenido</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 3: Editor de Contenido -->
-                <div class="tab-panel" id="content-editor-panel">
-                    <div class="form-group">
-                        <label>Editor de Contenido</label>
-                        <div class="editor-container">
-                            <div class="editor-toolbar" id="editor-toolbar">
-                                <button type="button" class="editor-btn" data-command="bold" title="Negrita"><i class="fas fa-bold"></i></button>
-                                <button type="button" class="editor-btn" data-command="italic" title="Itálica"><i class="fas fa-italic"></i></button>
-                                <button type="button" class="editor-btn" data-command="underline" title="Subrayado"><i class="fas fa-underline"></i></button>
-                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista"><i class="fas fa-list-ul"></i></button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H1" title="Título 1">T1</button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H2" title="Título 2">T2</button>
-                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="P" title="Párrafo">P</button>
-                                <button type="button" class="editor-btn" id="add-chapter-btn" title="Añadir capítulo"><i class="fas fa-bookmark"></i> Capítulo</button>
-                            </div>
-                            <div class="editor-content" id="book-content" contenteditable="true"></div>
-                            <div class="editor-stats">
-                                <span id="word-count">0 palabras</span>
-                                <span id="page-count">0 páginas</span>
-                            </div>
-                        </div>
-                    </div>
-                   
-                    <div class="chapters-section">
-                        <h4>Capítulos</h4>
-                        <div class="chapter-list" id="chapter-list">
-                            <!-- Los capítulos se añadirán aquí dinámicamente -->
-                        </div>
-                        <button type="button" class="btn btn-secondary" id="manage-chapters-btn">
-                            <i class="fas fa-cog"></i> Gestionar Capítulos
-                        </button>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between;">
-                        <button type="button" class="btn btn-secondary" id="back-to-cover">Anterior: Portada</button>
-                        <button type="button" class="btn btn-secondary" id="next-to-preview">Siguiente: Vista Previa</button>
-                    </div>
-                </div>
-               
-                <!-- Pestaña 4: Vista Previa -->
-                <div class="tab-panel" id="preview-panel">
-                    <div class="book-preview">
-                        <h4>Vista Previa de tu Libro</h4>
-                        <div class="book-card" style="max-width: 300px; margin: 0 auto 2rem;">
-                            <div class="book-cover" id="preview-cover">
-                                <div class="cover-text" id="preview-cover-text">
-                                    <h3 id="preview-title">Título del Libro</h3>
-                                    <p id="preview-author">por Autor</p>
-                                </div>
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title" id="preview-book-title">Título del Libro</div>
-                                <div class="book-author" id="preview-book-author">por Autor</div>
-                                <div class="book-description" id="preview-description">Descripción del libro</div>
-                                <div class="book-genre" id="preview-genre">Género</div>
-                            </div>
-                        </div>
-                       
-                        <div class="preview-content">
-                            <h5>Contenido (primeras 500 palabras):</h5>
-                            <div class="preview-text" id="preview-content-text" style="
-                                background: var(--input-bg);
-                                padding: 1rem;
-                                border-radius: 8px;
-                                max-height: 200px;
-                                overflow-y: auto;
-                                white-space: pre-line;
-                                color: var(--text-color);
-                            "></div>
-                        </div>
-                    </div>
-                   
-                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                        <button type="button" class="btn btn-secondary" id="back-to-content">Anterior: Contenido</button>
-                        <button type="submit" class="btn" id="publish-book-btn">Publicar Libro</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+        .avatar-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
 
-    <!-- Modal para editar perfil -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Editar Perfil</h3>
-                <button class="close-modal" id="close-edit-profile-modal">&times;</button>
-            </div>
-            <form id="edit-profile-form">
-                <div class="form-group">
-                    <label for="edit-user-name">Nombre</label>
-                    <input type="text" id="edit-user-name" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-user-bio">Biografía</label>
-                    <textarea id="edit-user-bio" class="form-control" placeholder="Cuéntanos sobre ti..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="edit-user-avatar">Foto de Perfil</label>
-                    <input type="file" id="edit-user-avatar" class="form-control" accept="image/*">
-                    <small>Selecciona una imagen para tu perfil (máx. 2MB)</small>
-                </div>
-                <button type="submit" class="btn">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 1rem auto;
+            overflow: hidden;
+            border: 4px solid var(--border-color);
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <!-- Lector de Libros (oculto inicialmente) -->
-    <section id="reader" style="display: none;">
-        <div class="container">
-            <div class="reader-container">
-                <div class="reader-header">
-                    <h2 id="reader-title">Título del Libro</h2>
-                    <button id="close-reader" class="btn">Cerrar</button>
-                </div>
-                <div class="reader-content" id="reader-content">
-                    <!-- El contenido del libro se cargará aquí -->
-                </div>
-                <div class="reader-controls">
-                    <button id="prev-page" class="btn"><i class="fas fa-chevron-left"></i> Anterior</button>
-                    <span id="page-info">Página 1 de 1</span>
-                    <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
-                </div>
-                <!-- Sección de reseñas -->
-                <div class="reviews-section">
-                    <h3>Reseñas</h3>
-                    <div class="review-form">
-                        <h4>Deja tu reseña</h4>
-                        <div class="form-group">
-                            <label for="review-rating">Calificación</label>
-                            <select id="review-rating" class="form-control">
-                                <option value="5">★★★★★ Excelente</option>
-                                <option value="4">★★★★ Muy Bueno</option>
-                                <option value="3">★★★ Bueno</option>
-                                <option value="2">★★ Regular</option>
-                                <option value="1">★ Malo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="review-content">Tu reseña</label>
-                            <textarea id="review-content" class="form-control" placeholder="Comparte tu opinión sobre este libro..."></textarea>
-                        </div>
-                        <button id="submit-review" class="btn">Enviar Reseña</button>
-                    </div>
-                    <div id="reviews-container">
-                        <!-- Las reseñas se cargarán aquí dinámicamente -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Publibros</h3>
-                    <p>Una plataforma elegante para compartir y descubrir libros de autores emergentes y establecidos.</p>
-                    <p>Conectamos a lectores y escritores en una comunidad literaria vibrante.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Enlaces Rápidos</h3>
-                    <p><a href="#" class="nav-link-footer" data-section="inicio">Inicio</a></p>
-                    <p><a href="#" class="nav-link-footer" data-section="biblioteca">Biblioteca</a></p>
-                    <p><a href="#" class="nav-link-footer" data-section="perfil">Mi Perfil</a></p>
-                </div>
-                <div class="footer-section">
-                    <h3>Sobre Nosotros</h3>
-                    <p>Publibros nació con la misión de crear un espacio donde los amantes de la literatura puedan compartir sus creaciones y descubrir nuevas voces.</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Publibros. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-      <style>
-        /* Pestañas del perfil */
+        .avatar-preview i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .avatar-upload {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .avatar-upload input[type="file"] {
+            display: none;
+        }
+
+        .avatar-upload label {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .avatar-upload label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(106, 90, 249, 0.3);
+        }
+
+        .avatar-colors {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .avatar-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .avatar-color:hover {
+            transform: scale(1.1);
+        }
+
+        .avatar-color.selected {
+            border-color: white;
+            box-shadow: 0 0 0 3px var(--secondary);
+        }
+
+        .avatar-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* Contador de caracteres para biografía */
+        .bio-counter {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .bio-counter.warning {
+            color: #f39c12;
+        }
+
+        .bio-counter.error {
+            color: #e74c3c;
+        }
+
+        /* Contador de usuarios en tiempo real */
+        .user-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .user-counter i {
+            font-size: 1.1rem;
+        }
+
+        /* Mejoras para el buscador */
+        .search-results {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tabs del perfil */
         .profile-tabs {
             margin-top: 3rem;
         }
+
         .tabs-header {
             display: flex;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 2rem;
+            overflow-x: auto;
         }
+
         .tab-btn {
             background: none;
             border: none;
@@ -1482,17 +1102,22 @@
             color: var(--text-muted);
             border-bottom: 3px solid transparent;
             transition: var(--transition);
+            white-space: nowrap;
         }
+
         .tab-btn:hover {
             color: var(--primary);
         }
+
         .tab-btn.active {
             color: var(--secondary);
             border-bottom: 3px solid var(--secondary);
         }
+
         .tab-content {
             display: none;
         }
+
         .tab-content.active {
             display: block;
         }
@@ -1504,17 +1129,20 @@
             padding: 3rem 0 2rem;
             margin-top: 3rem;
         }
+
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
         }
+
         .footer-section h3 {
             margin-bottom: 1.5rem;
             position: relative;
             padding-bottom: 10px;
         }
+
         .footer-section h3:after {
             content: '';
             position: absolute;
@@ -1524,18 +1152,22 @@
             height: 3px;
             background: white;
         }
+
         .footer-section p {
             margin-bottom: 1rem;
             opacity: 0.8;
         }
+
         .footer-section a {
             color: white;
             text-decoration: none;
             transition: var(--transition);
         }
+
         .footer-section a:hover {
             opacity: 0.8;
         }
+
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
@@ -1556,6 +1188,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             max-width: 500px;
             width: 90%;
@@ -1566,15 +1199,18 @@
             border-radius: 16px;
             box-shadow: 0 8px 20px var(--shadow-color);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
+
         .modal-header h3 {
             color: var(--primary);
         }
+
         .close-modal {
             background: none;
             border: none;
@@ -1583,14 +1219,17 @@
             color: var(--text-muted);
             transition: var(--transition);
         }
+
         .close-modal:hover {
             color: var(--accent);
         }
+
         .auth-tabs {
             display: flex;
             margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
+
         .auth-tab {
             padding: 0.8rem 1.5rem;
             background: none;
@@ -1601,29 +1240,36 @@
             border-bottom: 3px solid transparent;
             transition: var(--transition);
         }
+
         .auth-tab.active {
             color: var(--secondary);
             border-bottom: 3px solid var(--secondary);
         }
+
         .auth-form {
             display: none;
         }
+
         .auth-form.active {
             display: block;
         }
+
         .form-footer {
             margin-top: 1.5rem;
             text-align: center;
             color: var(--text-muted);
         }
+
         .form-footer a {
             color: var(--secondary);
             text-decoration: none;
             cursor: pointer;
         }
+
         .form-footer a:hover {
             text-decoration: underline;
         }
+
         .error-message {
             color: var(--accent);
             font-size: 0.9rem;
@@ -1638,6 +1284,7 @@
             gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
+
         .genre-chip {
             background-color: var(--input-bg);
             color: var(--text-color);
@@ -1649,11 +1296,13 @@
             border: 2px solid transparent;
             font-weight: 500;
         }
+
         .genre-chip:hover {
             background-color: var(--primary);
             color: white;
             transform: translateY(-2px);
         }
+
         .genre-chip.active {
             background: var(--gradient);
             color: white;
@@ -1668,6 +1317,7 @@
             box-shadow: 0 8px 20px var(--shadow-color);
             margin-bottom: 2rem;
         }
+
         .admin-badge {
             background: var(--accent);
             color: white;
@@ -1677,6 +1327,7 @@
             font-weight: bold;
             margin-left: 10px;
         }
+
         .report-reason {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -1684,6 +1335,7 @@
             padding: 1rem;
             margin: 0.5rem 0;
         }
+
         .verification-badge {
             display: inline-flex;
             align-items: center;
@@ -1694,9 +1346,14 @@
             font-size: 0.8rem;
             margin-left: 10px;
         }
+
         .verification-badge.unverified {
             background: #f8d7da;
             color: #721c24;
+        }
+
+        .verification-badge i {
+            margin-right: 5px;
         }
 
         /* Estadísticas */
@@ -1706,6 +1363,7 @@
             gap: 2rem;
             margin-top: 3rem;
         }
+
         .stat-card {
             background: var(--card-bg);
             padding: 2rem;
@@ -1714,23 +1372,39 @@
             box-shadow: 0 8px 20px var(--shadow-color);
             transition: var(--transition);
         }
+
         .stat-card:hover {
             transform: translateY(-5px);
         }
+
         .stat-icon {
             font-size: 2.5rem;
             color: var(--secondary);
             margin-bottom: 1rem;
         }
 
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
         /* Acciones de biblioteca */
         .library-actions {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
+
         .search-filter {
             display: flex;
             gap: 1rem;
@@ -2002,7 +1676,7 @@
             height: 20px;
             border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            border-top-color: #fff;
+            border-top-color: var(--primary);
             animation: spin 1s ease-in-out infinite;
         }
        
@@ -2170,6 +1844,9 @@
                 flex-direction: column;
                 text-align: center;
             }
+            .user-avatar-container {
+                margin: 0 auto 1rem;
+            }
             .user-avatar {
                 margin-right: 0;
                 margin-bottom: 1rem;
@@ -2298,7 +1975,716 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-      <!-- Firebase SDK -->
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>Publi<span>libros</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-section="inicio">Inicio</a></li>
+                    <li><a href="#" class="nav-link" data-section="biblioteca">Biblioteca</a></li>
+                    <li><a href="#" class="nav-link" data-section="perfil">Mi Perfil</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-actions">
+                <!-- Buscador global simplificado - ahora dentro de user-actions -->
+                <div class="search-container">
+                    <button class="search-toggle" id="search-toggle">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <div class="search-box" id="search-box">
+                        <input type="text" id="global-search" placeholder="Buscar libros, autores...">
+                    </div>
+                    <div class="search-results" id="search-results"></div>
+                </div>
+                
+                <button id="auth-btn">
+                    <i class="fas fa-user"></i> 
+                    <span id="auth-status">Iniciar Sesión</span>
+                </button>
+                <button id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+      <!-- Modal de Bienvenida (nuevo) -->
+    <div id="welcome-modal" class="modal welcome-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>¡Bienvenido a Publibros!</h3>
+            </div>
+            <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
+            <div class="welcome-options">
+                <div class="welcome-option" id="login-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h4>Iniciar Sesión</h4>
+                    <p>Accede con tu cuenta existente</p>
+                </div>
+                <div class="welcome-option" id="register-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4>Registrarse</h4>
+                    <p>Crea una nueva cuenta y descubre todas las funciones</p>
+                </div>
+                <div class="welcome-option" id="guest-option">
+                    <div class="welcome-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>Modo Invitado</h4>
+                    <p>Explora con acceso limitado a funciones básicas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación de estado de invitado (nuevo) -->
+    <div id="guest-notification" class="guest-notification" style="display: none;">
+        <i class="fas fa-info-circle"></i>
+        <span>Estás navegando como invitado. Algunas funciones están limitadas. <a href="#" id="upgrade-account">Mejora tu cuenta</a> para acceder a todo.</span>
+        <span class="close" id="close-guest-notification">&times;</span>
+    </div>
+
+    <!-- Contador de usuarios en tiempo real -->
+    <div class="user-counter" id="user-counter" style="display: none;">
+        <i class="fas fa-users"></i>
+        <span id="online-users-count">0</span> usuarios en línea
+    </div>
+
+    <!-- Sección Inicio -->
+    <section id="inicio" class="main-section active">
+        <div class="container">
+            <div class="hero">
+                <h1>Descubre y Comparte Historias Únicas</h1>
+                <p>Publibros es una plataforma elegante donde autores y lectores se conectan. Comparte tus creaciones, descubre nuevos talentos y forma parte de una comunidad literaria vibrante.</p>
+                <button class="btn" id="explore-library">Explorar Biblioteca</button>
+                <button class="btn btn-outline" id="upload-first-book">Publica tu Primer Libro</button>
+            </div>
+            <div class="featured-books">
+                <h2 class="section-title">Libros Destacados</h2>
+                <div class="books-grid" id="featured-books-container">
+                    <!-- Los libros destacados se cargarán aquí -->
+                </div>
+            </div>
+            <!-- Nueva sección: Libros Recomendados -->
+            <div class="recommended-books" id="recommended-section">
+                <h2 class="section-title">Libros Recomendados para Ti</h2>
+                <div class="books-grid" id="recommended-books-container">
+                    <!-- Los libros recomendados se cargarán aquí -->
+                </div>
+            </div>
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-value" id="total-books">0</div>
+                        <div class="stat-label">Libros Publicados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="total-authors">0</div>
+                        <div class="stat-label">Autores Registrados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-value" id="total-likes">0</div>
+                        <div class="stat-label">Likes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-value" id="total-views">0</div>
+                        <div class="stat-label">Visitas Totales</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Biblioteca -->
+    <section id="biblioteca" class="main-section">
+        <div class="container">
+            <h2 class="section-title">Biblioteca de Libros</h2>
+           
+            <div class="library-actions">
+                <button class="btn" id="upload-book-btn">
+                    <i class="fas fa-plus"></i> Subir Nuevo Libro
+                </button>
+                <div class="search-filter">
+                    <input type="text" id="search-books" class="form-control" placeholder="Buscar libros...">
+                    <select id="filter-books" class="form-control">
+                        <option value="all">Todos</option>
+                        <option value="liked">Me gusta</option>
+                        <option value="my-books">Mis libros</option>
+                    </select>
+                </div>
+            </div>
+           
+            <!-- Filtros de género -->
+            <div class="genre-filter" id="genre-filter-container">
+                <!-- Los filtros de género se cargarán aquí -->
+            </div>
+            <div class="books-grid" id="books-container">
+                <!-- Los libros se cargarán aquí -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Perfil - MEJORADA -->
+    <section id="perfil" class="main-section">
+        <div class="container">
+            <h2 class="section-title">Mi Perfil</h2>
+           
+            <div class="user-profile">
+                <div class="user-avatar-container">
+                    <div class="user-avatar" id="user-avatar">
+                        <div class="avatar-placeholder" id="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <button class="edit-avatar-btn" id="edit-avatar-btn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="user-info">
+                    <h2 class="user-name" id="profile-user-name">Usuario
+                        <span id="verification-badge" class="verification-badge unverified" style="display: none;">
+                            <i class="fas fa-times-circle"></i> No verificado
+                        </span>
+                        <span id="admin-badge" class="admin-badge" style="display: none;">Admin</span>
+                    </h2>
+                    <p class="user-email" id="profile-user-email">email@ejemplo.com</p>
+                    <p class="user-bio" id="profile-user-bio">Aquí puedes agregar una breve biografía sobre ti.</p>
+                    <div class="user-stats">
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-books">0</div>
+                            <div class="stat-label">Libros Publicados</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-likes">0</div>
+                            <div class="stat-label">Likes Recibidos</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-followers">0</div>
+                            <div class="stat-label">Seguidores</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="stat-value" id="profile-following">0</div>
+                            <div class="stat-label">Siguiendo</div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn" id="edit-profile-btn">
+                            <i class="fas fa-edit"></i> Editar Perfil
+                        </button>
+                        <button class="btn btn-secondary" id="resend-verification" style="display: none;">
+                            <i class="fas fa-envelope"></i> Reenviar Verificación
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Administración -->
+            <div id="admin-panel" class="admin-panel" style="display: none;">
+                <h3 class="section-title">Panel de Moderación</h3>
+               
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="pending-books">Libros Pendientes</button>
+                    <button class="tab-btn" data-tab="reported-books">Libros Reportados</button>
+                    <button class="tab-btn" data-tab="user-management">Gestión de Usuarios</button>
+                </div>
+               
+                <div class="tab-content active" id="pending-books-tab">
+                    <h3>Libros Pendientes de Aprobación</h3>
+                    <div class="books-grid" id="pending-books-container">
+                        <!-- Los libros pendientes se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="reported-books-tab">
+                    <h3>Libros Reportados</h3>
+                    <div id="reported-books-container">
+                        <!-- Los libros reportados se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="user-management-tab">
+                    <h3>Gestión de Usuarios</h3>
+                    <div id="users-container">
+                        <!-- Los usuarios se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-tabs">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="my-books">Mis Libros</button>
+                    <button class="tab-btn" data-tab="liked-books">Libros que Me Gustan</button>
+                    <button class="tab-btn" data-tab="my-reviews">Mis Reseñas</button>
+                    <button class="tab-btn" data-tab="reading-history">Historial de Lectura</button>
+                </div>
+               
+                <div class="tab-content active" id="my-books-tab">
+                    <h3>Mis Libros Publicados</h3>
+                    <div class="books-grid" id="my-books-container">
+                        <!-- Los libros del usuario se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="liked-books-tab">
+                    <h3>Libros que Me Gustan</h3>
+                    <div class="books-grid" id="liked-books-container">
+                        <!-- Los libros que le gustan al usuario se cargarán aquí -->
+                    </div>
+                </div>
+               
+                <div class="tab-content" id="my-reviews-tab">
+                    <h3>Mis Reseñas</h3>
+                    <div id="my-reviews-container">
+                        <!-- Las reseñas del usuario se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="reading-history-tab">
+                    <h3>Historial de Lectura</h3>
+                    <div id="reading-history-container">
+                        <!-- El historial de lectura se cargará aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para autenticación -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="auth-modal-title">Iniciar Sesión</h3>
+                <button class="close-modal" id="close-auth-modal">&times;</button>
+            </div>
+           
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-form="login">Iniciar Sesión</button>
+                <button class="auth-tab" data-form="register">Registrarse</button>
+            </div>
+           
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+                <div class="form-footer">
+                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
+                    <br>
+                    ¿No tienes cuenta? <a id="switch-to-register">Regístrate aquí</a>
+                </div>
+            </form>
+           
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-name">Nombre</label>
+                    <input type="text" id="register-name" class="form-control" required>
+                    <div class="error-message" id="register-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" class="form-control" required>
+                    <div class="error-message" id="register-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Contraseña</label>
+                    <input type="password" id="register-password" class="form-control" required>
+                    <div class="error-message" id="register-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirmar Contraseña</label>
+                    <input type="password" id="register-confirm-password" class="form-control" required>
+                    <div class="error-message" id="register-confirm-password-error"></div>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+                <div class="form-footer">
+                    ¿Ya tienes cuenta? <a id="switch-to-login">Inicia sesión aquí</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para subir libro MEJORADO -->
+    <div id="upload-modal" class="modal writing-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Publicar Nuevo Libro</h3>
+                <button class="close-modal" id="close-upload-modal">&times;</button>
+            </div>
+           
+            <div class="writing-tabs">
+                <button class="writing-tab active" data-tab="basic-info">Información Básica</button>
+                <button class="writing-tab" data-tab="cover-design">Portada</button>
+                <button class="writing-tab" data-tab="content-editor">Contenido</button>
+                <button class="writing-tab" data-tab="preview">Vista Previa</button>
+            </div>
+           
+            <form id="upload-form">
+                <!-- Pestaña 1: Información Básica -->
+                <div class="tab-panel active" id="basic-info-panel">
+                    <div class="form-group">
+                        <label for="book-title">Título del Libro</label>
+                        <input type="text" id="book-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-author">Autor</label>
+                        <input type="text" id="book-author" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-genre">Género</label>
+                        <select id="book-genre" class="form-control" required>
+                            <option value="">Selecciona un género</option>
+                            <option value="romance">Romance</option>
+                            <option value="thriller">Thriller</option>
+                            <option value="terror">Terror</option>
+                            <option value="fantasia">Fantasía</option>
+                            <option value="ciencia-ficcion">Ciencia Ficción</option>
+                            <option value="misterio">Misterio</option>
+                            <option value="aventura">Aventura</option>
+                            <option value="drama">Drama</option>
+                            <option value="poesia">Poesía</option>
+                            <option value="biografia">Biografía</option>
+                            <option value="historico">Histórico</option>
+                            <option value="infantil">Infantil</option>
+                            <option value="juvenil">Juvenil</option>
+                            <option value="autoayuda">Autoayuda</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-description">Descripción</label>
+                        <textarea id="book-description" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" id="next-to-cover">Siguiente: Portada</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 2: Diseño de Portada -->
+                <div class="tab-panel" id="cover-design-panel">
+                    <div class="cover-upload-section">
+                        <h4>Portada del Libro</h4>
+                        <p>Puedes subir una imagen personalizada o elegir uno de nuestros diseños.</p>
+                       
+                        <div class="form-group">
+                            <label for="book-cover-upload">Subir Imagen de Portada</label>
+                            <input type="file" id="book-cover-upload" class="form-control" accept="image/*">
+                            <small>Formatos: JPG, PNG. Tamaño máximo: 2MB</small>
+                        </div>
+                       
+                        <div class="cover-preview" id="cover-preview">
+                            <div id="cover-placeholder">
+                                <i class="fas fa-book fa-3x" style="color: #7f8c8d;"></i>
+                                <p style="margin-top: 10px; color: #7f8c8d;">Vista previa de portada</p>
+                            </div>
+                        </div>
+                       
+                        <h5>O elige un diseño prediseñado:</h5>
+                        <div class="cover-options" id="cover-options">
+                            <!-- Los diseños de portada se generarán dinámicamente -->
+                        </div>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" id="back-to-basic">Anterior: Información</button>
+                        <button type="button" class="btn btn-secondary" id="next-to-content">Siguiente: Contenido</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 3: Editor de Contenido -->
+                <div class="tab-panel" id="content-editor-panel">
+                    <div class="form-group">
+                        <label>Editor de Contenido</label>
+                        <div class="editor-container">
+                            <div class="editor-toolbar" id="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Negrita"><i class="fas fa-bold"></i></button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Itálica"><i class="fas fa-italic"></i></button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Subrayado"><i class="fas fa-underline"></i></button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H1" title="Título 1">T1</button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="H2" title="Título 2">T2</button>
+                                <button type="button" class="editor-btn" data-command="formatBlock" data-value="P" title="Párrafo">P</button>
+                                <button type="button" class="editor-btn" id="add-chapter-btn" title="Añadir capítulo"><i class="fas fa-bookmark"></i> Capítulo</button>
+                            </div>
+                            <div class="editor-content" id="book-content" contenteditable="true"></div>
+                            <div class="editor-stats">
+                                <span id="word-count">0 palabras</span>
+                                <span id="page-count">0 páginas</span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="chapters-section">
+                        <h4>Capítulos</h4>
+                        <div class="chapter-list" id="chapter-list">
+                            <!-- Los capítulos se añadirán aquí dinámicamente -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="manage-chapters-btn">
+                            <i class="fas fa-cog"></i> Gestionar Capítulos
+                        </button>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-secondary" id="back-to-cover">Anterior: Portada</button>
+                        <button type="button" class="btn btn-secondary" id="next-to-preview">Siguiente: Vista Previa</button>
+                    </div>
+                </div>
+               
+                <!-- Pestaña 4: Vista Previa -->
+                <div class="tab-panel" id="preview-panel">
+                    <div class="book-preview">
+                        <h4>Vista Previa de tu Libro</h4>
+                        <div class="book-card" style="max-width: 300px; margin: 0 auto 2rem;">
+                            <div class="book-cover" id="preview-cover">
+                                <div class="cover-text" id="preview-cover-text">
+                                    <h3 id="preview-title">Título del Libro</h3>
+                                    <p id="preview-author">por Autor</p>
+                                </div>
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title" id="preview-book-title">Título del Libro</div>
+                                <div class="book-author" id="preview-book-author">por Autor</div>
+                                <div class="book-description" id="preview-description">Descripción del libro</div>
+                                <div class="book-genre" id="preview-genre">Género</div>
+                            </div>
+                        </div>
+                       
+                        <div class="preview-content">
+                            <h5>Contenido (primeras 500 palabras):</h5>
+                            <div class="preview-text" id="preview-content-text" style="
+                                background: var(--input-bg);
+                                padding: 1rem;
+                                border-radius: 8px;
+                                max-height: 200px;
+                                overflow-y: auto;
+                                white-space: pre-line;
+                                color: var(--text-color);
+                            "></div>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" id="back-to-content">Anterior: Contenido</button>
+                        <button type="submit" class="btn" id="publish-book-btn">Publicar Libro</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil - MEJORADO -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Perfil</h3>
+                <button class="close-modal" id="close-edit-profile-modal">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label for="edit-user-name">Nombre</label>
+                    <input type="text" id="edit-user-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-user-bio">Biografía</label>
+                    <textarea id="edit-user-bio" class="form-control" placeholder="Cuéntanos sobre ti..." rows="4"></textarea>
+                    <small class="bio-counter" id="bio-counter">0/500 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label>Géneros Favoritos</label>
+                    <div class="genres-select" id="edit-user-genres">
+                        <!-- Los géneros se cargarán dinámicamente -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Configuración de Privacidad</label>
+                    <div class="privacy-settings">
+                        <label class="privacy-option">
+                            <input type="checkbox" id="privacy-profile-public" checked>
+                            Perfil público
+                        </label>
+                        <label class="privacy-option">
+                            <input type="checkbox" id="privacy-email-hidden">
+                            Ocultar email
+                        </label>
+                        <label class="privacy-option">
+                            <input type="checkbox" id="privacy-reading-history">
+                            Guardar historial de lectura
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar avatar - NUEVO -->
+    <div id="avatar-modal" class="modal avatar-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cambiar Foto de Perfil</h3>
+                <button class="close-modal" id="close-avatar-modal">&times;</button>
+            </div>
+            
+            <div class="avatar-upload">
+                <input type="file" id="avatar-upload-input" accept="image/*">
+                <label for="avatar-upload-input">
+                    <i class="fas fa-upload"></i> Subir Imagen
+                </label>
+                <p class="upload-hint">Formatos: JPG, PNG, GIF. Máx: 2MB</p>
+            </div>
+            
+            <div class="avatar-preview" id="avatar-preview-container">
+                <div id="avatar-preview-placeholder">
+                    <i class="fas fa-user fa-3x"></i>
+                </div>
+            </div>
+            
+            <div class="avatar-colors">
+                <div class="avatar-color" style="background: #6a5af9;" data-color="#6a5af9"></div>
+                <div class="avatar-color" style="background: #d66efd;" data-color="#d66efd"></div>
+                <div class="avatar-color" style="background: #ff6b8b;" data-color="#ff6b8b"></div>
+                <div class="avatar-color" style="background: #2c3e50;" data-color="#2c3e50"></div>
+                <div class="avatar-color" style="background: #27ae60;" data-color="#27ae60"></div>
+                <div class="avatar-color" style="background: #f39c12;" data-color="#f39c12"></div>
+            </div>
+            
+            <div class="avatar-options">
+                <div class="avatar-option" data-avatar="default">
+                    <i class="fas fa-user fa-3x"></i>
+                    <p>Predeterminado</p>
+                </div>
+                <div class="avatar-option" data-avatar="male">
+                    <i class="fas fa-male fa-3x"></i>
+                    <p>Masculino</p>
+                </div>
+                <div class="avatar-option" data-avatar="female">
+                    <i class="fas fa-female fa-3x"></i>
+                    <p>Femenino</p>
+                </div>
+                <div class="avatar-option" data-avatar="book">
+                    <i class="fas fa-book fa-3x"></i>
+                    <p>Libro</p>
+                </div>
+                <div class="avatar-option" data-avatar="pen">
+                    <i class="fas fa-pen fa-3x"></i>
+                    <p>Pluma</p>
+                </div>
+                <div class="avatar-option" data-avatar="hat">
+                    <i class="fas fa-graduation-cap fa-3x"></i>
+                    <p>Estudiante</p>
+                </div>
+            </div>
+            
+            <div class="avatar-buttons">
+                <button class="btn" id="save-avatar-btn">
+                    <i class="fas fa-save"></i> Guardar Avatar
+                </button>
+                <button class="btn btn-danger" id="remove-avatar-btn">
+                    <i class="fas fa-trash"></i> Eliminar Avatar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lector de Libros (oculto inicialmente) -->
+    <section id="reader" style="display: none;">
+        <div class="container">
+            <div class="reader-container">
+                <div class="reader-header">
+                    <h2 id="reader-title">Título del Libro</h2>
+                    <button id="close-reader" class="btn">Cerrar</button>
+                </div>
+                <div class="reader-content" id="reader-content">
+                    <!-- El contenido del libro se cargará aquí -->
+                </div>
+                <div class="reader-controls">
+                    <button id="prev-page" class="btn"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <span id="page-info">Página 1 de 1</span>
+                    <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <!-- Sección de reseñas -->
+                <div class="reviews-section">
+                    <h3>Reseñas</h3>
+                    <div class="review-form">
+                        <h4>Deja tu reseña</h4>
+                        <div class="form-group">
+                            <label for="review-rating">Calificación</label>
+                            <select id="review-rating" class="form-control">
+                                <option value="5">★★★★★ Excelente</option>
+                                <option value="4">★★★★ Muy Bueno</option>
+                                <option value="3">★★★ Bueno</option>
+                                <option value="2">★★ Regular</option>
+                                <option value="1">★ Malo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="review-content">Tu reseña</label>
+                            <textarea id="review-content" class="form-control" placeholder="Comparte tu opinión sobre este libro..."></textarea>
+                        </div>
+                        <button id="submit-review" class="btn">Enviar Reseña</button>
+                    </div>
+                    <div id="reviews-container">
+                        <!-- Las reseñas se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Publibros</h3>
+                    <p>Una plataforma elegante para compartir y descubrir libros de autores emergentes y establecidos.</p>
+                    <p>Conectamos a lectores y escritores en una comunidad literaria vibrante.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <p><a href="#" class="nav-link-footer" data-section="inicio">Inicio</a></p>
+                    <p><a href="#" class="nav-link-footer" data-section="biblioteca">Biblioteca</a></p>
+                    <p><a href="#" class="nav-link-footer" data-section="perfil">Mi Perfil</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Publibros nació con la misión de crear un espacio donde los amantes de la literatura puedan compartir sus creaciones y descubrir nuevas voces.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Publibros. Todos los derechos reservados.</p>
+                <p id="live-user-counter">Usuarios activos: <span id="footer-user-count">0</span></p>
+            </div>
+        </div>
+    </footer>
+        <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -2311,6 +2697,10 @@
         let guestPagesRead = 0;
         const MAX_GUEST_PAGES = 3;
         const WORDS_PER_PAGE = 300;
+
+        // Variables para el contador de usuarios
+        let onlineUsers = new Set();
+        let userListener = null;
 
         // Función para alternar modo oscuro
         function toggleDarkMode() {
@@ -2372,6 +2762,8 @@
         const booksRef = db.collection("books");
         const reviewsRef = db.collection("reviews");
         const followersRef = db.collection("followers");
+        const readingHistoryRef = db.collection("readingHistory");
+        const onlineUsersRef = db.collection("onlineUsers");
 
         // Géneros disponibles
         const genres = [
@@ -2436,16 +2828,617 @@
         let usersListener = null;
 
         // ============================
-        // SISTEMA DE BÚSQUEDA GLOBAL
+        // MEJORAS AÑADIDAS: SISTEMA DE CONTADOR DE USUARIOS
         // ============================
 
-        // Función para inicializar el buscador global
+        async function initUserCounter() {
+            try {
+                // Configurar listener para usuarios en línea
+                userListener = onlineUsersRef.onSnapshot((snapshot) => {
+                    onlineUsers.clear();
+                    snapshot.forEach((doc) => {
+                        onlineUsers.add(doc.id);
+                    });
+                    
+                    // Actualizar contador en el footer
+                    const footerCounter = document.getElementById('footer-user-count');
+                    if (footerCounter) {
+                        footerCounter.textContent = onlineUsers.size;
+                    }
+                    
+                    // Actualizar contador flotante
+                    const floatingCounter = document.getElementById('online-users-count');
+                    if (floatingCounter) {
+                        floatingCounter.textContent = onlineUsers.size;
+                    }
+                    
+                    // Mostrar/ocultar contador flotante
+                    const counterElement = document.getElementById('user-counter');
+                    if (counterElement) {
+                        if (onlineUsers.size > 0) {
+                            counterElement.style.display = 'flex';
+                        } else {
+                            counterElement.style.display = 'none';
+                        }
+                    }
+                    
+                    // También actualizar estadística en el inicio
+                    document.getElementById('total-authors').textContent = onlineUsers.size;
+                });
+                
+                // Si hay usuario autenticado, marcarlo como en línea
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    await markUserAsOnline(currentUser.uid);
+                }
+                
+            } catch (error) {
+                console.error("Error inicializando contador de usuarios:", error);
+            }
+        }
+
+        async function markUserAsOnline(userId) {
+            try {
+                await onlineUsersRef.doc(userId).set({
+                    userId: userId,
+                    lastOnline: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'online'
+                });
+            } catch (error) {
+                console.error("Error marcando usuario como en línea:", error);
+            }
+        }
+
+        async function markUserAsOffline(userId) {
+            try {
+                await onlineUsersRef.doc(userId).delete();
+            } catch (error) {
+                console.error("Error marcando usuario como fuera de línea:", error);
+            }
+        }
+
+        // ============================
+        // MEJORAS AÑADIDAS: SISTEMA DE PERFIL COMPLETO
+        // ============================
+
+        // Función para cargar los datos del perfil
+        async function loadUserProfile() {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+
+            try {
+                // Obtener datos del usuario
+                const userData = await getUserData(currentUser.uid);
+                
+                if (!userData) {
+                    console.error("No se encontraron datos del usuario");
+                    return;
+                }
+
+                // Actualizar información básica
+                updateProfileUI(userData);
+                
+                // Actualizar estadísticas
+                await updateProfileStats(currentUser.uid);
+                
+                // Cargar contenido específico del perfil
+                await loadProfileContent(currentUser.uid);
+                
+                // Actualizar contador de seguidores
+                await updateFollowerCounts(currentUser.uid);
+                
+            } catch (error) {
+                console.error("Error cargando perfil:", error);
+            }
+        }
+
+        function updateProfileUI(userData) {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+            
+            // Actualizar nombre
+            document.getElementById('profile-user-name').textContent = 
+                userData.name || currentUser.displayName || 'Usuario';
+            
+            // Actualizar email
+            document.getElementById('profile-user-email').textContent = currentUser.email;
+            
+            // Actualizar biografía
+            const bioElement = document.getElementById('profile-user-bio');
+            if (userData.bio && userData.bio.trim() !== '') {
+                bioElement.textContent = userData.bio;
+                bioElement.classList.remove('empty');
+            } else {
+                bioElement.textContent = 'Aquí puedes agregar una breve biografía sobre ti.';
+                bioElement.classList.add('empty');
+            }
+            
+            // Actualizar avatar
+            updateAvatarUI(userData.avatarUrl, userData.avatarType, userData.avatarColor);
+            
+            // Actualizar formulario de edición
+            document.getElementById('edit-user-name').value = userData.name || currentUser.displayName || '';
+            document.getElementById('edit-user-bio').value = userData.bio || '';
+            
+            // Actualizar contador de caracteres de biografía
+            updateBioCounter();
+            
+            // Actualizar géneros favoritos en el formulario
+            updateFavoriteGenres(userData.favoriteGenres || []);
+            
+            // Actualizar configuración de privacidad
+            updatePrivacySettings(userData.privacy || {});
+        }
+
+        function updateAvatarUI(avatarUrl, avatarType = 'default', avatarColor = '#6a5af9') {
+            const avatarElement = document.getElementById('user-avatar');
+            
+            if (avatarUrl) {
+                // Si hay URL de avatar, usar imagen
+                avatarElement.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+            } else {
+                // Si no hay URL, usar icono con color
+                const icon = getAvatarIcon(avatarType);
+                avatarElement.innerHTML = `
+                    <div class="avatar-placeholder" style="background: ${avatarColor};">
+                        ${icon}
+                    </div>
+                `;
+            }
+        }
+
+        function getAvatarIcon(type) {
+            const icons = {
+                'default': '<i class="fas fa-user"></i>',
+                'male': '<i class="fas fa-male"></i>',
+                'female': '<i class="fas fa-female"></i>',
+                'book': '<i class="fas fa-book"></i>',
+                'pen': '<i class="fas fa-pen"></i>',
+                'hat': '<i class="fas fa-graduation-cap"></i>'
+            };
+            return icons[type] || icons['default'];
+        }
+
+        async function updateProfileStats(userId) {
+            try {
+                // Contar libros del usuario
+                const booksSnapshot = await booksRef
+                    .where('authorId', '==', userId)
+                    .where('status', '==', 'approved')
+                    .get();
+                
+                let totalLikes = 0;
+                booksSnapshot.forEach(doc => {
+                    const book = doc.data();
+                    totalLikes += book.likes || 0;
+                });
+                
+                document.getElementById('profile-books').textContent = booksSnapshot.size;
+                document.getElementById('profile-likes').textContent = totalLikes;
+                
+            } catch (error) {
+                console.error("Error actualizando estadísticas de perfil:", error);
+            }
+        }
+
+        async function loadProfileContent(userId) {
+            try {
+                // Cargar libros del usuario
+                await loadUserBooks(userId);
+                
+                // Cargar libros que le gustan
+                await loadLikedBooks(userId);
+                
+                // Cargar reseñas del usuario
+                await loadUserReviews(userId);
+                
+                // Cargar historial de lectura
+                await loadReadingHistory(userId);
+                
+            } catch (error) {
+                console.error("Error cargando contenido del perfil:", error);
+            }
+        }
+
+        async function loadUserBooks(userId) {
+            try {
+                const snapshot = await booksRef
+                    .where('authorId', '==', userId)
+                    .where('status', '==', 'approved')
+                    .get();
+                
+                const container = document.getElementById('my-books-container');
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-book"></i>
+                            <h3>No has publicado libros aún</h3>
+                            <p>¡Comparte tu primera historia con la comunidad!</p>
+                            <button class="btn" id="publish-first-book">Publicar Libro</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('publish-first-book').addEventListener('click', function() {
+                        document.getElementById('upload-modal').style.display = 'flex';
+                    });
+                    
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const book = { id: doc.id, ...doc.data() };
+                    const bookCard = createBookCard(book);
+                    container.appendChild(bookCard);
+                });
+                
+            } catch (error) {
+                console.error("Error cargando libros del usuario:", error);
+            }
+        }
+
+        async function loadLikedBooks(userId) {
+            try {
+                const userData = await getUserData(userId);
+                const likedBookIds = userData?.likedBooks || [];
+                
+                const container = document.getElementById('liked-books-container');
+                container.innerHTML = '';
+                
+                if (likedBookIds.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-heart"></i>
+                            <h3>No tienes libros favoritos</h3>
+                            <p>Haz clic en el corazón de los libros que te gusten para agregarlos aquí.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Obtener detalles de cada libro
+                for (const bookId of likedBookIds) {
+                    const bookDoc = await booksRef.doc(bookId).get();
+                    if (bookDoc.exists && bookDoc.data().status === 'approved') {
+                        const book = { id: bookDoc.id, ...bookDoc.data() };
+                        const bookCard = createBookCard(book);
+                        container.appendChild(bookCard);
+                    }
+                }
+                
+            } catch (error) {
+                console.error("Error cargando libros favoritos:", error);
+            }
+        }
+
+        async function loadUserReviews(userId) {
+            try {
+                const snapshot = await reviewsRef
+                    .where('userId', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                const container = document.getElementById('my-reviews-container');
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comment"></i>
+                            <h3>No has escrito reseñas</h3>
+                            <p>Comparte tu opinión sobre los libros que leas.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const review = doc.data();
+                    const reviewElement = createReviewElement(review);
+                    container.appendChild(reviewElement);
+                });
+                
+            } catch (error) {
+                console.error("Error cargando reseñas del usuario:", error);
+            }
+        }
+
+        async function loadReadingHistory(userId) {
+            try {
+                const snapshot = await readingHistoryRef
+                    .where('userId', '==', userId)
+                    .orderBy('lastRead', 'desc')
+                    .limit(10)
+                    .get();
+                
+                const container = document.getElementById('reading-history-container');
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3>No hay historial de lectura</h3>
+                            <p>Comienza a leer libros para ver tu historial aquí.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const history = doc.data();
+                    const historyElement = createReadingHistoryElement(history);
+                    container.appendChild(historyElement);
+                });
+                
+            } catch (error) {
+                console.error("Error cargando historial de lectura:", error);
+            }
+        }
+
+        function createReadingHistoryElement(history) {
+            const element = document.createElement('div');
+            element.className = 'reading-history-item';
+            
+            // Calcular progreso
+            const progress = history.progress ? Math.min(100, Math.max(0, history.progress)) : 0;
+            
+            element.innerHTML = `
+                <div class="reading-history-cover">
+                    ${history.bookTitle ? history.bookTitle.substring(0, 2) : '??'}
+                </div>
+                <div class="reading-history-info">
+                    <div class="reading-history-title">${history.bookTitle || 'Libro desconocido'}</div>
+                    <div class="reading-history-date">
+                        Última lectura: ${history.lastRead ? new Date(history.lastRead.toDate()).toLocaleDateString() : 'No disponible'}
+                    </div>
+                    <div class="reading-history-progress">
+                        <div class="reading-history-progress-bar" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" data-book-id="${history.bookId}">
+                    <i class="fas fa-book-open"></i>
+                </button>
+            `;
+            
+            // Configurar evento para continuar leyendo
+            element.querySelector('button[data-book-id]').addEventListener('click', async function() {
+                const bookId = this.getAttribute('data-book-id');
+                const bookDoc = await booksRef.doc(bookId).get();
+                if (bookDoc.exists) {
+                    openReader({ id: bookDoc.id, ...bookDoc.data() });
+                }
+            });
+            
+            return element;
+        }
+
+        async function updateFollowerCounts(userId) {
+            try {
+                // Contar seguidores
+                const followersSnapshot = await followersRef
+                    .where('authorId', '==', userId)
+                    .get();
+                
+                // Contar seguidos
+                const followingSnapshot = await followersRef
+                    .where('followerId', '==', userId)
+                    .get();
+                
+                document.getElementById('profile-followers').textContent = followersSnapshot.size;
+                document.getElementById('profile-following').textContent = followingSnapshot.size;
+                
+            } catch (error) {
+                console.error("Error actualizando contadores de seguidores:", error);
+            }
+        }
+
+        function updateBioCounter() {
+            const bioTextarea = document.getElementById('edit-user-bio');
+            const counter = document.getElementById('bio-counter');
+            
+            if (!bioTextarea || !counter) return;
+            
+            const length = bioTextarea.value.length;
+            counter.textContent = `${length}/500 caracteres`;
+            
+            counter.classList.remove('warning', 'error');
+            if (length > 450) {
+                counter.classList.add('warning');
+            }
+            if (length > 500) {
+                counter.classList.add('error');
+            }
+        }
+
+        function updateFavoriteGenres(favoriteGenres) {
+            const container = document.getElementById('edit-user-genres');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            genres.forEach(genre => {
+                const isChecked = favoriteGenres.includes(genre);
+                const label = document.createElement('label');
+                label.className = 'genre-label';
+                label.innerHTML = `
+                    <input type="checkbox" class="genre-checkbox" value="${genre}" ${isChecked ? 'checked' : ''}>
+                    ${genreNames[genre]}
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        function updatePrivacySettings(privacy) {
+            const profilePublic = document.getElementById('privacy-profile-public');
+            const emailHidden = document.getElementById('privacy-email-hidden');
+            const readingHistory = document.getElementById('privacy-reading-history');
+            
+            if (profilePublic) profilePublic.checked = privacy.profilePublic !== false;
+            if (emailHidden) emailHidden.checked = privacy.emailHidden === true;
+            if (readingHistory) readingHistory.checked = privacy.saveReadingHistory !== false;
+        }
+
+        // ============================
+        // MEJORAS AÑADIDAS: SISTEMA DE AVATAR
+        // ============================
+
+        function initAvatarSystem() {
+            const avatarModal = document.getElementById('avatar-modal');
+            const editAvatarBtn = document.getElementById('edit-avatar-btn');
+            const closeAvatarModal = document.getElementById('close-avatar-modal');
+            const saveAvatarBtn = document.getElementById('save-avatar-btn');
+            const removeAvatarBtn = document.getElementById('remove-avatar-btn');
+            const avatarUploadInput = document.getElementById('avatar-upload-input');
+            
+            // Abrir modal de avatar
+            if (editAvatarBtn) {
+                editAvatarBtn.addEventListener('click', function() {
+                    avatarModal.style.display = 'flex';
+                });
+            }
+            
+            // Cerrar modal de avatar
+            if (closeAvatarModal) {
+                closeAvatarModal.addEventListener('click', function() {
+                    avatarModal.style.display = 'none';
+                });
+            }
+            
+            // Configurar colores de avatar
+            document.querySelectorAll('.avatar-color').forEach(color => {
+                color.addEventListener('click', function() {
+                    document.querySelectorAll('.avatar-color').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const colorValue = this.getAttribute('data-color');
+                    updateAvatarPreview(null, 'default', colorValue);
+                });
+            });
+            
+            // Configurar opciones de avatar
+            document.querySelectorAll('.avatar-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Configurar subida de imagen
+            if (avatarUploadInput) {
+                avatarUploadInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            updateAvatarPreview(e.target.result, 'custom');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Guardar avatar
+            if (saveAvatarBtn) {
+                saveAvatarBtn.addEventListener('click', async function() {
+                    const currentUser = auth.currentUser;
+                    if (!currentUser) return;
+                    
+                    try {
+                        let avatarData = {};
+                        const fileInput = document.getElementById('avatar-upload-input');
+                        
+                        if (fileInput.files.length > 0) {
+                            // Subir imagen
+                            const file = fileInput.files[0];
+                            const avatarUrl = await uploadImage(file, 'avatars', currentUser.uid);
+                            if (avatarUrl) {
+                                avatarData.avatarUrl = avatarUrl;
+                                avatarData.avatarType = 'custom';
+                            }
+                        } else {
+                            // Usar color y tipo seleccionados
+                            const selectedColor = document.querySelector('.avatar-color.selected');
+                            const selectedOption = document.querySelector('.avatar-option.selected');
+                            
+                            if (selectedColor && selectedOption) {
+                                const colorValue = selectedColor.getAttribute('data-color');
+                                const avatarType = selectedOption.getAttribute('data-avatar');
+                                
+                                avatarData.avatarColor = colorValue;
+                                avatarData.avatarType = avatarType;
+                            }
+                        }
+                        
+                        if (Object.keys(avatarData).length > 0) {
+                            await saveUserData(currentUser.uid, avatarData);
+                            avatarModal.style.display = 'none';
+                            await loadUserProfile(); // Recargar perfil
+                            alert('Avatar actualizado correctamente.');
+                        } else {
+                            alert('Por favor, selecciona una opción para tu avatar.');
+                        }
+                        
+                    } catch (error) {
+                        console.error("Error guardando avatar:", error);
+                        alert('Error al guardar el avatar.');
+                    }
+                });
+            }
+            
+            // Eliminar avatar
+            if (removeAvatarBtn) {
+                removeAvatarBtn.addEventListener('click', async function() {
+                    const currentUser = auth.currentUser;
+                    if (!currentUser) return;
+                    
+                    if (confirm('¿Estás seguro de que quieres eliminar tu avatar?')) {
+                        try {
+                            await saveUserData(currentUser.uid, {
+                                avatarUrl: null,
+                                avatarType: 'default',
+                                avatarColor: '#6a5af9'
+                            });
+                            
+                            avatarModal.style.display = 'none';
+                            await loadUserProfile(); // Recargar perfil
+                            alert('Avatar eliminado correctamente.');
+                            
+                        } catch (error) {
+                            console.error("Error eliminando avatar:", error);
+                            alert('Error al eliminar el avatar.');
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateAvatarPreview(imageUrl, avatarType = 'default', avatarColor = '#6a5af9') {
+            const preview = document.getElementById('avatar-preview-container');
+            
+            if (imageUrl) {
+                preview.innerHTML = `<img src="${imageUrl}" alt="Preview de avatar">`;
+            } else {
+                const icon = getAvatarIcon(avatarType);
+                preview.innerHTML = `
+                    <div style="width: 100%; height: 100%; background: ${avatarColor}; display: flex; align-items: center; justify-content: center;">
+                        ${icon}
+                    </div>
+                `;
+            }
+        }
+
+        // ============================
+        // MEJORAS AÑADIDAS: BUSCADOR GLOBAL MEJORADO
+        // ============================
+
         function initGlobalSearch() {
             const searchToggle = document.getElementById('search-toggle');
             const searchBox = document.getElementById('search-box');
             const searchInput = document.getElementById('global-search');
             const searchResults = document.getElementById('search-results');
-
+            
             // Alternar visibilidad del buscador
             searchToggle.addEventListener('click', function() {
                 searchBox.classList.toggle('expanded');
@@ -2456,7 +3449,7 @@
                     hideSearchResults();
                 }
             });
-
+            
             // Buscar al escribir
             searchInput.addEventListener('input', function(e) {
                 const term = e.target.value.trim();
@@ -2472,7 +3465,7 @@
                     hideSearchResults();
                 }
             });
-
+            
             // Buscar al presionar Enter
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -2482,7 +3475,7 @@
                     }
                 }
             });
-
+            
             // Ocultar resultados al hacer clic fuera
             document.addEventListener('click', function(e) {
                 if (!searchResults.contains(e.target) && 
@@ -2491,7 +3484,7 @@
                     hideSearchResults();
                 }
             });
-
+            
             // Mostrar resultados cuando el input está enfocado y hay término
             searchInput.addEventListener('focus', function() {
                 if (currentSearchTerm.length >= 2) {
@@ -2500,7 +3493,6 @@
             });
         }
 
-        // Función para realizar búsqueda global
         async function performGlobalSearch(term) {
             const searchResults = document.getElementById('search-results');
             
@@ -2518,8 +3510,12 @@
                     .where('status', '==', 'approved')
                     .get();
 
+                // Buscar en usuarios
+                const usersSnapshot = await usersRef.get();
+                
                 const results = [];
                 
+                // Procesar libros
                 booksSnapshot.forEach(doc => {
                     const book = { id: doc.id, ...doc.data(), type: 'book' };
                     const searchableText = `${book.title} ${book.author} ${book.description} ${genreNames[book.genre] || ''}`.toLowerCase();
@@ -2552,6 +3548,29 @@
                         results.push(book);
                     }
                 });
+                
+                // Procesar usuarios
+                usersSnapshot.forEach(doc => {
+                    const user = { id: doc.id, ...doc.data(), type: 'user' };
+                    const searchableText = `${user.name || ''} ${user.email || ''}`.toLowerCase();
+                    
+                    if (searchableText.includes(term.toLowerCase())) {
+                        let relevance = 0;
+                        
+                        // Nombre coincide
+                        if (user.name?.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 8;
+                        }
+                        
+                        // Email coincide
+                        if (user.email?.toLowerCase().includes(term.toLowerCase())) {
+                            relevance += 5;
+                        }
+                        
+                        user.relevance = relevance;
+                        results.push(user);
+                    }
+                });
 
                 // Ordenar por relevancia
                 results.sort((a, b) => b.relevance - a.relevance);
@@ -2569,7 +3588,6 @@
             }
         }
 
-        // Función para mostrar resultados de búsqueda
         function displaySearchResults(results, term) {
             const searchResults = document.getElementById('search-results');
             
@@ -2586,21 +3604,36 @@
 
             let html = '';
             
-            results.slice(0, 8).forEach(book => {
-                const coverHtml = book.coverUrl ? 
-                    `<div class="search-result-cover" style="background-image: url('${book.coverUrl}'); background-size: cover;"></div>` :
-                    `<div class="search-result-cover">${book.title.split(' ').map(word => word[0]).join('').substring(0, 2)}</div>`;
-                
-                html += `
-                    <div class="search-result-item" data-book-id="${book.id}">
-                        ${coverHtml}
-                        <div class="search-result-info">
-                            <div class="search-result-title">${book.title}</div>
-                            <div class="search-result-author">por ${book.author}</div>
-                            <div class="search-result-genre">${genreNames[book.genre] || book.genre}</div>
+            results.slice(0, 8).forEach(item => {
+                if (item.type === 'book') {
+                    const coverHtml = item.coverUrl ? 
+                        `<div class="search-result-cover" style="background-image: url('${item.coverUrl}'); background-size: cover;"></div>` :
+                        `<div class="search-result-cover">${item.title.split(' ').map(word => word[0]).join('').substring(0, 2)}</div>`;
+                    
+                    html += `
+                        <div class="search-result-item" data-book-id="${item.id}" data-type="book">
+                            ${coverHtml}
+                            <div class="search-result-info">
+                                <div class="search-result-title">${item.title}</div>
+                                <div class="search-result-author">por ${item.author}</div>
+                                <div class="search-result-genre">${genreNames[item.genre] || item.genre}</div>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else if (item.type === 'user') {
+                    html += `
+                        <div class="search-result-item" data-user-id="${item.id}" data-type="user">
+                            <div class="search-result-cover" style="background: var(--gradient);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="search-result-info">
+                                <div class="search-result-title">${item.name || 'Usuario'}</div>
+                                <div class="search-result-author">${item.email || ''}</div>
+                                <div class="search-result-genre">Usuario</div>
+                            </div>
+                        </div>
+                    `;
+                }
             });
 
             searchResults.innerHTML = html;
@@ -2608,168 +3641,33 @@
             // Configurar eventos para los resultados
             searchResults.querySelectorAll('.search-result-item').forEach(item => {
                 item.addEventListener('click', function() {
-                    const bookId = this.getAttribute('data-book-id');
-                    const book = results.find(b => b.id === bookId);
-                    if (book) {
-                        openReader(book);
+                    const type = this.getAttribute('data-type');
+                    const id = this.getAttribute('data-book-id') || this.getAttribute('data-user-id');
+                    
+                    if (type === 'book') {
+                        const book = results.find(b => b.id === id && b.type === 'book');
+                        if (book) {
+                            openReader(book);
+                            hideSearchResults();
+                            document.getElementById('search-box').classList.remove('expanded');
+                            document.getElementById('global-search').value = '';
+                        }
+                    } else if (type === 'user') {
+                        // Aquí podrías navegar al perfil del usuario
+                        console.log('Ver perfil del usuario:', id);
                         hideSearchResults();
-                        document.getElementById('search-box').classList.remove('expanded');
-                        document.getElementById('global-search').value = '';
                     }
                 });
             });
         }
 
-        // Función para ocultar resultados de búsqueda
         function hideSearchResults() {
             const searchResults = document.getElementById('search-results');
             searchResults.classList.remove('active');
         }
 
         // ============================
-        // SISTEMA DE CONTROL DE ACCESO
-        // ============================
-
-        // Función para mostrar el modal de bienvenida
-        function showWelcomeModal() {
-            document.getElementById('welcome-modal').style.display = 'flex';
-           
-            // Configurar eventos para las opciones
-            document.getElementById('login-option').addEventListener('click', function() {
-                document.getElementById('welcome-modal').style.display = 'none';
-                document.getElementById('auth-modal').style.display = 'flex';
-            });
-           
-            document.getElementById('register-option').addEventListener('click', function() {
-                document.getElementById('welcome-modal').style.display = 'none';
-                document.getElementById('auth-modal').style.display = 'flex';
-                // Cambiar a pestaña de registro
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('[data-form="register"]').classList.add('active');
-                document.querySelectorAll('.auth-form').forEach(form => {
-                    form.classList.remove('active');
-                });
-                document.getElementById('register-form').classList.add('active');
-            });
-           
-            document.getElementById('guest-option').addEventListener('click', function() {
-                enterAsGuest();
-            });
-        }
-
-        // Función para entrar como invitado
-        function enterAsGuest() {
-            currentUserType = 'guest';
-            document.getElementById('welcome-modal').style.display = 'none';
-            document.getElementById('guest-notification').style.display = 'flex';
-           
-            // Actualizar la interfaz para modo invitado
-            updateUIForGuest();
-           
-            // Iniciar listeners para contenido público
-            startRealTimeListeners();
-        }
-
-        // Función para actualizar la UI para usuarios invitados
-        function updateUIForGuest() {
-            // Actualizar botón de autenticación
-            document.getElementById('auth-status').textContent = 'Invitado';
-           
-            // Ocultar o deshabilitar funciones restringidas
-            const restrictedActions = [
-                'upload-book-btn',
-                'edit-profile-btn',
-                'submit-review'
-            ];
-           
-            restrictedActions.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.classList.add('restricted-action');
-                    element.disabled = true;
-                   
-                    // Añadir tooltip de restricción
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'restricted-message';
-                    tooltip.textContent = 'Inicia sesión para acceder a esta función';
-                    element.appendChild(tooltip);
-                }
-            });
-           
-            // Restringir acciones de like y seguir
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.like-btn') || e.target.closest('.follow-btn')) {
-                    if (currentUserType === 'guest') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        showLoginPrompt();
-                    }
-                }
-            });
-        }
-
-        // Función para mostrar mensaje de inicio de sesión
-        function showLoginPrompt() {
-            // Crear un modal de confirmación
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'flex';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 400px; text-align: center;">
-                    <div class="modal-header">
-                        <h3>Iniciar Sesión Requerido</h3>
-                    </div>
-                    <p>Para acceder a esta función, necesitas tener una cuenta.</p>
-                    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
-                        <button class="btn" id="go-to-login">Iniciar Sesión</button>
-                        <button class="btn btn-secondary" id="cancel-login">Cancelar</button>
-                    </div>
-                </div>
-            `;
-           
-            document.body.appendChild(modal);
-           
-            // Configurar eventos
-            document.getElementById('go-to-login').addEventListener('click', function() {
-                document.body.removeChild(modal);
-                document.getElementById('auth-modal').style.display = 'flex';
-            });
-           
-            document.getElementById('cancel-login').addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-           
-            // Cerrar al hacer clic fuera
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            });
-        }
-
-        // Función para verificar si una acción está permitida
-        function isActionAllowed(action) {
-            if (currentUserType === 'logged') {
-                return true;
-            }
-           
-            if (currentUserType === 'guest') {
-                // Definir acciones permitidas para invitados
-                const allowedActions = [
-                    'view_books',
-                    'read_limited_content',
-                    'search_books',
-                    'filter_books'
-                ];
-               
-                return allowedActions.includes(action);
-            }
-           
-            return false;
-        }
-
-        // ============================
-        // FUNCIONES ORIGINALES DEL SISTEMA
+        // FUNCIONES ORIGINALES DEL SISTEMA (MANTENIDAS)
         // ============================
 
         // Función para cambiar de sección
@@ -2803,7 +3701,7 @@
                 displayGenreFilters();
                 displayBooks();
             } else if (sectionId === 'perfil' && currentUserType === 'logged') {
-                updateProfile();
+                loadUserProfile();
                 if (isAdmin()) {
                     loadAdminPanel();
                 }
@@ -2879,6 +3777,10 @@
             });
            
             userMenu.querySelector('#logout-btn').addEventListener('click', function() {
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    markUserAsOffline(currentUser.uid);
+                }
                 auth.signOut();
                 document.body.removeChild(userMenu);
             });
@@ -2926,7 +3828,7 @@
         }
 
         // ============================
-        // FUNCIONES DE BASE DE DATOS
+        // FUNCIONES DE BASE DE DATOS (MANTENIDAS)
         // ============================
 
         async function saveUserData(userId, userData) {
@@ -2998,6 +3900,19 @@
             }
         }
 
+        async function uploadImage(imageFile, path, userId) {
+            try {
+                const storageRef = storage.ref();
+                const imageRef = storageRef.child(`${path}/${userId}/${Date.now()}_${imageFile.name}`);
+                const snapshot = await imageRef.put(imageFile);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                return downloadURL;
+            } catch (error) {
+                console.error("Error subiendo imagen:", error);
+                return null;
+            }
+        }
+
         async function updateBookViews(bookId) {
             try {
                 const bookDoc = await booksRef.doc(bookId).get();
@@ -3013,7 +3928,7 @@
         }
 
         // ============================
-        // FUNCIONES DE INTERFAZ
+        // FUNCIONES DE INTERFAZ (MANTENIDAS)
         // ============================
 
         async function displayFeaturedBooks() {
@@ -3239,76 +4154,26 @@
             return bookCard;
         }
 
-        async function updateProfile() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                // Mostrar estado de no autenticado
-                document.getElementById('profile-user-name').textContent = 'No autenticado';
-                document.getElementById('profile-user-email').textContent = 'Inicia sesión para ver tu perfil';
-                document.getElementById('profile-user-bio').textContent = '';
-                document.getElementById('edit-profile-btn').style.display = 'none';
-                return;
+        function createReviewElement(review) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review';
+           
+            // Crear estrellas según la calificación
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= review.rating ? '★' : '☆';
             }
            
-            try {
-                const userData = await getUserData(currentUser.uid);
-               
-                // Actualizar información básica
-                document.getElementById('profile-user-name').textContent = currentUser.displayName || 'Usuario';
-                document.getElementById('profile-user-email').textContent = currentUser.email;
-                document.getElementById('profile-user-bio').textContent = userData?.bio || 'Aquí puedes agregar una breve biografía sobre ti.';
-               
-                // Actualizar avatar
-                if (userData?.avatarUrl) {
-                    document.getElementById('user-avatar').innerHTML = `
-                        <img src="${userData.avatarUrl}" alt="Avatar">
-                        <div class="edit-overlay" id="edit-avatar-overlay">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                    `;
-                }
-               
-                // Actualizar formulario de edición
-                document.getElementById('edit-user-name').value = currentUser.displayName || '';
-                document.getElementById('edit-user-bio').value = userData?.bio || '';
-               
-                // Actualizar estadísticas
-                await updateProfileStats();
-               
-                // Mostrar/ocultar elementos según el estado de verificación
-                checkEmailVerification();
-               
-            } catch (error) {
-                console.error("Error actualizando perfil:", error);
-            }
-        }
-
-        async function updateProfileStats() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) return;
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <div class="review-author">${review.userName}</div>
+                    <div class="review-date">${review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString() : 'Fecha no disponible'}</div>
+                </div>
+                <div class="review-rating">${stars}</div>
+                <div class="review-content">${review.content}</div>
+            `;
            
-            try {
-                const userData = await getUserData(currentUser.uid);
-                const userBooksSnapshot = await booksRef
-                    .where('authorId', '==', currentUser.uid)
-                    .get();
-               
-                let totalLikes = 0;
-                userBooksSnapshot.forEach(doc => {
-                    const book = doc.data();
-                    totalLikes += book.likes || 0;
-                });
-               
-                document.getElementById('profile-books').textContent = userBooksSnapshot.size;
-                document.getElementById('profile-likes').textContent = totalLikes;
-               
-                // Actualizar reseñas (simplificado)
-                const reviewsCount = userData?.myReviews?.length || 0;
-                document.getElementById('profile-reviews').textContent = reviewsCount;
-               
-            } catch (error) {
-                console.error("Error actualizando estadísticas de perfil:", error);
-            }
+            return reviewDiv;
         }
 
         async function updateBooksStats() {
@@ -3316,24 +4181,26 @@
                 const booksSnapshot = await booksRef
                     .where('status', '==', 'approved')
                     .get();
-                const usersSnapshot = await usersRef.get();
                
                 let totalLikes = 0;
+                let totalViews = 0;
                 booksSnapshot.forEach(doc => {
                     const book = doc.data();
                     totalLikes += book.likes || 0;
+                    totalViews += book.views || 0;
                 });
                
                 document.getElementById('total-books').textContent = booksSnapshot.size;
-                document.getElementById('total-authors').textContent = usersSnapshot.size;
                 document.getElementById('total-likes').textContent = totalLikes;
+                document.getElementById('total-views').textContent = totalViews;
+                
             } catch (error) {
                 console.error("Error actualizando estadísticas:", error);
             }
         }
 
         // ============================
-        // SISTEMA DE LECTOR
+        // SISTEMA DE LECTOR (MANTENIDO)
         // ============================
 
         function openReader(book) {
@@ -3452,7 +4319,7 @@
         }
 
         // ============================
-        // SISTEMA DE RESEÑAS
+        // SISTEMA DE RESEÑAS (MANTENIDO)
         // ============================
 
         async function loadReviews(bookId) {
@@ -3478,28 +4345,6 @@
             } catch (error) {
                 console.error("Error cargando reseñas:", error);
             }
-        }
-
-        function createReviewElement(review) {
-            const reviewDiv = document.createElement('div');
-            reviewDiv.className = 'review';
-           
-            // Crear estrellas según la calificación
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                stars += i <= review.rating ? '★' : '☆';
-            }
-           
-            reviewDiv.innerHTML = `
-                <div class="review-header">
-                    <div class="review-author">${review.userName}</div>
-                    <div class="review-date">${review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString() : 'Fecha no disponible'}</div>
-                </div>
-                <div class="review-rating">${stars}</div>
-                <div class="review-content">${review.content}</div>
-            `;
-           
-            return reviewDiv;
         }
 
         async function submitReview() {
@@ -3544,7 +4389,7 @@
                 await loadReviews(currentBook.id);
                
                 // Actualizar estadísticas del usuario
-                updateProfileStats();
+                await loadUserProfile();
                
                 alert('¡Reseña enviada correctamente!');
             } catch (error) {
@@ -3554,7 +4399,7 @@
         }
 
         // ============================
-        // SISTEMA DE LIKES Y SEGUIDORES
+        // SISTEMA DE LIKES Y SEGUIDORES (MANTENIDO)
         // ============================
 
         async function handleLikeBook(bookId) {
@@ -3595,6 +4440,12 @@
                 });
                
                 console.log(`Like ${isLiked ? 'quitado' : 'agregado'} al libro ${bookId}`);
+                
+                // Actualizar perfil si está visible
+                if (document.getElementById('perfil').classList.contains('active')) {
+                    await loadUserProfile();
+                }
+                
             } catch (error) {
                 console.error("Error manejando like:", error);
                 alert('Error al procesar el like. Intenta nuevamente.');
@@ -3643,7 +4494,7 @@
                
                 // Actualizar la interfaz si es necesario
                 if (document.getElementById('perfil').classList.contains('active')) {
-                    updateProfile();
+                    await loadUserProfile();
                 }
             } catch (error) {
                 console.error("Error en sistema de seguidores:", error);
@@ -3682,7 +4533,7 @@
         }
 
         // ============================
-        // SISTEMA DE AUTENTICACIÓN
+        // SISTEMA DE AUTENTICACIÓN (MANTENIDO)
         // ============================
 
         async function handleLoginFormSubmit(e) {
@@ -3734,6 +4585,13 @@
                     role: 'user',
                     followers: 0,
                     following: 0,
+                    avatarType: 'default',
+                    avatarColor: '#6a5af9',
+                    privacy: {
+                        profilePublic: true,
+                        emailHidden: false,
+                        saveReadingHistory: true
+                    },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                
@@ -3760,7 +4618,6 @@
            
             const name = document.getElementById('edit-user-name').value;
             const bio = document.getElementById('edit-user-bio').value;
-            const avatarFile = document.getElementById('edit-user-avatar').files[0];
            
             try {
                 // Actualizar perfil en Firebase Auth
@@ -3768,25 +4625,30 @@
                     displayName: name
                 });
                
+                // Obtener géneros favoritos seleccionados
+                const favoriteGenres = Array.from(document.querySelectorAll('.genre-checkbox:checked'))
+                    .map(cb => cb.value);
+                
+                // Obtener configuración de privacidad
+                const privacy = {
+                    profilePublic: document.getElementById('privacy-profile-public').checked,
+                    emailHidden: document.getElementById('privacy-email-hidden').checked,
+                    saveReadingHistory: document.getElementById('privacy-reading-history').checked
+                };
+               
                 // Guardar datos adicionales en Firestore
                 const userData = {
                     name: name,
                     bio: bio,
+                    favoriteGenres: favoriteGenres,
+                    privacy: privacy,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
-               
-                // Subir avatar si se seleccionó uno
-                if (avatarFile) {
-                    const avatarUrl = await uploadCoverImage(avatarFile, currentUser.uid);
-                    if (avatarUrl) {
-                        userData.avatarUrl = avatarUrl;
-                    }
-                }
                
                 await saveUserData(currentUser.uid, userData);
                
                 document.getElementById('edit-profile-modal').style.display = 'none';
-                updateProfile();
+                await loadUserProfile();
                 alert('Perfil actualizado correctamente.');
             } catch (error) {
                 console.error("Error actualizando perfil:", error);
@@ -3844,7 +4706,7 @@
         }
 
         // ============================
-        // SISTEMA DE ESCRITURA
+        // SISTEMA DE ESCRITURA (MANTENIDO)
         // ============================
 
         function initWritingSystem() {
@@ -4286,6 +5148,11 @@
                     // Cerrar modal y mostrar mensaje
                     document.getElementById('upload-modal').style.display = 'none';
                     alert('¡Libro publicado correctamente! Estará disponible después de la moderación.');
+                    
+                    // Recargar perfil si está visible
+                    if (document.getElementById('perfil').classList.contains('active')) {
+                        await loadUserProfile();
+                    }
                 } else {
                     throw new Error('Error al guardar el libro en la base de datos');
                 }
@@ -4310,6 +5177,9 @@
             // Inicializar buscador global
             initGlobalSearch();
             
+            // Inicializar sistema de avatar
+            initAvatarSystem();
+            
             // Configurar listener de autenticación
             auth.onAuthStateChanged((user) => {
                 if (user) {
@@ -4321,11 +5191,17 @@
                     // Actualizar interfaz de usuario
                     updateAuthUI();
                    
+                    // Marcar usuario como en línea
+                    markUserAsOnline(user.uid);
+                    
+                    // Inicializar contador de usuarios
+                    initUserCounter();
+                    
                     checkEmailVerification();
                     setInterval(checkEmailVerification, 30000);
                    
                     if (document.getElementById('perfil').classList.contains('active')) {
-                        updateProfile();
+                        loadUserProfile();
                     }
                 } else {
                     // No hay usuario autenticado
@@ -4534,6 +5410,12 @@
                 });
             });
 
+            // Configurar contador de caracteres para biografía
+            const bioTextarea = document.getElementById('edit-user-bio');
+            if (bioTextarea) {
+                bioTextarea.addEventListener('input', updateBioCounter);
+            }
+
             // Inicializar el sistema de escritura mejorado
             initWritingSystem();
 
@@ -4542,12 +5424,85 @@
 
             // Iniciar en la sección de inicio
             switchSection('inicio');
+            
+            // Iniciar listeners en tiempo real
+            startRealTimeListeners();
         });
 
-        // Limpiar listeners cuando se cierre la página
+        // Limpiar cuando se cierre la página
         window.addEventListener('beforeunload', function() {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                markUserAsOffline(currentUser.uid);
+            }
             stopRealTimeListeners();
         });
+
+        // Función para verificar si una acción está permitida
+        function isActionAllowed(action) {
+            if (currentUserType === 'logged') {
+                return true;
+            }
+           
+            if (currentUserType === 'guest') {
+                // Definir acciones permitidas para invitados
+                const allowedActions = [
+                    'view_books',
+                    'read_limited_content',
+                    'search_books',
+                    'filter_books'
+                ];
+               
+                return allowedActions.includes(action);
+            }
+           
+            return false;
+        }
+
+        // Función para mostrar mensaje de inicio de sesión
+        function showLoginPrompt() {
+            // Crear un modal de confirmación
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <div class="modal-header">
+                        <h3>Iniciar Sesión Requerido</h3>
+                    </div>
+                    <p>Para acceder a esta función, necesitas tener una cuenta.</p>
+                    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+                        <button class="btn" id="go-to-login">Iniciar Sesión</button>
+                        <button class="btn btn-secondary" id="cancel-login">Cancelar</button>
+                    </div>
+                </div>
+            `;
+           
+            document.body.appendChild(modal);
+           
+            // Configurar eventos
+            document.getElementById('go-to-login').addEventListener('click', function() {
+                document.body.removeChild(modal);
+                document.getElementById('auth-modal').style.display = 'flex';
+            });
+           
+            document.getElementById('cancel-login').addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+           
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        // Función para mostrar el gestor de capítulos
+        function showChapterManager() {
+            // Implementación básica del gestor de capítulos
+            alert('Gestor de capítulos - Esta funcionalidad está en desarrollo');
+        }
 
         // Función para manejar la lectura de páginas como invitado
         function handleGuestPageReading() {
@@ -4582,10 +5537,85 @@
             return true;
         }
 
-        // Función para mostrar el gestor de capítulos
-        function showChapterManager() {
-            // Implementación básica del gestor de capítulos
-            alert('Gestor de capítulos - Esta funcionalidad está en desarrollo');
+        // Función para mostrar el modal de bienvenida
+        function showWelcomeModal() {
+            document.getElementById('welcome-modal').style.display = 'flex';
+           
+            // Configurar eventos para las opciones
+            document.getElementById('login-option').addEventListener('click', function() {
+                document.getElementById('welcome-modal').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+            });
+           
+            document.getElementById('register-option').addEventListener('click', function() {
+                document.getElementById('welcome-modal').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+                // Cambiar a pestaña de registro
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('[data-form="register"]').classList.add('active');
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById('register-form').classList.add('active');
+            });
+           
+            document.getElementById('guest-option').addEventListener('click', function() {
+                enterAsGuest();
+            });
+        }
+
+        // Función para entrar como invitado
+        function enterAsGuest() {
+            currentUserType = 'guest';
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('guest-notification').style.display = 'flex';
+           
+            // Actualizar la interfaz para modo invitado
+            updateUIForGuest();
+           
+            // Iniciar listeners para contenido público
+            startRealTimeListeners();
+            
+            // Inicializar contador de usuarios
+            initUserCounter();
+        }
+
+        // Función para actualizar la UI para usuarios invitados
+        function updateUIForGuest() {
+            // Actualizar botón de autenticación
+            document.getElementById('auth-status').textContent = 'Invitado';
+           
+            // Ocultar o deshabilitar funciones restringidas
+            const restrictedActions = [
+                'upload-book-btn',
+                'edit-profile-btn',
+                'submit-review'
+            ];
+           
+            restrictedActions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.add('restricted-action');
+                    element.disabled = true;
+                   
+                    // Añadir tooltip de restricción
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'restricted-message';
+                    tooltip.textContent = 'Inicia sesión para acceder a esta función';
+                    element.appendChild(tooltip);
+                }
+            });
+           
+            // Restringir acciones de like y seguir
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.like-btn') || e.target.closest('.follow-btn')) {
+                    if (currentUserType === 'guest') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        showLoginPrompt();
+                    }
+                }
+            });
         }
 
     </script>
