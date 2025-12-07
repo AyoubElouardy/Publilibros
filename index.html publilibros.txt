@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Publibros - Red social para leer, compartir y descubrir libros. Únete a nuestra comunidad de lectores y escritores.">
+    <meta name="keywords" content="libros, lectura, red social, autores, publicar libros, leer gratis, comunidad literaria">
+    <meta name="author" content="Publibros">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://publilibros.es/">
+    <meta property="og:title" content="Publibros - Comparte y Lee Libros">
+    <meta property="og:description" content="Únete a nuestra comunidad de lectores y escritores. Descubre libros increíbles y comparte tus propias historias.">
+    <meta property="og:image" content="https://publilibros.es/images/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://publilibros.es/">
+    <meta property="twitter:title" content="Publibros - Comparte y Lee Libros">
+    <meta property="twitter:description" content="Únete a nuestra comunidad de lectores y escritores. Descubre libros increíbles y comparte tus propias historias.">
+    <meta property="twitter:image" content="https://publilibros.es/images/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    
+    <!-- Seguridad y políticas -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' https://*.firebasestorage.app https://*.unsplash.com data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <title>Publibros - Comparte y Lee Libros</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    
+    <!-- Configuración segura de Firebase -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Iconos y fuentes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos principales -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" as="style">
+    
+    <!-- Structured Data para SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Publibros",
+        "url": "https://publilibros.es",
+        "description": "Red social para leer, compartir y descubrir libros",
+        "applicationCategory": "SocialNetworkingPlatform",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "Publibros"
+        }
+    }
+    </script>
+    
+    <style>
+        /* Estilos críticos para carga rápida */
+        .critical-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6a5af9, #d66efd);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-logo {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .loading-text {
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de carga inicial -->
+    <div id="critical-loading" class="critical-loading">
+        <div class="loading-logo">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div class="loading-text">Cargando Publibros...</div>
+    </div>
+    
+    <!-- Notificación de error global -->
+    <div id="global-error" class="global-error" style="display: none;">
+        <div class="error-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="error-message"></span>
+            <button id="close-error" class="error-close">&times;</button>
+        </div>
+    </div>
+    
+    <!-- Header principal -->
+    <header id="main-header">
+        <div class="container header-content">
+            <!-- Logo y marca -->
+            <div class="logo">
+                <a href="#inicio" class="logo-link">
+                    <i class="fas fa-book-open"></i>
+                    <span class="logo-text">Publi<span class="logo-highlight">libros</span></span>
+                </a>
+            </div>
+            
+            <!-- Navegación principal -->
+            <nav class="main-nav" role="navigation" aria-label="Navegación principal">
+                <button class="mobile-menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#inicio" class="nav-link active" data-section="inicio" aria-current="page">
+                            <i class="fas fa-home"></i>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#biblioteca" class="nav-link" data-section="biblioteca">
+                            <i class="fas fa-book"></i>
+                            <span>Biblioteca</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#explorar" class="nav-link" data-section="explorar">
+                            <i class="fas fa-compass"></i>
+                            <span>Explorar</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#perfil" class="nav-link" data-section="perfil">
+                            <i class="fas fa-user"></i>
+                            <span>Mi Perfil</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Acciones de usuario -->
+            <div class="user-actions">
+                <!-- Buscador global -->
+                <div class="search-container" role="search">
+                    <button class="search-toggle" id="search-toggle" aria-label="Buscar libros">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <div class="search-box" id="search-box">
+                        <input type="search" 
+                               id="global-search" 
+                               placeholder="Buscar libros, autores..." 
+                               aria-label="Buscar en Publibros"
+                               autocomplete="off">
+                        <button class="search-clear" id="search-clear" aria-label="Limpiar búsqueda">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-results" id="search-results" role="listbox" aria-label="Resultados de búsqueda"></div>
+                </div>
+                
+                <!-- Botón de subir libro -->
+                <button class="btn-upload" id="upload-book-btn" aria-label="Subir nuevo libro">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text">Publicar</span>
+                </button>
+                
+                <!-- Botón de tema -->
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <!-- Botón de autenticación -->
+                <button class="auth-btn" id="auth-btn" aria-label="Iniciar sesión">
+                    <i class="fas fa-user"></i>
+                    <span id="auth-status">Iniciar Sesión</span>
+                </button>
+                
+                <!-- Menú de usuario (se mostrará dinámicamente) -->
+                <div class="user-menu-container" id="user-menu-container"></div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contador de usuarios en línea -->
+    <div class="user-counter" id="user-counter" aria-live="polite">
+        <i class="fas fa-users"></i>
+        <span id="online-users-count">0</span> lectores en línea
+    </div>
+    
+    <!-- Secciones principales -->
+    <main id="main-content" role="main">
+        
+        <!-- Sección Inicio -->
+        <section id="inicio" class="main-section active" aria-labelledby="inicio-title">
+            <div class="container">
+                <!-- Hero section -->
+                <div class="hero">
+                    <div class="hero-content">
+                        <h1 id="inicio-title" class="hero-title">
+                            <span class="hero-highlight">Comparte</span> tu pasión por la lectura
+                        </h1>
+                        <p class="hero-subtitle">
+                            Únete a miles de lectores y escritores que ya están compartiendo sus historias.
+                            Descubre nuevos talentos, lee libros increíbles y forma parte de nuestra comunidad literaria.
+                        </p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" id="explore-library">
+                                <i class="fas fa-book-open"></i>
+                                Explorar Biblioteca
+                            </button>
+                            <button class="btn btn-outline btn-lg" id="upload-first-book">
+                                <i class="fas fa-pen-alt"></i>
+                                Publica tu Primer Libro
+                            </button>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-book"></i>
+                                <div>
+                                    <span class="stat-value" id="total-books">0</span>
+                                    <span class="stat-label">Libros Publicados</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <span class="stat-value" id="total-authors">0</span>
+                                    <span class="stat-label">Autores</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <div>
+                                    <span class="stat-value" id="total-likes">0</span>
+                                    <span class="stat-label">Likes</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <div>
+                                    <span class="stat-value" id="total-views">0</span>
+                                    <span class="stat-label">Visitas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="book-stack">
+                            <div class="book book-1"></div>
+                            <div class="book book-2"></div>
+                            <div class="book book-3"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Libros destacados -->
+                <section class="featured-section" aria-labelledby="featured-title">
+                    <div class="section-header">
+                        <h2 id="featured-title" class="section-title">
+                            <i class="fas fa-star"></i>
+                            Libros Destacados
+                        </h2>
+                        <a href="#biblioteca" class="view-all" aria-label="Ver todos los libros destacados">
+                            Ver todos
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="books-grid" id="featured-books-container" role="list" aria-label="Lista de libros destacados">
+                        <!-- Los libros destacados se cargarán aquí -->
+                        <div class="loading-placeholder">
+                            <div class="loading-book"></div>
+                            <div class="loading-book"></div>
+                            <div class="loading-book"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recomendados para ti -->
+                <section class="recommended-section" aria-labelledby="recommended-title">
+                    <div class="section-header">
+                        <h2 id="recommended-title" class="section-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Recomendados para ti
+                        </h2>
+                        <button class="refresh-recommendations" id="refresh-recommendations" aria-label="Actualizar recomendaciones">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="books-grid" id="recommended-books-container" role="list" aria-label="Libros recomendados">
+                        <!-- Los libros recomendados se cargarán aquí -->
+                        <div class="loading-placeholder">
+                            <div class="loading-book"></div>
+                            <div class="loading-book"></div>
+                            <div class="loading-book"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Categorías populares -->
+                <section class="categories-section" aria-labelledby="categories-title">
+                    <h2 id="categories-title" class="section-title">
+                        <i class="fas fa-tags"></i>
+                        Explora por Género
+                    </h2>
+                    <div class="categories-grid" id="categories-container">
+                        <!-- Las categorías se cargarán aquí -->
+                    </div>
+                </section>
+                
+                <!-- Testimonios -->
+                <section class="testimonials-section" aria-labelledby="testimonials-title">
+                    <h2 id="testimonials-title" class="section-title">
+                        <i class="fas fa-comments"></i>
+                        Lo que dicen nuestros lectores
+                    </h2>
+                    <div class="testimonials-slider" id="testimonials-container">
+                        <!-- Los testimonios se cargarán aquí -->
+                    </div>
+                </section>
+            </div>
+        </section>
+        
+        <!-- Sección Biblioteca -->
+        <section id="biblioteca" class="main-section" aria-labelledby="biblioteca-title">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="biblioteca-title" class="section-title">
+                        <i class="fas fa-book-reader"></i>
+                        Biblioteca de Libros
+                    </h2>
+                    <div class="section-actions">
+                        <button class="btn btn-filter" id="filter-toggle" aria-label="Filtrar libros">
+                            <i class="fas fa-filter"></i>
+                            Filtrar
+                        </button>
+                        <button class="btn btn-sort" id="sort-toggle" aria-label="Ordenar libros">
+                            <i class="fas fa-sort-amount-down"></i>
+                            Ordenar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filtros y búsqueda -->
+                <div class="library-controls">
+                    <div class="search-filter">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="search" 
+                                   id="search-books" 
+                                   class="form-control" 
+                                   placeholder="Buscar por título, autor o descripción..."
+                                   aria-label="Buscar en la biblioteca">
+                            <button class="search-clear" id="clear-search" aria-label="Limpiar búsqueda">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="filter-options" id="filter-options">
+                            <select id="filter-by-genre" class="form-control" aria-label="Filtrar por género">
+                                <option value="all">Todos los géneros</option>
+                                <!-- Los géneros se cargarán dinámicamente -->
+                            </select>
+                            <select id="filter-by-status" class="form-control" aria-label="Filtrar por estado">
+                                <option value="all">Todos los estados</option>
+                                <option value="completed">Completados</option>
+                                <option value="ongoing">En progreso</option>
+                            </select>
+                            <select id="sort-by" class="form-control" aria-label="Ordenar por">
+                                <option value="newest">Más recientes</option>
+                                <option value="popular">Más populares</option>
+                                <option value="likes">Más likes</option>
+                                <option value="views">Más vistos</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros de género rápido -->
+                    <div class="quick-genre-filter" id="quick-genre-filter">
+                        <!-- Los géneros rápidos se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <!-- Resultados de búsqueda -->
+                <div class="search-results-info" id="search-results-info" aria-live="polite"></div>
+                
+                <!-- Contenedor de libros -->
+                <div class="books-container">
+                    <div class="books-grid" id="books-container" role="list" aria-label="Lista de libros">
+                        <!-- Los libros se cargarán aquí -->
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Cargando libros...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Paginación -->
+                    <div class="pagination" id="pagination" role="navigation" aria-label="Paginación de libros">
+                        <button class="pagination-btn prev" id="prev-page" disabled aria-label="Página anterior">
+                            <i class="fas fa-chevron-left"></i>
+                            Anterior
+                        </button>
+                        <div class="page-numbers" id="page-numbers"></div>
+                        <button class="pagination-btn next" id="next-page" aria-label="Página siguiente">
+                            Siguiente
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Estado vacío -->
+                    <div class="empty-state" id="empty-state" style="display: none;">
+                        <i class="fas fa-book"></i>
+                        <h3>No se encontraron libros</h3>
+                        <p>Intenta con otros filtros o sé el primero en publicar.</p>
+                        <button class="btn btn-primary" id="upload-from-empty">Publicar Libro</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Explorar -->
+        <section id="explorar" class="main-section" aria-labelledby="explorar-title">
+            <div class="container">
+                <h2 id="explorar-title" class="section-title">
+                    <i class="fas fa-compass"></i>
+                    Explora la Comunidad
+                </h2>
+                
+                <!-- Autores destacados -->
+                <div class="explore-section">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-users"></i>
+                        Autores Destacados
+                    </h3>
+                    <div class="authors-grid" id="featured-authors-container">
+                        <!-- Autores destacados se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <!-- Libros más populares -->
+                <div class="explore-section">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-chart-line"></i>
+                        Tendencia esta Semana
+                    </h3>
+                    <div class="books-grid" id="trending-books-container">
+                        <!-- Libros en tendencia se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <!-- Nuevos autores -->
+                <div class="explore-section">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-seedling"></i>
+                        Nuevos Talentos
+                    </h3>
+                    <div class="authors-grid" id="new-authors-container">
+                        <!-- Nuevos autores se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Perfil -->
+        <section id="perfil" class="main-section" aria-labelledby="perfil-title">
+            <div class="container">
+                <div id="profile-container">
+                    <!-- El contenido del perfil se cargará dinámicamente -->
+                    <div class="profile-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando perfil...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Lector de libros -->
+        <section id="reader" class="reader-section" aria-labelledby="reader-title" style="display: none;">
+            <!-- Se cargará dinámicamente -->
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="main-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-book-open"></i>
+                        <span>Publibros</span>
+                    </div>
+                    <p class="footer-description">
+                        Una plataforma para compartir y descubrir libros de autores emergentes y establecidos.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Síguenos en Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Síguenos en Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Síguenos en Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Únete a nuestro Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#inicio" class="nav-link-footer">Inicio</a></li>
+                        <li><a href="#biblioteca" class="nav-link-footer">Biblioteca</a></li>
+                        <li><a href="#explorar" class="nav-link-footer">Explorar</a></li>
+                        <li><a href="#perfil" class="nav-link-footer">Mi Perfil</a></li>
+                        <li><a href="#" id="privacy-link">Política de Privacidad</a></li>
+                        <li><a href="#" id="terms-link">Términos de Servicio</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-envelope"></i> contacto@publilibros.es</li>
+                        <li><i class="fas fa-globe"></i> publilibros.es</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Estadísticas en Vivo</h3>
+                    <div class="live-stats">
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <span class="stat-value" id="footer-users">0</span>
+                                <span class="stat-label">Usuarios</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <span class="stat-value" id="footer-books">0</span>
+                                <span class="stat-label">Libros</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year">2024</span> Publibros. Todos los derechos reservados.</p>
+                <p class="version">v1.0.0</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal de Bienvenida -->
+    <div id="welcome-modal" class="modal" role="dialog" aria-labelledby="welcome-title" aria-modal="true" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="welcome-title">¡Bienvenido a Publibros!</h3>
+                <button class="close-modal" id="close-welcome-modal" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Descubre una comunidad vibrante de lectores y escritores. Para disfrutar de todas las funciones, te recomendamos crear una cuenta.</p>
+                <div class="welcome-options">
+                    <div class="welcome-option" id="login-option" role="button" tabindex="0">
+                        <div class="welcome-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h4>Iniciar Sesión</h4>
+                        <p>Accede con tu cuenta existente</p>
+                    </div>
+                    <div class="welcome-option" id="register-option" role="button" tabindex="0">
+                        <div class="welcome-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h4>Registrarse</h4>
+                        <p>Crea una nueva cuenta gratis</p>
+                    </div>
+                    <div class="welcome-option" id="guest-option" role="button" tabindex="0">
+                        <div class="welcome-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4>Modo Invitado</h4>
+                        <p>Explora con acceso limitado</p>
+                    </div>
+                </div>
+                <div class="guest-warning">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Como invitado podrás leer hasta 3 páginas por libro. Regístrate para acceso completo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Autenticación -->
+    <div id="auth-modal" class="modal" role="dialog" aria-labelledby="auth-modal-title" aria-modal="true" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="auth-modal-title">Iniciar Sesión</h3>
+                <button class="close-modal" id="close-auth-modal" aria-label="Cerrar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="auth-tabs" role="tablist">
+                <button class="auth-tab active" data-form="login" role="tab" aria-selected="true" aria-controls="login-form">
+                    Iniciar Sesión
+                </button>
+                <button class="auth-tab" data-form="register" role="tab" aria-selected="false" aria-controls="register-form">
+                    Registrarse
+                </button>
+            </div>
+            
+            <form id="login-form" class="auth-form active" role="tabpanel" aria-labelledby="login-tab">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required 
+                           placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                    <div class="error-message" id="login-email-error" role="alert"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" class="form-control" required 
+                               placeholder="Tu contraseña" autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="toggle-login-password" aria-label="Mostrar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="login-password-error" role="alert"></div>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Iniciar Sesión</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+                <div class="form-footer">
+                    <p>¿No tienes cuenta? <a href="#" id="switch-to-register" class="auth-switch">Regístrate aquí</a></p>
+                </div>
+            </form>
+            
+            <form id="register-form" class="auth-form" role="tabpanel" aria-labelledby="register-tab">
+                <div class="form-group">
+                    <label for="register-name">Nombre completo</label>
+                    <input type="text" id="register-name" class="form-control" required 
+                           placeholder="Tu nombre" autocomplete="name">
+                    <div class="error-message" id="register-name-error" role="alert"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" class="form-control" required 
+                           placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                    <div class="error-message" id="register-email-error" role="alert"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="register-password" class="form-control" required 
+                               placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                        <button type="button" class="toggle-password" id="toggle-register-password" aria-label="Mostrar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="register-password-error" role="alert"></div>
+                    <div class="password-strength" id="password-strength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Seguridad de contraseña</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirmar Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="register-confirm-password" class="form-control" required 
+                               placeholder="Repite tu contraseña" autocomplete="new-password">
+                        <button type="button" class="toggle-password" id="toggle-confirm-password" aria-label="Mostrar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="register-confirm-password-error" role="alert"></div>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="accept-terms" required>
+                        <span>Acepto los <a href="#" id="terms-modal-link">Términos de Servicio</a> y la <a href="#" id="privacy-modal-link">Política de Privacidad</a></span>
+                    </label>
+                    <div class="error-message" id="terms-error" role="alert"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Crear Cuenta</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+                <div class="form-footer">
+                    <p>¿Ya tienes cuenta? <a href="#" id="switch-to-login" class="auth-switch">Inicia sesión aquí</a></p>
+                </div>
+            </form>
+            
+            <!-- Recuperación de contraseña -->
+            <form id="recovery-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="recovery-email">Email</label>
+                    <input type="email" id="recovery-email" class="form-control" required 
+                           placeholder="Ingresa tu email para recuperar contraseña">
+                    <div class="error-message" id="recovery-email-error" role="alert"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Enviar enlace de recuperación</button>
+                <div class="form-footer">
+                    <p><a href="#" id="back-to-login">Volver a inicio de sesión</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Subida de Libro -->
+    <div id="upload-modal" class="modal upload-modal" role="dialog" aria-labelledby="upload-title" aria-modal="true" style="display: none;">
+        <!-- Este modal se cargará dinámicamente -->
+    </div>
+    
+    <!-- Modal de Edición de Perfil -->
+    <div id="edit-profile-modal" class="modal" role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" style="display: none;">
+        <!-- Este modal se cargará dinámicamente -->
+    </div>
+    
+    <!-- Modal de Términos y Privacidad -->
+    <div id="terms-modal" class="modal" role="dialog" aria-labelledby="terms-title" aria-modal="true" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="terms-title">Términos de Servicio y Política de Privacidad</h3>
+                <button class="close-modal" id="close-terms-modal" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body terms-content" id="terms-content">
+                <!-- Contenido se cargará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    
+    <!-- Service Worker para PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registrado con éxito:', registration.scope);
+                }).catch(error => {
+                    console.log('Error registrando ServiceWorker:', error);
+                });
+            });
+        }
+    </script>
+    
+    <!-- Analytics -->
+    <script>
+        // Inicializar analytics después de cargar Firebase
+        window.addEventListener('load', () => {
+            if (typeof firebase !== 'undefined') {
+                firebase.analytics();
+            }
+        });
+    </script>
+</body>
+</html>
